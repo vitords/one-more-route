@@ -2,7 +2,8 @@
 const CONFIG = {
     GIST_ID_KEY: 'zwift_tracker_gist_id',
     TOKEN_KEY: 'zwift_tracker_token',
-    GIST_FILENAME: 'zwift_routes.json'
+    GIST_FILENAME: 'zwift_routes.json',
+    LOCAL_STORAGE_KEY: 'zwift_tracker_completed_routes'
 };
 
 // State
@@ -13,6 +14,8 @@ let currentFilter = 'all';
 let searchQuery = '';
 let isAuthenticated = false;
 let gistId = null;
+let syncTimeout = null;
+let isSyncing = false;
 
 // DOM Elements
 const routesContainer = document.getElementById('routes-container');
@@ -45,9 +48,12 @@ async function init() {
     // Load routes
     await loadRoutes();
     
-    // Load completed routes from Gist
+    // Load completed routes (localStorage first for instant load, then sync from Gist)
+    loadCompletedRoutesFromLocal();
+    
+    // Load completed routes from Gist in background (for multi-device sync)
     if (gistId) {
-        await loadCompletedRoutes();
+        loadCompletedRoutes(); // Don't await - load in background
     }
     
     // Render routes
@@ -71,7 +77,22 @@ async function loadRoutes() {
     }
 }
 
-// Load completed routes from GitHub Gist
+// Load completed routes from localStorage (instant)
+function loadCompletedRoutesFromLocal() {
+    try {
+        const saved = localStorage.getItem(CONFIG.LOCAL_STORAGE_KEY);
+        if (saved) {
+            const data = JSON.parse(saved);
+            completedRoutes = new Set(data.completedRoutes || []);
+            renderRoutes();
+            updateStats();
+        }
+    } catch (error) {
+        console.error('Error loading from localStorage:', error);
+    }
+}
+
+// Load completed routes from GitHub Gist (background sync)
 async function loadCompletedRoutes() {
     if (!gistId) return;
     
@@ -90,27 +111,78 @@ async function loadCompletedRoutes() {
         
         if (file && file.content) {
             const data = JSON.parse(file.content);
-            completedRoutes = new Set(data.completedRoutes || []);
+            const gistRoutes = new Set(data.completedRoutes || []);
+            
+            // Merge with local storage (local takes precedence for conflicts)
+            const localSaved = localStorage.getItem(CONFIG.LOCAL_STORAGE_KEY);
+            if (localSaved) {
+                const localData = JSON.parse(localSaved);
+                const localRoutes = new Set(localData.completedRoutes || []);
+                // Merge: union of both sets (if local has it, keep it; if gist has it, add it)
+                completedRoutes = new Set([...localRoutes, ...gistRoutes]);
+            } else {
+                completedRoutes = gistRoutes;
+            }
+            
+            // Save merged data back to localStorage
+            saveCompletedRoutesToLocal();
+            
             renderRoutes();
             updateStats();
+            updateSyncStatus('synced');
         }
     } catch (error) {
-        console.error('Error loading completed routes:', error);
+        console.error('Error loading completed routes from Gist:', error);
+        updateSyncStatus('error');
     }
 }
 
-// Save completed routes to GitHub Gist
+// Save completed routes to localStorage (instant)
+function saveCompletedRoutesToLocal() {
+    try {
+        const data = {
+            completedRoutes: Array.from(completedRoutes),
+            lastUpdated: Date.now()
+        };
+        localStorage.setItem(CONFIG.LOCAL_STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+        console.error('Error saving to localStorage:', error);
+    }
+}
+
+// Save completed routes to GitHub Gist (background sync with debouncing)
 async function saveCompletedRoutes() {
+    // Save to localStorage immediately for instant feedback
+    saveCompletedRoutesToLocal();
+    
     if (!isAuthenticated) {
-        alert('Please authenticate first to save changes.');
-        return;
+        return; // Don't show alert, just save locally
     }
     
     const token = sessionStorage.getItem(CONFIG.TOKEN_KEY);
     if (!token) {
-        alert('Authentication token not found. Please login again.');
-        return;
+        return; // Save locally only
     }
+    
+    // Clear existing timeout
+    if (syncTimeout) {
+        clearTimeout(syncTimeout);
+    }
+    
+    // Debounce: wait 1 second before syncing to Gist (batch multiple changes)
+    syncTimeout = setTimeout(async () => {
+        await syncToGist(token);
+    }, 1000);
+}
+
+// Actually sync to Gist (called after debounce)
+async function syncToGist(token) {
+    if (isSyncing) {
+        return; // Already syncing, skip
+    }
+    
+    isSyncing = true;
+    updateSyncStatus('syncing');
     
     const data = {
         completedRoutes: Array.from(completedRoutes)
@@ -222,10 +294,43 @@ async function saveCompletedRoutes() {
             }
         }
         
-        console.log('Progress saved successfully!');
+        console.log('Progress synced to Gist successfully!');
+        updateSyncStatus('synced');
     } catch (error) {
-        console.error('Error saving completed routes:', error);
-        alert(`Error saving progress: ${error.message}`);
+        console.error('Error syncing to Gist:', error);
+        updateSyncStatus('error');
+        // Don't show alert - just log error, local storage already saved
+    } finally {
+        isSyncing = false;
+    }
+}
+
+// Update sync status indicator
+function updateSyncStatus(status) {
+    if (!authStatus) return;
+    
+    const statusText = {
+        'syncing': '⏳ Syncing...',
+        'synced': '✓ Synced',
+        'error': '⚠ Sync failed (saved locally)'
+    };
+    
+    const statusColor = {
+        'syncing': 'var(--text-secondary)',
+        'synced': 'var(--completed)',
+        'error': '#f85149'
+    };
+    
+    if (status === 'synced') {
+        // Clear status after 2 seconds
+        setTimeout(() => {
+            if (authStatus.textContent === statusText['synced']) {
+                authStatus.textContent = isAuthenticated ? '✓ Authenticated' : '';
+            }
+        }, 2000);
+    } else {
+        authStatus.textContent = statusText[status] || '';
+        authStatus.style.color = statusColor[status] || 'var(--text-secondary)';
     }
 }
 
@@ -334,15 +439,53 @@ function createRouteCard(route) {
     
     const checkbox = card.querySelector('.route-checkbox');
     checkbox.addEventListener('change', async (e) => {
-        if (e.target.checked) {
-            completedRoutes.add(route.route);
+        const wasChecked = e.target.checked;
+        const routeName = route.route;
+        
+        // Update the set first
+        if (wasChecked) {
+            completedRoutes.add(routeName);
         } else {
-            completedRoutes.delete(route.route);
+            completedRoutes.delete(routeName);
         }
-        renderRoutes();
+        
+        // Update the current card's visual state immediately
+        if (wasChecked) {
+            card.classList.add('completed');
+            const routeNameEl = card.querySelector('.route-name');
+            if (routeNameEl) {
+                routeNameEl.style.textDecoration = 'line-through';
+                routeNameEl.style.opacity = '0.7';
+            }
+        } else {
+            card.classList.remove('completed');
+            const routeNameEl = card.querySelector('.route-name');
+            if (routeNameEl) {
+                routeNameEl.style.textDecoration = 'none';
+                routeNameEl.style.opacity = '1';
+            }
+        }
+        
+        // Update stats immediately
         updateStats();
-        // Save progress (works for both checking and unchecking)
-        await saveCompletedRoutes();
+        
+        // Update map stats in the header
+        updateMapStats();
+        
+        // Save to localStorage immediately
+        saveCompletedRoutesToLocal();
+        
+        // Re-render only if we're in a filtered view (completed/remaining)
+        // This ensures routes appear/disappear correctly in filtered views
+        if (currentFilter !== 'all') {
+            // Use setTimeout to ensure the DOM update happens after the checkbox state is set
+            setTimeout(() => {
+                renderRoutes();
+            }, 0);
+        }
+        
+        // Sync to Gist in background (don't await - let it happen in background)
+        saveCompletedRoutes();
     });
     
     return card;
@@ -361,12 +504,33 @@ function updateStats() {
     document.getElementById('percentage-complete').textContent = `${percentage}%`;
 }
 
+// Update map stats in headers without full re-render
+function updateMapStats() {
+    const mapHeaders = document.querySelectorAll('.map-stats');
+    mapHeaders.forEach(header => {
+        const mapGroup = header.closest('.map-group');
+        if (!mapGroup) return;
+        
+        const mapTitle = mapGroup.querySelector('.map-title');
+        if (!mapTitle) return;
+        
+        const mapName = mapTitle.textContent;
+        const routesInMap = routes.filter(r => r.map === mapName);
+        const completedInMap = routesInMap.filter(r => completedRoutes.has(r.route)).length;
+        
+        header.textContent = `${completedInMap} / ${routesInMap.length} completed`;
+    });
+}
+
 // Update authentication UI
 function updateAuthUI() {
     if (isAuthenticated) {
         authBtn.textContent = 'Logout';
-        authStatus.textContent = '✓ Authenticated';
-        authStatus.style.color = 'var(--completed)';
+        // Only update status if not currently showing sync status
+        if (!authStatus.textContent.includes('Syncing') && !authStatus.textContent.includes('Sync')) {
+            authStatus.textContent = '✓ Authenticated';
+            authStatus.style.color = 'var(--completed)';
+        }
     } else {
         authBtn.textContent = 'Login to Edit';
         authStatus.textContent = '';
