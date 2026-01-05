@@ -1,0 +1,1563 @@
+[
+  {
+    "route": "Bon Voyage",
+    "map": "France",
+    "length": 28.2,
+    "elevation": 132,
+    "leadIn": 3.2
+  },
+  {
+    "route": "Casse-Pattes",
+    "map": "France",
+    "length": 23.0,
+    "elevation": 155,
+    "leadIn": 0.9
+  },
+  {
+    "route": "Croissant",
+    "map": "France",
+    "length": 9.3,
+    "elevation": 49,
+    "leadIn": 3.2
+  },
+  {
+    "route": "Douce France",
+    "map": "France",
+    "length": 24.0,
+    "elevation": 133,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Gentil 8",
+    "map": "France",
+    "length": 23.1,
+    "elevation": 243,
+    "leadIn": 0.6
+  },
+  {
+    "route": "Hell of the North",
+    "map": "France",
+    "length": 19.8,
+    "elevation": 241,
+    "leadIn": 0.3
+  },
+  {
+    "route": "Knights of the Roundabout",
+    "map": "France",
+    "length": 51.2,
+    "elevation": 336,
+    "leadIn": 3.2
+  },
+  {
+    "route": "La Reine",
+    "map": "France",
+    "length": 22.4,
+    "elevation": 1201,
+    "leadIn": 0.4
+  },
+  {
+    "route": "Petit Boucle",
+    "map": "France",
+    "length": 60.8,
+    "elevation": 483,
+    "leadIn": 0.9
+  },
+  {
+    "route": "Petite Douleur",
+    "map": "France",
+    "length": 13.9,
+    "elevation": 194,
+    "leadIn": 10.9
+  },
+  {
+    "route": "R.G.V.",
+    "map": "France",
+    "length": 24.0,
+    "elevation": 133,
+    "leadIn": 0.9
+  },
+  {
+    "route": "Roule Ma Poule",
+    "map": "France",
+    "length": 23.0,
+    "elevation": 155,
+    "leadIn": 3.1
+  },
+  {
+    "route": "Sacre Bleu",
+    "map": "France",
+    "length": 71.2,
+    "elevation": 396,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Three Musketeers",
+    "map": "France",
+    "length": 35.2,
+    "elevation": 193,
+    "leadIn": 2.6
+  },
+  {
+    "route": "Tire-Bouchon",
+    "map": "France",
+    "length": 61.0,
+    "elevation": 483,
+    "leadIn": 3.1
+  },
+  {
+    "route": "Ven-10",
+    "map": "France",
+    "length": 10.0,
+    "elevation": 781,
+    "leadIn": 1.4
+  },
+  {
+    "route": "Ven-Top",
+    "map": "France",
+    "length": 20.9,
+    "elevation": 1534,
+    "leadIn": 0.2
+  },
+  {
+    "route": "2018 UCI Worlds Course Short Lap",
+    "map": "Innsbruck",
+    "length": 23.6,
+    "elevation": 494,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Achterbahn",
+    "map": "Innsbruck",
+    "length": 47.4,
+    "elevation": 989,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Innsbruck KOM After Party",
+    "map": "Innsbruck",
+    "length": 36.9,
+    "elevation": 656,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Innsbruckring",
+    "map": "Innsbruck",
+    "length": 8.8,
+    "elevation": 77,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Lutscher CCW",
+    "map": "Innsbruck",
+    "length": 13.8,
+    "elevation": 402,
+    "leadIn": 8.8
+  },
+  {
+    "route": "Lutscher",
+    "map": "Innsbruck",
+    "length": 13.7,
+    "elevation": 402,
+    "leadIn": 10.9
+  },
+  {
+    "route": "Greater London 8",
+    "map": "London",
+    "length": 23.8,
+    "elevation": 276,
+    "leadIn": 0.6
+  },
+  {
+    "route": "Greater London Flat",
+    "map": "London",
+    "length": 11.7,
+    "elevation": 36,
+    "leadIn": 5.6
+  },
+  {
+    "route": "Greater London Loop",
+    "map": "London",
+    "length": 21.0,
+    "elevation": 222,
+    "leadIn": 0.6
+  },
+  {
+    "route": "Greatest London Flat",
+    "map": "London",
+    "length": 23.6,
+    "elevation": 164,
+    "leadIn": 7.5
+  },
+  {
+    "route": "Greatest London Loop",
+    "map": "London",
+    "length": 25.6,
+    "elevation": 356,
+    "leadIn": 0.6
+  },
+  {
+    "route": "London 8",
+    "map": "London",
+    "length": 20.3,
+    "elevation": 219,
+    "leadIn": 0.6
+  },
+  {
+    "route": "London Calling",
+    "map": "London",
+    "length": 31.2,
+    "elevation": 207,
+    "leadIn": 0.5
+  },
+  {
+    "route": "London Classique",
+    "map": "London",
+    "length": 5.5,
+    "elevation": 16,
+    "leadIn": 5.6
+  },
+  {
+    "route": "London Flat",
+    "map": "London",
+    "length": 11.99,
+    "elevation": 115,
+    "leadIn": 0.39
+  },
+  {
+    "route": "London Loop",
+    "map": "London",
+    "length": 14.9,
+    "elevation": 231,
+    "leadIn": 0.6
+  },
+  {
+    "route": "London Uprising",
+    "map": "London",
+    "length": 20.5,
+    "elevation": 356,
+    "leadIn": 0.3
+  },
+  {
+    "route": "Surrey Hills",
+    "map": "London",
+    "length": 39.2,
+    "elevation": 837,
+    "leadIn": 5.1
+  },
+  {
+    "route": "The London Pretzel",
+    "map": "London",
+    "length": 55.7,
+    "elevation": 571,
+    "leadIn": 0.6
+  },
+  {
+    "route": "The PRL Full",
+    "map": "London",
+    "length": 173.0,
+    "elevation": 2621,
+    "leadIn": 0.5
+  },
+  {
+    "route": "The PRL Half",
+    "map": "London",
+    "length": 69.1,
+    "elevation": 1009,
+    "leadIn": 0.6
+  },
+  {
+    "route": "Triple Loops",
+    "map": "London",
+    "length": 40.9,
+    "elevation": 565,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Bridges and Boardwalks",
+    "map": "Makuri Islands",
+    "length": 6.2,
+    "elevation": 60,
+    "leadIn": 1.9
+  },
+  {
+    "route": "Castle Crit",
+    "map": "Makuri Islands",
+    "length": 3.5,
+    "elevation": 44,
+    "leadIn": 1.5
+  },
+  {
+    "route": "Castle to Castle",
+    "map": "Makuri Islands",
+    "length": 22.4,
+    "elevation": 140,
+    "leadIn": 0.8
+  },
+  {
+    "route": "Chain Chomper",
+    "map": "Makuri Islands",
+    "length": 13.6,
+    "elevation": 184,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Chasing the Sun",
+    "map": "Makuri Islands",
+    "length": 35.1,
+    "elevation": 316,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Country to Coastal",
+    "map": "Makuri Islands",
+    "length": 33.4,
+    "elevation": 275,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Countryside Tour",
+    "map": "Makuri Islands",
+    "length": 16.0,
+    "elevation": 185,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Electric Break",
+    "map": "Makuri Islands",
+    "length": 17.8,
+    "elevation": 190,
+    "leadIn": 1.8
+  },
+  {
+    "route": "Electric Loop",
+    "map": "Makuri Islands",
+    "length": 8.9,
+    "elevation": 43,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Farmland Loop",
+    "map": "Makuri Islands",
+    "length": 7.9,
+    "elevation": 58,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Fine and Sandy",
+    "map": "Makuri Islands",
+    "length": 10.6,
+    "elevation": 77,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Flatland Loop",
+    "map": "Makuri Islands",
+    "length": 12.9,
+    "elevation": 96,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Island Hopper",
+    "map": "Makuri Islands",
+    "length": 18.0,
+    "elevation": 129,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Island Outskirts",
+    "map": "Makuri Islands",
+    "length": 11.4,
+    "elevation": 90,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Kappa Quest Reverse",
+    "map": "Makuri Islands",
+    "length": 9.0,
+    "elevation": 139,
+    "leadIn": 5.1
+  },
+  {
+    "route": "Kappa Quest",
+    "map": "Makuri Islands",
+    "length": 9.1,
+    "elevation": 140,
+    "leadIn": 3.8
+  },
+  {
+    "route": "Makuri 40",
+    "map": "Makuri Islands",
+    "length": 40.2,
+    "elevation": 308,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Makuri Madness",
+    "map": "Makuri Islands",
+    "length": 15.9,
+    "elevation": 85,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Makuri Pretzel",
+    "map": "Makuri Islands",
+    "length": 77.6,
+    "elevation": 616,
+    "leadIn": 1.1
+  },
+  {
+    "route": "Mech Isle Loop",
+    "map": "Makuri Islands",
+    "length": 4.0,
+    "elevation": 39,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Neokyo All-Nighter",
+    "map": "Makuri Islands",
+    "length": 24.3,
+    "elevation": 168,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Neon After Party",
+    "map": "Makuri Islands",
+    "length": 16.15,
+    "elevation": 141,
+    "leadIn": 1.15
+  },
+  {
+    "route": "Neon Flats",
+    "map": "Makuri Islands",
+    "length": 14.7,
+    "elevation": 73,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Railways and Rooftops",
+    "map": "Makuri Islands",
+    "length": 6.2,
+    "elevation": 71,
+    "leadIn": 2.1
+  },
+  {
+    "route": "Red Zone Repeats",
+    "map": "Makuri Islands",
+    "length": 19.4,
+    "elevation": 87,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Rooftop Rendezvous",
+    "map": "Makuri Islands",
+    "length": 3.7,
+    "elevation": 56,
+    "leadIn": 2.9
+  },
+  {
+    "route": "Sea to Tree",
+    "map": "Makuri Islands",
+    "length": 3.2,
+    "elevation": 106,
+    "leadIn": 0.6
+  },
+  {
+    "route": "Shisa Shakedown",
+    "map": "Makuri Islands",
+    "length": 49.3,
+    "elevation": 495,
+    "leadIn": 4.0
+  },
+  {
+    "route": "Sleepless City",
+    "map": "Makuri Islands",
+    "length": 9.6,
+    "elevation": 43,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Spirit Forest",
+    "map": "Makuri Islands",
+    "length": 8.4,
+    "elevation": 135,
+    "leadIn": 4.6
+  },
+  {
+    "route": "Sprinter's Playground",
+    "map": "Makuri Islands",
+    "length": 12.4,
+    "elevation": 68,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Suki's Playground",
+    "map": "Makuri Islands",
+    "length": 18.3,
+    "elevation": 150,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Temples and Towers",
+    "map": "Makuri Islands",
+    "length": 32.6,
+    "elevation": 319,
+    "leadIn": 0.7
+  },
+  {
+    "route": "Three Village Loop",
+    "map": "Makuri Islands",
+    "length": 10.6,
+    "elevation": 93,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Tropic Rush",
+    "map": "Makuri Islands",
+    "length": 41.2,
+    "elevation": 328,
+    "leadIn": 1.6
+  },
+  {
+    "route": "Turf N Surf",
+    "map": "Makuri Islands",
+    "length": 24.6,
+    "elevation": 196,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Twilight Harbor",
+    "map": "Makuri Islands",
+    "length": 6.9,
+    "elevation": 33,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Two Village Loop",
+    "map": "Makuri Islands",
+    "length": 12.8,
+    "elevation": 88,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Valley to Mountaintop",
+    "map": "Makuri Islands",
+    "length": 5.0,
+    "elevation": 129,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Wandering Flats",
+    "map": "Makuri Islands",
+    "length": 25.1,
+    "elevation": 146,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Astoria Line 8",
+    "map": "New York",
+    "length": 11.5,
+    "elevation": 140,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Avon Flyer",
+    "map": "New York",
+    "length": 3.3,
+    "elevation": 25,
+    "leadIn": 1.8
+  },
+  {
+    "route": "Double Parked",
+    "map": "New York",
+    "length": 42.2,
+    "elevation": 330,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Double Span Spin",
+    "map": "New York",
+    "length": 7.0,
+    "elevation": 80,
+    "leadIn": 5.6
+  },
+  {
+    "route": "Everything Bagel",
+    "map": "New York",
+    "length": 34.8,
+    "elevation": 525,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Fuhgeddaboudit",
+    "map": "New York",
+    "length": 79.0,
+    "elevation": 838,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Gotham Grind",
+    "map": "New York",
+    "length": 9.3,
+    "elevation": 96,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Grand Central Circuit",
+    "map": "New York",
+    "length": 6.8,
+    "elevation": 144,
+    "leadIn": 1.5
+  },
+  {
+    "route": "Green to Screen",
+    "map": "New York",
+    "length": 28.4,
+    "elevation": 207,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Issendorf Express",
+    "map": "New York",
+    "length": 7.2,
+    "elevation": 53,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Knickerbocker Reverse",
+    "map": "New York",
+    "length": 22.5,
+    "elevation": 364,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Knickerbocker",
+    "map": "New York",
+    "length": 22.5,
+    "elevation": 364,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Lady Liberty",
+    "map": "New York",
+    "length": 12.4,
+    "elevation": 206,
+    "leadIn": 0.1
+  },
+  {
+    "route": "LaGuardia After Party",
+    "map": "New York",
+    "length": 20.8,
+    "elevation": 326,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Mighty Metropolitan",
+    "map": "New York",
+    "length": 20.1,
+    "elevation": 316,
+    "leadIn": 0.0
+  },
+  {
+    "route": "No Sleep Till Brooklyn",
+    "map": "New York",
+    "length": 31.8,
+    "elevation": 247,
+    "leadIn": 0.2
+  },
+  {
+    "route": "NYC KOM After Party",
+    "map": "New York",
+    "length": 37.0,
+    "elevation": 480,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Park Perimeter Loop",
+    "map": "New York",
+    "length": 9.8,
+    "elevation": 126,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Prospect Park Loop",
+    "map": "New York",
+    "length": 5.4,
+    "elevation": 37,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Rising Empire",
+    "map": "New York",
+    "length": 20.7,
+    "elevation": 375,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Spinfinity Ultra",
+    "map": "New York",
+    "length": 35.0,
+    "elevation": 291,
+    "leadIn": 0.8
+  },
+  {
+    "route": "Spinfinity",
+    "map": "New York",
+    "length": 19.3,
+    "elevation": 155,
+    "leadIn": 0.8
+  },
+  {
+    "route": "Stay Puft Pursuit",
+    "map": "New York",
+    "length": 31.2,
+    "elevation": 416,
+    "leadIn": 0.8
+  },
+  {
+    "route": "The 6 Train",
+    "map": "New York",
+    "length": 6.5,
+    "elevation": 70,
+    "leadIn": 0.1
+  },
+  {
+    "route": "The Double Borough",
+    "map": "New York",
+    "length": 17.8,
+    "elevation": 147,
+    "leadIn": 0.1
+  },
+  {
+    "route": "The Greenway",
+    "map": "New York",
+    "length": 36.2,
+    "elevation": 290,
+    "leadIn": 0.6
+  },
+  {
+    "route": "The Highline",
+    "map": "New York",
+    "length": 10.5,
+    "elevation": 179,
+    "leadIn": 9.9
+  },
+  {
+    "route": "Times Square Circuit",
+    "map": "New York",
+    "length": 3.5,
+    "elevation": 20,
+    "leadIn": 0.8
+  },
+  {
+    "route": "Toefield Tornado",
+    "map": "New York",
+    "length": 10.2,
+    "elevation": 53,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Watts the Limit",
+    "map": "New York",
+    "length": 29.5,
+    "elevation": 200,
+    "leadIn": 1.5
+  },
+  {
+    "route": "Champs-Élysées",
+    "map": "Paris",
+    "length": 6.6,
+    "elevation": 39,
+    "leadIn": 3.1
+  },
+  {
+    "route": "Lutece Express",
+    "map": "Paris",
+    "length": 6.6,
+    "elevation": 39,
+    "leadIn": 3.6
+  },
+  {
+    "route": "2015 UCI Worlds Course",
+    "map": "Richmond",
+    "length": 16.3,
+    "elevation": 127,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Cobbled Climbs",
+    "map": "Richmond",
+    "length": 9.2,
+    "elevation": 117,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Libby Hill After Party",
+    "map": "Richmond",
+    "length": 33.0,
+    "elevation": 102,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Richmond UCI Reverse",
+    "map": "Richmond",
+    "length": 16.3,
+    "elevation": 127,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Richmond Loop Around",
+    "map": "Richmond",
+    "length": 42.2,
+    "elevation": 555,
+    "leadIn": 0.3
+  },
+  {
+    "route": "Richmond Rollercoaster",
+    "map": "Richmond",
+    "length": 5.0,
+    "elevation": 19,
+    "leadIn": 12.0
+  },
+  {
+    "route": "The Fan Flats",
+    "map": "Richmond",
+    "length": 5.1,
+    "elevation": 12,
+    "leadIn": 4.2
+  },
+  {
+    "route": "BRAEk-fast Crits and Grits",
+    "map": "Scotland",
+    "length": 20.8,
+    "elevation": 211,
+    "leadIn": 1.3
+  },
+  {
+    "route": "City and the Sgurr",
+    "map": "Scotland",
+    "length": 5.9,
+    "elevation": 103,
+    "leadIn": 2.7
+  },
+  {
+    "route": "Dùn Dash",
+    "map": "Scotland",
+    "length": 12.4,
+    "elevation": 139,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Glasgow Crit Circuit",
+    "map": "Scotland",
+    "length": 3.0,
+    "elevation": 34,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Loch Loop",
+    "map": "Scotland",
+    "length": 8.0,
+    "elevation": 71,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Outer Scotland",
+    "map": "Scotland",
+    "length": 11.1,
+    "elevation": 104,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Rolling Highlands",
+    "map": "Scotland",
+    "length": 9.0,
+    "elevation": 77,
+    "leadIn": 5.1
+  },
+  {
+    "route": "Scotland After Party",
+    "map": "Scotland",
+    "length": 13.6,
+    "elevation": 190,
+    "leadIn": 1.1
+  },
+  {
+    "route": "Scotland Smash",
+    "map": "Scotland",
+    "length": 17.8,
+    "elevation": 167,
+    "leadIn": 0.2
+  },
+  {
+    "route": "The Muckle Yin",
+    "map": "Scotland",
+    "length": 23.4,
+    "elevation": 282,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Accelerate to Elevate",
+    "map": "Watopia",
+    "length": 41.0,
+    "elevation": 1153,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Beach Island Loop",
+    "map": "Watopia",
+    "length": 13.1,
+    "elevation": 44,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Big Flat 8",
+    "map": "Watopia",
+    "length": 29.2,
+    "elevation": 103,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Big Foot Hills",
+    "map": "Watopia",
+    "length": 67.5,
+    "elevation": 708,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Big Loop",
+    "map": "Watopia",
+    "length": 42.1,
+    "elevation": 661,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Bigger Loop",
+    "map": "Watopia",
+    "length": 52.7,
+    "elevation": 691,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Canopies and Coastlines",
+    "map": "Watopia",
+    "length": 22.6,
+    "elevation": 124,
+    "leadIn": 5.1
+  },
+  {
+    "route": "Climb Control",
+    "map": "Watopia",
+    "length": 23.7,
+    "elevation": 191,
+    "leadIn": 0.3
+  },
+  {
+    "route": "Climber's Gambit",
+    "map": "Watopia",
+    "length": 27.7,
+    "elevation": 670,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Coast Crusher",
+    "map": "Watopia",
+    "length": 34.7,
+    "elevation": 174,
+    "leadIn": 8.1
+  },
+  {
+    "route": "Coast to Coast",
+    "map": "Watopia",
+    "length": 24.1,
+    "elevation": 154,
+    "leadIn": 2.6
+  },
+  {
+    "route": "Coastal Crown Loop",
+    "map": "Watopia",
+    "length": 15.0,
+    "elevation": 185,
+    "leadIn": 8.6
+  },
+  {
+    "route": "Danger Noodle",
+    "map": "Watopia",
+    "length": 32.1,
+    "elevation": 413,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Deca Dash",
+    "map": "Watopia",
+    "length": 48.2,
+    "elevation": 484,
+    "leadIn": 4.0
+  },
+  {
+    "route": "Downtown Eruption",
+    "map": "Watopia",
+    "length": 19.4,
+    "elevation": 275,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Downtown Titans",
+    "map": "Watopia",
+    "length": 24.6,
+    "elevation": 292,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Dust In the Wind",
+    "map": "Watopia",
+    "length": 52.1,
+    "elevation": 582,
+    "leadIn": 0.3
+  },
+  {
+    "route": "Eastern Eight",
+    "map": "Watopia",
+    "length": 51.7,
+    "elevation": 406,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Elevation Evaluation",
+    "map": "Watopia",
+    "length": 24.6,
+    "elevation": 396,
+    "leadIn": 3.1
+  },
+  {
+    "route": "Figure 8 Reverse",
+    "map": "Watopia",
+    "length": 29.7,
+    "elevation": 254,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Figure 8",
+    "map": "Watopia",
+    "length": 29.7,
+    "elevation": 254,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Flat Out Fast",
+    "map": "Watopia",
+    "length": 21.4,
+    "elevation": 46,
+    "leadIn": 0.9
+  },
+  {
+    "route": "Flat Route",
+    "map": "Watopia",
+    "length": 10.2,
+    "elevation": 61,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Four Horsemen",
+    "map": "Watopia",
+    "length": 88.7,
+    "elevation": 2113,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Glyph Heights",
+    "map": "Watopia",
+    "length": 25.3,
+    "elevation": 537,
+    "leadIn": 8.6
+  },
+  {
+    "route": "Going Coastal",
+    "map": "Watopia",
+    "length": 16.5,
+    "elevation": 63,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Hilltop Hustle",
+    "map": "Watopia",
+    "length": 13.6,
+    "elevation": 336,
+    "leadIn": 2.7
+  },
+  {
+    "route": "Hilly Route",
+    "map": "Watopia",
+    "length": 9.3,
+    "elevation": 109,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Itza Climb Finish",
+    "map": "Watopia",
+    "length": 29.1,
+    "elevation": 291,
+    "leadIn": 0.9
+  },
+  {
+    "route": "Itza Party",
+    "map": "Watopia",
+    "length": 45.7,
+    "elevation": 505,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Jarvis Seaside Sprint",
+    "map": "Watopia",
+    "length": 12.5,
+    "elevation": 95,
+    "leadIn": 2.8
+  },
+  {
+    "route": "Jungle Circuit",
+    "map": "Watopia",
+    "length": 7.9,
+    "elevation": 82,
+    "leadIn": 5.7
+  },
+  {
+    "route": "Jurassic Coast",
+    "map": "Watopia",
+    "length": 19.5,
+    "elevation": 212,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Legends and Lava",
+    "map": "Watopia",
+    "length": 24.6,
+    "elevation": 352,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Loop de Loop",
+    "map": "Watopia",
+    "length": 12.4,
+    "elevation": 144,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Loopin Lava",
+    "map": "Watopia",
+    "length": 14.3,
+    "elevation": 196,
+    "leadIn": 4.1
+  },
+  {
+    "route": "Mayan 8",
+    "map": "Watopia",
+    "length": 23.1,
+    "elevation": 241,
+    "leadIn": 3.1
+  },
+  {
+    "route": "Mayan Mash",
+    "map": "Watopia",
+    "length": 34.6,
+    "elevation": 756,
+    "leadIn": 3.1
+  },
+  {
+    "route": "Mayan San Remo",
+    "map": "Watopia",
+    "length": 21.0,
+    "elevation": 219,
+    "leadIn": 0.3
+  },
+  {
+    "route": "Mountain 8",
+    "map": "Watopia",
+    "length": 32.1,
+    "elevation": 691,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Mountain Mash",
+    "map": "Watopia",
+    "length": 5.7,
+    "elevation": 335,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Mountain Route",
+    "map": "Watopia",
+    "length": 29.6,
+    "elevation": 682,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Muir and the Mountain",
+    "map": "Watopia",
+    "length": 33.9,
+    "elevation": 793,
+    "leadIn": 5.1
+  },
+  {
+    "route": "Navig8",
+    "map": "Watopia",
+    "length": 63.9,
+    "elevation": 417,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Ocean Lava Cliffside Loop",
+    "map": "Watopia",
+    "length": 19.1,
+    "elevation": 157,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Oh Hill No",
+    "map": "Watopia",
+    "length": 7.9,
+    "elevation": 306,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Out and Back Again",
+    "map": "Watopia",
+    "length": 40.3,
+    "elevation": 329,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Peak Performance",
+    "map": "Watopia",
+    "length": 45.7,
+    "elevation": 726,
+    "leadIn": 0.9
+  },
+  {
+    "route": "Power Punches",
+    "map": "Watopia",
+    "length": 23.5,
+    "elevation": 205,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Power to the Tower",
+    "map": "Watopia",
+    "length": 43.8,
+    "elevation": 1494,
+    "leadIn": 0.9
+  },
+  {
+    "route": "Quatch Quest",
+    "map": "Watopia",
+    "length": 46.7,
+    "elevation": 1710,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Radio Rendezvous",
+    "map": "Watopia",
+    "length": 20.4,
+    "elevation": 728,
+    "leadIn": 3.1
+  },
+  {
+    "route": "Road to Ruins",
+    "map": "Watopia",
+    "length": 29.6,
+    "elevation": 276,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Road to Sky",
+    "map": "Watopia",
+    "length": 17.3,
+    "elevation": 1045,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Sand and Sequoias",
+    "map": "Watopia",
+    "length": 20.1,
+    "elevation": 175,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Serpentine 8",
+    "map": "Watopia",
+    "length": 19.4,
+    "elevation": 206,
+    "leadIn": 7.5
+  },
+  {
+    "route": "Shorelines and Summits",
+    "map": "Watopia",
+    "length": 46.1,
+    "elevation": 776,
+    "leadIn": 4.1
+  },
+  {
+    "route": "Snowman",
+    "map": "Watopia",
+    "length": 43.9,
+    "elevation": 577,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Southern Coast Cruise",
+    "map": "Watopia",
+    "length": 26.3,
+    "elevation": 147,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Spiral Into the Volcano",
+    "map": "Watopia",
+    "length": 55.8,
+    "elevation": 336,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Sugar Cookie",
+    "map": "Watopia",
+    "length": 33.6,
+    "elevation": 251,
+    "leadIn": 5.6
+  },
+  {
+    "route": "Tair Dringfa Fechan",
+    "map": "Watopia",
+    "length": 31.5,
+    "elevation": 349,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Temple Trek",
+    "map": "Watopia",
+    "length": 6.5,
+    "elevation": 25,
+    "leadIn": 4.1
+  },
+  {
+    "route": "Tempus Fugit",
+    "map": "Watopia",
+    "length": 17.3,
+    "elevation": 16,
+    "leadIn": 2.3
+  },
+  {
+    "route": "The Big Ring",
+    "map": "Watopia",
+    "length": 48.9,
+    "elevation": 269,
+    "leadIn": 2.3
+  },
+  {
+    "route": "The Classic",
+    "map": "Watopia",
+    "length": 4.7,
+    "elevation": 49,
+    "leadIn": 4.1
+  },
+  {
+    "route": "The Magnificent 8",
+    "map": "Watopia",
+    "length": 28.9,
+    "elevation": 156,
+    "leadIn": 0.2
+  },
+  {
+    "route": "The Mega Pretzel",
+    "map": "Watopia",
+    "length": 107.0,
+    "elevation": 1640,
+    "leadIn": 3.7
+  },
+  {
+    "route": "The Pretzel",
+    "map": "Watopia",
+    "length": 72.9,
+    "elevation": 1362,
+    "leadIn": 0.0
+  },
+  {
+    "route": "The Über Pretzel",
+    "map": "Watopia",
+    "length": 128.3,
+    "elevation": 2335,
+    "leadIn": 0.5
+  },
+  {
+    "route": "Three Little Sisters",
+    "map": "Watopia",
+    "length": 37.8,
+    "elevation": 434,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Three Sisters",
+    "map": "Watopia",
+    "length": 48.0,
+    "elevation": 897,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Tick Tock",
+    "map": "Watopia",
+    "length": 16.8,
+    "elevation": 53,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Tides and Temples",
+    "map": "Watopia",
+    "length": 36.5,
+    "elevation": 460,
+    "leadIn": 2.6
+  },
+  {
+    "route": "Tour of Fire and Ice",
+    "map": "Watopia",
+    "length": 25.3,
+    "elevation": 1167,
+    "leadIn": 2.7
+  },
+  {
+    "route": "Triple Flat Loops",
+    "map": "Watopia",
+    "length": 33.9,
+    "elevation": 134,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Triple Twist",
+    "map": "Watopia",
+    "length": 19.8,
+    "elevation": 180,
+    "leadIn": 4.5
+  },
+  {
+    "route": "Two Bridges Loop",
+    "map": "Watopia",
+    "length": 7.1,
+    "elevation": 81,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Volcano Circuit CCW",
+    "map": "Watopia",
+    "length": 4.1,
+    "elevation": 20,
+    "leadIn": 4.8
+  },
+  {
+    "route": "Volcano Circuit",
+    "map": "Watopia",
+    "length": 4.1,
+    "elevation": 20,
+    "leadIn": 2.7
+  },
+  {
+    "route": "Volcano Climb",
+    "map": "Watopia",
+    "length": 23.1,
+    "elevation": 203,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Volcano Flat",
+    "map": "Watopia",
+    "length": 12.3,
+    "elevation": 50,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Waisted 8",
+    "map": "Watopia",
+    "length": 30.7,
+    "elevation": 144,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Watopia's Waistband",
+    "map": "Watopia",
+    "length": 25.4,
+    "elevation": 96,
+    "leadIn": 2.3
+  },
+  {
+    "route": "Watts of the Wild",
+    "map": "Watopia",
+    "length": 42.0,
+    "elevation": 309,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Whole Lotta Lava",
+    "map": "Watopia",
+    "length": 12.3,
+    "elevation": 160,
+    "leadIn": 4.8
+  },
+  {
+    "route": "ZG25 Queen",
+    "map": "Watopia",
+    "length": 44.6,
+    "elevation": 896,
+    "leadIn": 0.2
+  },
+  {
+    "route": "Zwift Games 2024 Epic",
+    "map": "Watopia",
+    "length": 79.6,
+    "elevation": 821,
+    "leadIn": 1.9
+  },
+  {
+    "route": "2019 UCI Worlds Harrogate Circuit",
+    "map": "Yorkshire",
+    "length": 13.8,
+    "elevation": 245,
+    "leadIn": 0.1
+  },
+  {
+    "route": "Duchy Estate",
+    "map": "Yorkshire",
+    "length": 3.0,
+    "elevation": 41,
+    "leadIn": 1.7
+  },
+  {
+    "route": "Queen's Highway After Party",
+    "map": "Yorkshire",
+    "length": 17.2,
+    "elevation": 259,
+    "leadIn": 2.6
+  },
+  {
+    "route": "Queen's Highway",
+    "map": "Yorkshire",
+    "length": 3.0,
+    "elevation": 40,
+    "leadIn": 2.6
+  },
+  {
+    "route": "Royal Pump Room 8",
+    "map": "Yorkshire",
+    "length": 27.5,
+    "elevation": 490,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Tour of Tewit Well",
+    "map": "Yorkshire",
+    "length": 10.8,
+    "elevation": 204,
+    "leadIn": 0.0
+  },
+  {
+    "route": "Yorkshire Double Loop",
+    "map": "Yorkshire",
+    "length": 29.6,
+    "elevation": 547,
+    "leadIn": 0.0
+  }
+]
