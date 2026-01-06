@@ -1190,6 +1190,27 @@ function showActivityDetailsModal(activity, routeName) {
     title.textContent = `Strava Activity - ${routeName}`;
     content.innerHTML = renderActivityDetails(activity);
     
+    // Ensure close button works (set up event listener if not already set)
+    const closeBtn = modal.querySelector('.close-activity-details');
+    if (closeBtn) {
+        // Remove any existing listeners by cloning and replacing
+        const newCloseBtn = closeBtn.cloneNode(true);
+        closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+        
+        newCloseBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    }
+    
+    // Close on outside click
+    const handleOutsideClick = (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            modal.removeEventListener('click', handleOutsideClick);
+        }
+    };
+    modal.addEventListener('click', handleOutsideClick);
+    
     modal.style.display = 'block';
 }
 
@@ -1233,6 +1254,11 @@ function formatDistance(km) {
     return km.toFixed(1) + ' km';
 }
 
+// Format elevation in meters
+function formatElevation(meters) {
+    return Math.round(meters) + ' m';
+}
+
 // Update statistics
 function updateStats() {
     const total = routes.length;
@@ -1240,17 +1266,36 @@ function updateStats() {
     const remaining = total - completed;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
     
-    // Calculate distances
+    // Calculate distances (without lead-in)
     const totalDistance = routes.reduce((sum, route) => sum + (route.length || 0), 0);
     const completedDistance = routes
         .filter(route => completedRoutes.has(route.route))
         .reduce((sum, route) => sum + (route.length || 0), 0);
     const remainingDistance = totalDistance - completedDistance;
     
+    // Calculate distances with lead-in
+    const totalDistanceWithLeadIn = routes.reduce((sum, route) => 
+        sum + (route.length || 0) + (route.leadIn || 0), 0);
+    const completedDistanceWithLeadIn = routes
+        .filter(route => completedRoutes.has(route.route))
+        .reduce((sum, route) => sum + (route.length || 0) + (route.leadIn || 0), 0);
+    const remainingDistanceWithLeadIn = totalDistanceWithLeadIn - completedDistanceWithLeadIn;
+    
+    // Calculate elevations
+    const totalElevation = routes.reduce((sum, route) => sum + (route.elevation || 0), 0);
+    const completedElevation = routes
+        .filter(route => completedRoutes.has(route.route))
+        .reduce((sum, route) => sum + (route.elevation || 0), 0);
+    const remainingElevation = totalElevation - completedElevation;
+    
     // Calculate averages
     const avgDistanceAll = total > 0 ? totalDistance / total : 0;
     const avgDistanceCompleted = completed > 0 ? completedDistance / completed : 0;
     const avgDistanceRemaining = remaining > 0 ? remainingDistance / remaining : 0;
+    
+    const avgElevationAll = total > 0 ? totalElevation / total : 0;
+    const avgElevationCompleted = completed > 0 ? completedElevation / completed : 0;
+    const avgElevationRemaining = remaining > 0 ? remainingElevation / remaining : 0;
     
     // Update route count stats
     document.getElementById('total-routes').textContent = total;
@@ -1258,13 +1303,92 @@ function updateStats() {
     document.getElementById('remaining-routes').textContent = remaining;
     document.getElementById('percentage-complete').textContent = `${percentage}%`;
     
-    // Update distance stats
+    // Update distance stats (without lead-in)
     document.getElementById('total-distance').textContent = formatDistance(totalDistance);
     document.getElementById('completed-distance').textContent = formatDistance(completedDistance);
     document.getElementById('remaining-distance').textContent = formatDistance(remainingDistance);
     document.getElementById('avg-distance-all').textContent = formatDistance(avgDistanceAll);
     document.getElementById('avg-distance-completed').textContent = formatDistance(avgDistanceCompleted);
     document.getElementById('avg-distance-remaining').textContent = formatDistance(avgDistanceRemaining);
+    
+    // Update distance stats with lead-in
+    const totalDistanceLeadInEl = document.getElementById('total-distance-leadin');
+    const completedDistanceLeadInEl = document.getElementById('completed-distance-leadin');
+    const remainingDistanceLeadInEl = document.getElementById('remaining-distance-leadin');
+    if (totalDistanceLeadInEl) totalDistanceLeadInEl.textContent = formatDistance(totalDistanceWithLeadIn);
+    if (completedDistanceLeadInEl) completedDistanceLeadInEl.textContent = formatDistance(completedDistanceWithLeadIn);
+    if (remainingDistanceLeadInEl) remainingDistanceLeadInEl.textContent = formatDistance(remainingDistanceWithLeadIn);
+    
+    // Update elevation stats
+    const totalElevationEl = document.getElementById('total-elevation');
+    const completedElevationEl = document.getElementById('completed-elevation');
+    const remainingElevationEl = document.getElementById('remaining-elevation');
+    const avgElevationAllEl = document.getElementById('avg-elevation-all');
+    const avgElevationCompletedEl = document.getElementById('avg-elevation-completed');
+    const avgElevationRemainingEl = document.getElementById('avg-elevation-remaining');
+    
+    if (totalElevationEl) totalElevationEl.textContent = formatElevation(totalElevation);
+    if (completedElevationEl) completedElevationEl.textContent = formatElevation(completedElevation);
+    if (remainingElevationEl) remainingElevationEl.textContent = formatElevation(remainingElevation);
+    if (avgElevationAllEl) avgElevationAllEl.textContent = formatElevation(avgElevationAll);
+    if (avgElevationCompletedEl) avgElevationCompletedEl.textContent = formatElevation(avgElevationCompleted);
+    if (avgElevationRemainingEl) avgElevationRemainingEl.textContent = formatElevation(avgElevationRemaining);
+    
+    // Update Strava activity stats
+    updateStravaStats();
+}
+
+// Format time in seconds to readable format
+function formatTime(seconds) {
+    if (!seconds || seconds === 0) return '0:00';
+    
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    if (days > 0) {
+        return `${days}d ${hours}h ${mins}m`;
+    } else if (hours > 0) {
+        return `${hours}h ${mins}m`;
+    } else {
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+}
+
+// Update Strava activity-based statistics
+function updateStravaStats() {
+    const activities = Object.values(routeActivities);
+    
+    // Calculate totals from all linked activities
+    const totalDistance = activities.reduce((sum, activity) => sum + (activity.distance || 0), 0);
+    const totalElevation = activities.reduce((sum, activity) => sum + (activity.totalElevationGain || 0), 0);
+    const totalMovingTime = activities.reduce((sum, activity) => sum + (activity.movingTime || 0), 0);
+    const totalElapsedTime = activities.reduce((sum, activity) => sum + (activity.elapsedTime || 0), 0);
+    const totalCalories = activities.reduce((sum, activity) => sum + (activity.calories || 0), 0);
+    
+    // Update Strava stat elements
+    const stravaDistanceEl = document.getElementById('strava-total-distance');
+    const stravaElevationEl = document.getElementById('strava-total-elevation');
+    const stravaMovingTimeEl = document.getElementById('strava-total-moving-time');
+    const stravaElapsedTimeEl = document.getElementById('strava-total-elapsed-time');
+    const stravaCaloriesEl = document.getElementById('strava-total-calories');
+    
+    if (stravaDistanceEl) {
+        stravaDistanceEl.textContent = formatDistance(totalDistance / 1000); // Convert meters to km
+    }
+    if (stravaElevationEl) {
+        stravaElevationEl.textContent = formatElevation(totalElevation);
+    }
+    if (stravaMovingTimeEl) {
+        stravaMovingTimeEl.textContent = formatTime(totalMovingTime);
+    }
+    if (stravaElapsedTimeEl) {
+        stravaElapsedTimeEl.textContent = formatTime(totalElapsedTime);
+    }
+    if (stravaCaloriesEl) {
+        stravaCaloriesEl.textContent = totalCalories.toLocaleString();
+    }
 }
 
 // Update map stats in headers without full re-render
@@ -1660,6 +1784,21 @@ function setupShowcaseEventListeners() {
         searchInput.addEventListener('input', (e) => {
             searchQuery = e.target.value;
             renderRoutes();
+        });
+    }
+    
+    // Activity details modal close (for showcase mode)
+    const activityDetailsModal = document.getElementById('activity-details-modal');
+    const closeActivityDetails = document.querySelector('.close-activity-details');
+    if (closeActivityDetails && activityDetailsModal) {
+        closeActivityDetails.addEventListener('click', () => {
+            activityDetailsModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === activityDetailsModal) {
+                activityDetailsModal.style.display = 'none';
+            }
         });
     }
 }

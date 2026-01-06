@@ -9,15 +9,18 @@
     --primary-color: #ff6b35; /* Zwift orange */
     --primary-hover: #ff8c5a;
     --secondary-color: #ff4757; /* Zwift red accent */
-    --background: #0a0e14; /* Deep dark background */
-    --surface: #141920; /* Slightly lighter surface */
+    --background: #ffffff; /* White background */
+    --surface: #141920; /* Dark surface for cards (maintains contrast) */
     --surface-hover: #1e2530; /* Hover state */
-    --text-primary: #e8eaed; /* Light text */
-    --text-secondary: #9aa0a6; /* Secondary text */
-    --border: #2d3438; /* Subtle borders */
+    --text-primary: #212121; /* Dark text for white background */
+    --text-secondary: #757575; /* Medium gray for secondary text */
+    --text-on-dark: #e8eaed; /* Light text for dark surfaces */
+    --text-secondary-on-dark: #9aa0a6; /* Secondary text for dark surfaces */
+    --border: #e0e0e0; /* Light borders for white background */
+    --border-on-dark: #2d3438; /* Borders for dark surfaces */
     --completed: #4caf50; /* Green for completed (maintains clarity) */
     --pending: #ff6b35; /* Orange for pending */
-    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     --zwift-orange: #ff6b35;
     --zwift-orange-light: #ff8c5a;
     --zwift-orange-dark: #e55a2b;
@@ -82,11 +85,12 @@ h1 {
 
 .stat-card {
     background: var(--surface);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-on-dark);
     border-radius: 8px;
     padding: 20px;
     text-align: center;
     transition: transform 0.2s, box-shadow 0.2s;
+    color: var(--text-on-dark);
 }
 
 .stat-card:hover {
@@ -102,7 +106,7 @@ h1 {
 }
 
 .stat-label {
-    color: var(--text-secondary);
+    color: var(--text-secondary-on-dark);
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -215,12 +219,13 @@ h1 {
 }
 
 .route-card {
-    background: var(--background);
-    border: 1px solid var(--border);
+    background: var(--surface);
+    border: 1px solid var(--border-on-dark);
     border-radius: 6px;
     padding: 15px;
     transition: all 0.2s;
     position: relative;
+    color: var(--text-on-dark);
 }
 
 .route-card:hover {
@@ -231,7 +236,7 @@ h1 {
 
 .route-card.completed {
     border-left: 4px solid var(--completed);
-    background: linear-gradient(90deg, rgba(76, 175, 80, 0.05) 0%, var(--background) 4px);
+    background: linear-gradient(90deg, rgba(76, 175, 80, 0.1) 0%, var(--surface) 4px);
 }
 
 .route-card.completed .route-name {
@@ -249,7 +254,7 @@ h1 {
 .route-name {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text-on-dark);
     flex: 1;
 }
 
@@ -270,7 +275,7 @@ h1 {
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
     font-size: 0.85rem;
-    color: var(--text-secondary);
+    color: var(--text-secondary-on-dark);
     margin-top: 10px;
 }
 
