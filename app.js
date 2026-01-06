@@ -285,24 +285,32 @@ function saveCompletedRoutesToLocal() {
 
 // Save completed routes to GitHub Gist (background sync with debouncing)
 async function saveCompletedRoutes() {
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] saveCompletedRoutes: Starting save process`);
+    
     // Save to localStorage immediately for instant feedback
     saveCompletedRoutesToLocal();
+    console.log(`[${timestamp}] saveCompletedRoutes: Saved to localStorage`);
     
     if (!isAuthenticated) {
+        console.log(`[${timestamp}] saveCompletedRoutes: Not authenticated, skipping Gist sync`);
         return; // Don't show alert, just save locally
     }
     
     const token = sessionStorage.getItem(CONFIG.TOKEN_KEY);
     if (!token) {
+        console.log(`[${timestamp}] saveCompletedRoutes: No token found, skipping Gist sync`);
         return; // Save locally only
     }
     
     // Clear existing timeout
     if (syncTimeout) {
         clearTimeout(syncTimeout);
+        console.log(`[${timestamp}] saveCompletedRoutes: Cleared previous sync timeout`);
     }
     
     // Debounce: wait 1 second before syncing to Gist (batch multiple changes)
+    console.log(`[${timestamp}] saveCompletedRoutes: Scheduling Gist sync in 1 second (debounce)`);
     syncTimeout = setTimeout(async () => {
         await syncToGist(token);
     }, 1000);
@@ -310,12 +318,17 @@ async function saveCompletedRoutes() {
 
 // Actually sync to Gist (called after debounce)
 async function syncToGist(token) {
+    const timestamp = new Date().toISOString();
+    
     if (isSyncing) {
+        console.log(`[${timestamp}] syncToGist: Already syncing, skipping duplicate request`);
         return; // Already syncing, skip
     }
     
     isSyncing = true;
     updateSyncStatus('syncing');
+    console.log(`[${timestamp}] syncToGist: Starting sync to Gist`);
+    console.log(`[${timestamp}] syncToGist: Completed routes: ${completedRoutes.size}, Activities: ${Object.keys(routeActivities).length}`);
     
     const data = {
         completedRoutes: Array.from(completedRoutes),
@@ -327,6 +340,7 @@ async function syncToGist(token) {
         
         // If no Gist ID is set, create a new Gist
         if (!gistId) {
+            console.log(`[${timestamp}] syncToGist: No Gist ID, creating new Gist`);
             const response = await fetch('https://api.github.com/gists', {
                 method: 'POST',
                 headers: {
@@ -347,6 +361,7 @@ async function syncToGist(token) {
             
             if (!response.ok) {
                 const error = await response.json();
+                console.error(`[${timestamp}] syncToGist: Failed to create Gist - Status: ${response.status}`, error);
                 throw new Error(error.message || 'Failed to create Gist');
             }
             
@@ -356,8 +371,9 @@ async function syncToGist(token) {
             if (gistIdInput) {
                 gistIdInput.value = gistId;
             }
-            console.log('Created new Gist:', gistId);
+            console.log(`[${timestamp}] syncToGist: ✓ Created new Gist: ${gistId}`);
         } else {
+            console.log(`[${timestamp}] syncToGist: Gist ID exists (${gistId}), checking if it exists`);
             // Check if Gist exists
             let response = await fetch(`https://api.github.com/gists/${gistId}`, {
                 headers: {
@@ -367,6 +383,7 @@ async function syncToGist(token) {
             });
             
             if (response.status === 404) {
+                console.log(`[${timestamp}] syncToGist: Gist not found (404), creating new one`);
                 // Gist doesn't exist, create a new one
                 response = await fetch('https://api.github.com/gists', {
                     method: 'POST',
@@ -388,6 +405,7 @@ async function syncToGist(token) {
                 
                 if (!response.ok) {
                     const error = await response.json();
+                    console.error(`[${timestamp}] syncToGist: Failed to create replacement Gist - Status: ${response.status}`, error);
                     throw new Error(error.message || 'Failed to create Gist');
                 }
                 
@@ -397,14 +415,16 @@ async function syncToGist(token) {
                 if (gistIdInput) {
                     gistIdInput.value = gistId;
                 }
-                console.log('Created new Gist (old one not found):', gistId);
+                console.log(`[${timestamp}] syncToGist: ✓ Created replacement Gist: ${gistId}`);
             } else {
                 // Update existing Gist
                 if (!response.ok) {
                     const error = await response.json();
+                    console.error(`[${timestamp}] syncToGist: Failed to check Gist - Status: ${response.status}`, error);
                     throw new Error(error.message || 'Failed to update Gist');
                 }
                 
+                console.log(`[${timestamp}] syncToGist: Gist exists, updating with PATCH request`);
                 response = await fetch(`https://api.github.com/gists/${gistId}`, {
                     method: 'PATCH',
                     headers: {
@@ -423,25 +443,45 @@ async function syncToGist(token) {
                 
                 if (!response.ok) {
                     const error = await response.json();
+                    console.error(`[${timestamp}] syncToGist: Failed to update Gist - Status: ${response.status}`, error);
                     throw new Error(error.message || 'Failed to update Gist');
                 }
+                
+                console.log(`[${timestamp}] syncToGist: ✓ Successfully updated Gist: ${gistId}`);
             }
         }
         
-        console.log('Progress synced to Gist successfully!');
+        const endTimestamp = new Date().toISOString();
+        console.log(`[${endTimestamp}] syncToGist: ✓ Sync completed successfully`);
         updateSyncStatus('synced');
     } catch (error) {
-        console.error('Error syncing to Gist:', error);
+        const errorTimestamp = new Date().toISOString();
+        console.error(`[${errorTimestamp}] syncToGist: ✗ Error syncing to Gist:`, error);
+        console.error(`[${errorTimestamp}] syncToGist: Error details:`, {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
         updateSyncStatus('error');
         // Don't show alert - just log error, local storage already saved
     } finally {
         isSyncing = false;
+        const finalTimestamp = new Date().toISOString();
+        console.log(`[${finalTimestamp}] syncToGist: Sync process finished, isSyncing = false`);
     }
 }
 
 // Update sync status indicator
+let syncStatusTimeout = null;
+
 function updateSyncStatus(status) {
     if (!authStatus) return;
+    
+    // Clear any existing timeout
+    if (syncStatusTimeout) {
+        clearTimeout(syncStatusTimeout);
+        syncStatusTimeout = null;
+    }
     
     const statusText = {
         'syncing': '⏳ Syncing...',
@@ -456,11 +496,16 @@ function updateSyncStatus(status) {
     };
     
     if (status === 'synced') {
+        authStatus.textContent = statusText['synced'];
+        authStatus.style.color = statusColor['synced'];
+        
         // Clear status after 2 seconds
-        setTimeout(() => {
-            if (authStatus.textContent === statusText['synced']) {
+        syncStatusTimeout = setTimeout(() => {
+            if (authStatus && authStatus.textContent === statusText['synced']) {
                 authStatus.textContent = isAuthenticated ? '✓ Authenticated' : '';
+                authStatus.style.color = isAuthenticated ? 'var(--completed)' : '';
             }
+            syncStatusTimeout = null;
         }, 2000);
     } else {
         authStatus.textContent = statusText[status] || '';
@@ -852,13 +897,10 @@ function createRouteCard(route) {
             <div class="route-activity-section">
                 ${hasActivity ? `
                     <div class="activity-header">
-                        <button class="btn-activity-toggle" data-route="${route.route}">
-                            <span class="activity-toggle-icon">▼</span> Strava Activity
+                        <button class="btn-view-activity" data-route="${route.route}">
+                            🏃 View Strava Activity
                         </button>
                         ${isEditMode ? `<button class="btn-unlink-activity" data-route="${route.route}" title="Unlink activity">✕</button>` : ''}
-                    </div>
-                    <div class="activity-details hidden" data-route="${route.route}">
-                        ${renderActivityDetails(activity)}
                     </div>
                 ` : isEditMode ? `
                     <div class="activity-link-section">
@@ -893,12 +935,88 @@ function createRouteCard(route) {
                 routeNameEl.style.textDecoration = 'line-through';
                 routeNameEl.style.opacity = '0.7';
             }
+            
+            // Immediately show activity link section if it doesn't exist
+            let activitySection = card.querySelector('.route-activity-section');
+            if (!activitySection) {
+                activitySection = document.createElement('div');
+                activitySection.className = 'route-activity-section';
+                
+                const activity = routeActivities[routeName];
+                const hasActivity = !!activity;
+                
+                if (hasActivity) {
+                    activitySection.innerHTML = `
+                        <div class="activity-header">
+                            <button class="btn-view-activity" data-route="${routeName}">
+                                🏃 View Strava Activity
+                            </button>
+                            ${isEditMode ? `<button class="btn-unlink-activity" data-route="${routeName}" title="Unlink activity">✕</button>` : ''}
+                        </div>
+                    `;
+                } else {
+                    activitySection.innerHTML = `
+                        <div class="activity-link-section">
+                            <button class="btn-link-activity" data-route="${routeName}">
+                                ${isStravaAuthenticated ? '🔗 Link Strava Activity' : '🔗 Connect Strava to Link Activity'}
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                // Insert after route-details
+                const routeDetails = card.querySelector('.route-details');
+                if (routeDetails) {
+                    routeDetails.insertAdjacentElement('afterend', activitySection);
+                } else {
+                    card.appendChild(activitySection);
+                }
+                
+                // Attach event listeners to the new elements
+                if (isEditMode) {
+                    const linkBtn = activitySection.querySelector('.btn-link-activity');
+                    if (linkBtn) {
+                        linkBtn.addEventListener('click', () => {
+                            if (!isStravaAuthenticated) {
+                                connectStrava();
+                            } else {
+                                openActivityModal(routeName);
+                            }
+                        });
+                    }
+                    
+                    const unlinkBtn = activitySection.querySelector('.btn-unlink-activity');
+                    if (unlinkBtn) {
+                        unlinkBtn.addEventListener('click', () => {
+                            if (confirm('Unlink this Strava activity?')) {
+                                unlinkActivityFromRoute(routeName);
+                            }
+                        });
+                    }
+                    
+                    const viewBtn = activitySection.querySelector('.btn-view-activity');
+                    if (viewBtn) {
+                        viewBtn.addEventListener('click', () => {
+                            const activity = routeActivities[routeName];
+                            if (activity) {
+                                showActivityDetailsModal(activity, routeName);
+                            }
+                        });
+                    }
+                }
+            }
         } else {
             card.classList.remove('completed');
             const routeNameEl = card.querySelector('.route-name');
             if (routeNameEl) {
                 routeNameEl.style.textDecoration = 'none';
                 routeNameEl.style.opacity = '1';
+            }
+            
+            // Remove activity section if route is unchecked
+            const activitySection = card.querySelector('.route-activity-section');
+            if (activitySection) {
+                activitySection.remove();
             }
         }
         
@@ -920,8 +1038,8 @@ function createRouteCard(route) {
             }, 0);
         }
         
-            // Sync to Gist in background (don't await - let it happen in background)
-            saveCompletedRoutes();
+        // Sync to Gist in background (don't await - let it happen in background)
+        saveCompletedRoutes();
         });
     }
     
@@ -948,14 +1066,15 @@ function createRouteCard(route) {
         }
     }
     
-    // Activity toggle (works in both modes - just for viewing)
-    const toggleBtn = card.querySelector('.btn-activity-toggle');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', () => {
-            const details = card.querySelector('.activity-details');
-            const icon = toggleBtn.querySelector('.activity-toggle-icon');
-            details.classList.toggle('hidden');
-            icon.textContent = details.classList.contains('hidden') ? '▼' : '▲';
+    // View activity button (works in both modes - opens modal)
+    const viewBtn = card.querySelector('.btn-view-activity');
+    if (viewBtn) {
+        viewBtn.addEventListener('click', () => {
+            const routeName = viewBtn.getAttribute('data-route');
+            const activity = routeActivities[routeName];
+            if (activity) {
+                showActivityDetailsModal(activity, routeName);
+            }
         });
     }
     
@@ -1060,6 +1179,20 @@ function renderActivityDetails(activity) {
     `;
 }
 
+// Show activity details in modal
+function showActivityDetailsModal(activity, routeName) {
+    const modal = document.getElementById('activity-details-modal');
+    const title = document.getElementById('activity-details-title');
+    const content = document.getElementById('activity-details-content');
+    
+    if (!modal || !title || !content) return;
+    
+    title.textContent = `Strava Activity - ${routeName}`;
+    content.innerHTML = renderActivityDetails(activity);
+    
+    modal.style.display = 'block';
+}
+
 // Open activity linking modal
 function openActivityModal(routeName) {
     const modal = document.getElementById('activity-modal');
@@ -1095,6 +1228,11 @@ function openActivityModal(routeName) {
     }
 }
 
+// Format distance in km with one decimal place
+function formatDistance(km) {
+    return km.toFixed(1) + ' km';
+}
+
 // Update statistics
 function updateStats() {
     const total = routes.length;
@@ -1102,10 +1240,31 @@ function updateStats() {
     const remaining = total - completed;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
     
+    // Calculate distances
+    const totalDistance = routes.reduce((sum, route) => sum + (route.length || 0), 0);
+    const completedDistance = routes
+        .filter(route => completedRoutes.has(route.route))
+        .reduce((sum, route) => sum + (route.length || 0), 0);
+    const remainingDistance = totalDistance - completedDistance;
+    
+    // Calculate averages
+    const avgDistanceAll = total > 0 ? totalDistance / total : 0;
+    const avgDistanceCompleted = completed > 0 ? completedDistance / completed : 0;
+    const avgDistanceRemaining = remaining > 0 ? remainingDistance / remaining : 0;
+    
+    // Update route count stats
     document.getElementById('total-routes').textContent = total;
     document.getElementById('completed-routes').textContent = completed;
     document.getElementById('remaining-routes').textContent = remaining;
     document.getElementById('percentage-complete').textContent = `${percentage}%`;
+    
+    // Update distance stats
+    document.getElementById('total-distance').textContent = formatDistance(totalDistance);
+    document.getElementById('completed-distance').textContent = formatDistance(completedDistance);
+    document.getElementById('remaining-distance').textContent = formatDistance(remainingDistance);
+    document.getElementById('avg-distance-all').textContent = formatDistance(avgDistanceAll);
+    document.getElementById('avg-distance-completed').textContent = formatDistance(avgDistanceCompleted);
+    document.getElementById('avg-distance-remaining').textContent = formatDistance(avgDistanceRemaining);
 }
 
 // Update map stats in headers without full re-render
@@ -1265,6 +1424,21 @@ function setupEventListeners() {
         window.addEventListener('click', (e) => {
             if (e.target === activityModal) {
                 activityModal.style.display = 'none';
+            }
+        });
+    }
+    
+    // Activity details modal close
+    const activityDetailsModal = document.getElementById('activity-details-modal');
+    const closeActivityDetails = document.querySelector('.close-activity-details');
+    if (closeActivityDetails && activityDetailsModal) {
+        closeActivityDetails.addEventListener('click', () => {
+            activityDetailsModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (e) => {
+            if (e.target === activityDetailsModal) {
+                activityDetailsModal.style.display = 'none';
             }
         });
     }

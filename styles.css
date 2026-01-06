@@ -5,18 +5,22 @@
 }
 
 :root {
-    --primary-color: #238636;
-    --primary-hover: #2ea043;
-    --secondary-color: #1f6feb;
-    --background: #0d1117;
-    --surface: #161b22;
-    --surface-hover: #21262d;
-    --text-primary: #c9d1d9;
-    --text-secondary: #8b949e;
-    --border: #30363d;
-    --completed: #238636;
-    --pending: #f85149;
-    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    /* Zwift-inspired color palette */
+    --primary-color: #ff6b35; /* Zwift orange */
+    --primary-hover: #ff8c5a;
+    --secondary-color: #ff4757; /* Zwift red accent */
+    --background: #0a0e14; /* Deep dark background */
+    --surface: #141920; /* Slightly lighter surface */
+    --surface-hover: #1e2530; /* Hover state */
+    --text-primary: #e8eaed; /* Light text */
+    --text-secondary: #9aa0a6; /* Secondary text */
+    --border: #2d3438; /* Subtle borders */
+    --completed: #4caf50; /* Green for completed (maintains clarity) */
+    --pending: #ff6b35; /* Orange for pending */
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --zwift-orange: #ff6b35;
+    --zwift-orange-light: #ff8c5a;
+    --zwift-orange-dark: #e55a2b;
 }
 
 body {
@@ -227,6 +231,7 @@ h1 {
 
 .route-card.completed {
     border-left: 4px solid var(--completed);
+    background: linear-gradient(90deg, rgba(76, 175, 80, 0.05) 0%, var(--background) 4px);
 }
 
 .route-card.completed .route-name {
@@ -658,7 +663,8 @@ h1 {
     text-align: center;
 }
 
-.close-activity {
+.close-activity,
+.close-activity-details {
     color: var(--text-secondary);
     float: right;
     font-size: 28px;
@@ -667,8 +673,33 @@ h1 {
     line-height: 20px;
 }
 
-.close-activity:hover {
+.close-activity:hover,
+.close-activity-details:hover {
     color: var(--text-primary);
+}
+
+.modal-large {
+    max-width: 800px;
+    width: 90%;
+}
+
+.btn-view-activity {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-view-activity:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
 /* Responsive Design */

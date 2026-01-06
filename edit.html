@@ -35,6 +35,30 @@
                 <div class="stat-value" id="percentage-complete">0%</div>
                 <div class="stat-label">Progress</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-distance">0.0 km</div>
+                <div class="stat-label">Total Distance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completed-distance">0.0 km</div>
+                <div class="stat-label">Completed Distance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="remaining-distance">0.0 km</div>
+                <div class="stat-label">Remaining Distance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-distance-all">0.0 km</div>
+                <div class="stat-label">Avg Distance (All)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-distance-completed">0.0 km</div>
+                <div class="stat-label">Avg Distance (Completed)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-distance-remaining">0.0 km</div>
+                <div class="stat-label">Avg Distance (Remaining)</div>
+            </div>
         </div>
 
         <div class="controls">
@@ -100,6 +124,15 @@
                 </div>
             </div>
             <div id="activity-linking-status" class="activity-status"></div>
+        </div>
+    </div>
+
+    <!-- Activity Details Modal -->
+    <div id="activity-details-modal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close-activity-details">&times;</span>
+            <h2 id="activity-details-title">Strava Activity</h2>
+            <div id="activity-details-content"></div>
         </div>
     </div>
 
