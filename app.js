@@ -11,7 +11,9 @@ const CONFIG = {
     STRAVA_CLIENT_ID: '194117',
     STRAVA_REDIRECT_URI: window.location.origin + window.location.pathname,
     // Token exchange endpoint - must be a serverless function that keeps Client Secret secure
-    STRAVA_TOKEN_PROXY_URL: 'https://one-more-route.vercel.app/api/strava-token'
+    STRAVA_TOKEN_PROXY_URL: 'https://one-more-route.vercel.app/api/strava-token',
+    // Showcase Gist ID - for public viewing (set this to your Gist ID)
+    SHOWCASE_GIST_ID: 'c8d7387ee7688232d7eb9c890a2e329b' // Set this to your Gist ID for public showcase
 };
 
 // State
@@ -27,7 +29,16 @@ let gistId = null;
 let syncTimeout = null;
 let isSyncing = false;
 
-// DOM Elements
+// Route detection - determine if we're in edit mode
+const isEditMode = (() => {
+    const pathname = window.location.pathname;
+    const search = window.location.search;
+    return pathname.includes('/edit') || 
+           pathname.endsWith('edit.html') ||
+           search.includes('edit=true');
+})();
+
+// DOM Elements (may be null in showcase mode)
 const routesContainer = document.getElementById('routes-container');
 const authBtn = document.getElementById('auth-btn');
 const authStatus = document.getElementById('auth-status');
@@ -40,8 +51,53 @@ const gistSetup = document.getElementById('gist-setup');
 const searchInput = document.getElementById('search-input');
 const filterBtns = document.querySelectorAll('.filter-btn');
 
-// Initialize
+// Initialize based on mode
 async function init() {
+    if (isEditMode) {
+        await initEdit();
+    } else {
+        await initShowcase();
+    }
+}
+
+// Initialize showcase mode (public viewing)
+async function initShowcase() {
+    // Hide edit-related UI
+    hideEditUI();
+    
+    // Show navigation to edit page
+    showNavigation();
+    
+    // Load routes
+    await loadRoutes();
+    
+    // Load data from public Gist (no auth required)
+    const showcaseGistId = CONFIG.SHOWCASE_GIST_ID || getGistIdFromURL();
+    if (showcaseGistId) {
+        await loadShowcaseData(showcaseGistId);
+    } else {
+        if (routesContainer) {
+            routesContainer.innerHTML = '<div class="loading">Showcase Gist ID not configured. Please set CONFIG.SHOWCASE_GIST_ID in app.js or add ?gist=YOUR_GIST_ID to the URL</div>';
+        }
+        return;
+    }
+    
+    // Render routes (read-only)
+    renderRoutes();
+    updateStats();
+    
+    // Setup event listeners (only for showcase features)
+    setupShowcaseEventListeners();
+}
+
+// Initialize edit mode (authenticated editing)
+async function initEdit() {
+    // Show edit-related UI
+    showEditUI();
+    
+    // Show navigation to showcase
+    showNavigation();
+    
     // Check for Strava OAuth callback
     handleStravaCallback();
     
@@ -61,7 +117,7 @@ async function init() {
         updateStravaAuthUI();
     }
     
-    if (gistId) {
+    if (gistId && gistIdInput) {
         gistIdInput.value = gistId;
     }
 
@@ -80,8 +136,59 @@ async function init() {
     renderRoutes();
     updateStats();
     
-    // Setup event listeners
+    // Setup event listeners (full functionality)
     setupEventListeners();
+}
+
+// Get Gist ID from URL parameter (optional)
+function getGistIdFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('gist');
+}
+
+// Load showcase data from public Gist (no authentication required)
+async function loadShowcaseData(gistId) {
+    if (!gistId) {
+        console.error('No Gist ID provided for showcase');
+        if (routesContainer) {
+            routesContainer.innerHTML = '<div class="loading">No Gist ID provided.</div>';
+        }
+        return;
+    }
+    
+    try {
+        const response = await fetch(`https://api.github.com/gists/${gistId}`);
+        if (!response.ok) {
+            if (response.status === 404) {
+                if (routesContainer) {
+                    routesContainer.innerHTML = '<div class="loading">Gist not found. Please check the Gist ID.</div>';
+                }
+                return;
+            }
+            throw new Error('Failed to load Gist');
+        }
+        
+        const gist = await response.json();
+        const file = gist.files[CONFIG.GIST_FILENAME];
+        
+        if (file && file.content) {
+            const data = JSON.parse(file.content);
+            completedRoutes = new Set(data.completedRoutes || []);
+            routeActivities = data.activities || {};
+            
+            renderRoutes();
+            updateStats();
+        } else {
+            if (routesContainer) {
+                routesContainer.innerHTML = '<div class="loading">No route data found in Gist.</div>';
+            }
+        }
+    } catch (error) {
+        console.error('Error loading showcase data:', error);
+        if (routesContainer) {
+            routesContainer.innerHTML = '<div class="loading">Error loading showcase data. Please refresh the page.</div>';
+        }
+    }
 }
 
 // Load routes from JSON file
@@ -708,18 +815,23 @@ function createRouteCard(route) {
     const activity = routeActivities[route.route];
     const hasActivity = !!activity;
     
+    // Show checkbox only in edit mode
+    const checkboxHTML = isEditMode ? `
+        <input 
+            type="checkbox" 
+            class="route-checkbox" 
+            ${isCompleted ? 'checked' : ''}
+            ${!isAuthenticated ? 'disabled' : ''}
+            data-route="${route.route}"
+        >
+    ` : '';
+    
     card.innerHTML = `
         <div class="route-header">
             <div class="route-name">${route.route}</div>
             <div class="route-header-actions">
                 ${hasActivity ? '<span class="activity-badge" title="Has Strava activity">🏃</span>' : ''}
-                <input 
-                    type="checkbox" 
-                    class="route-checkbox" 
-                    ${isCompleted ? 'checked' : ''}
-                    ${!isAuthenticated ? 'disabled' : ''}
-                    data-route="${route.route}"
-                >
+                ${checkboxHTML}
             </div>
         </div>
         <div class="route-details">
@@ -743,24 +855,26 @@ function createRouteCard(route) {
                         <button class="btn-activity-toggle" data-route="${route.route}">
                             <span class="activity-toggle-icon">▼</span> Strava Activity
                         </button>
-                        <button class="btn-unlink-activity" data-route="${route.route}" title="Unlink activity">✕</button>
+                        ${isEditMode ? `<button class="btn-unlink-activity" data-route="${route.route}" title="Unlink activity">✕</button>` : ''}
                     </div>
                     <div class="activity-details hidden" data-route="${route.route}">
                         ${renderActivityDetails(activity)}
                     </div>
-                ` : `
+                ` : isEditMode ? `
                     <div class="activity-link-section">
                         <button class="btn-link-activity" data-route="${route.route}">
                             ${isStravaAuthenticated ? '🔗 Link Strava Activity' : '🔗 Connect Strava to Link Activity'}
                         </button>
                     </div>
-                `}
+                ` : ''}
             </div>
         ` : ''}
     `;
     
+    // Only attach checkbox event listener in edit mode
     const checkbox = card.querySelector('.route-checkbox');
-    checkbox.addEventListener('change', async (e) => {
+    if (checkbox && isEditMode) {
+        checkbox.addEventListener('change', async (e) => {
         const wasChecked = e.target.checked;
         const routeName = route.route;
         
@@ -806,12 +920,13 @@ function createRouteCard(route) {
             }, 0);
         }
         
-        // Sync to Gist in background (don't await - let it happen in background)
-        saveCompletedRoutes();
-    });
+            // Sync to Gist in background (don't await - let it happen in background)
+            saveCompletedRoutes();
+        });
+    }
     
-    // Activity linking/unlinking handlers
-    if (isCompleted) {
+    // Activity linking/unlinking handlers (only in edit mode)
+    if (isCompleted && isEditMode) {
         const linkBtn = card.querySelector('.btn-link-activity');
         if (linkBtn) {
             linkBtn.addEventListener('click', () => {
@@ -831,16 +946,17 @@ function createRouteCard(route) {
                 }
             });
         }
-        
-        const toggleBtn = card.querySelector('.btn-activity-toggle');
-        if (toggleBtn) {
-            toggleBtn.addEventListener('click', () => {
-                const details = card.querySelector('.activity-details');
-                const icon = toggleBtn.querySelector('.activity-toggle-icon');
-                details.classList.toggle('hidden');
-                icon.textContent = details.classList.contains('hidden') ? '▼' : '▲';
-            });
-        }
+    }
+    
+    // Activity toggle (works in both modes - just for viewing)
+    const toggleBtn = card.querySelector('.btn-activity-toggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => {
+            const details = card.querySelector('.activity-details');
+            const icon = toggleBtn.querySelector('.activity-toggle-icon');
+            details.classList.toggle('hidden');
+            icon.textContent = details.classList.contains('hidden') ? '▼' : '▲';
+        });
     }
     
     return card;
@@ -1261,6 +1377,115 @@ function setupEventListeners() {
                     statusEl.style.color = '#f85149';
                 }
             }
+        });
+    }
+}
+
+// UI Visibility Functions
+function hideEditUI() {
+    // Hide auth section
+    const authSection = document.querySelector('.auth-section');
+    if (authSection) {
+        authSection.style.display = 'none';
+    }
+    
+    // Hide auth modal
+    if (authModal) {
+        authModal.style.display = 'none';
+    }
+    
+    // Hide activity modal
+    const activityModal = document.getElementById('activity-modal');
+    if (activityModal) {
+        activityModal.style.display = 'none';
+    }
+}
+
+function showEditUI() {
+    // Show auth section
+    const authSection = document.querySelector('.auth-section');
+    if (authSection) {
+        authSection.style.display = 'flex';
+    }
+}
+
+function showNavigation() {
+    const header = document.querySelector('header');
+    if (!header) return;
+    
+    // Check if navigation already exists
+    if (document.getElementById('nav-edit-link') || document.getElementById('nav-showcase-link')) {
+        return;
+    }
+    
+    const navContainer = document.createElement('div');
+    navContainer.className = 'nav-container';
+    
+    if (isEditMode) {
+        // Show link to showcase
+        const showcaseLink = document.createElement('a');
+        showcaseLink.id = 'nav-showcase-link';
+        // Calculate showcase URL - go back to root
+        const currentPath = window.location.pathname;
+        let showcasePath = '/';
+        if (currentPath.includes('/edit')) {
+            showcasePath = currentPath.replace('/edit', '');
+        } else if (currentPath.includes('edit.html')) {
+            showcasePath = currentPath.replace('edit.html', 'index.html');
+        }
+        if (!showcasePath || showcasePath === '/edit') {
+            showcasePath = '/';
+        }
+        showcaseLink.href = showcasePath;
+        showcaseLink.className = 'btn btn-secondary';
+        showcaseLink.textContent = '← View Showcase';
+        navContainer.appendChild(showcaseLink);
+    } else {
+        // Show link to edit page
+        const editLink = document.createElement('a');
+        editLink.id = 'nav-edit-link';
+        const currentPath = window.location.pathname;
+        let editPath = '/edit';
+        if (currentPath.endsWith('/') || currentPath.endsWith('index.html')) {
+            editPath = currentPath.replace('index.html', '').replace(/\/$/, '') + '/edit';
+        } else {
+            editPath = currentPath.replace(/\/[^/]*$/, '') + '/edit';
+        }
+        editLink.href = editPath;
+        editLink.className = 'btn btn-primary';
+        editLink.textContent = 'Edit Progress →';
+        navContainer.appendChild(editLink);
+    }
+    
+    // Insert navigation into header (after h1, before auth-section)
+    const h1 = header.querySelector('h1');
+    const authSection = header.querySelector('.auth-section');
+    if (h1) {
+        if (authSection) {
+            header.insertBefore(navContainer, authSection);
+        } else {
+            header.appendChild(navContainer);
+        }
+    }
+}
+
+// Setup event listeners for showcase mode (limited functionality)
+function setupShowcaseEventListeners() {
+    // Filter buttons
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.filter;
+            renderRoutes();
+        });
+    });
+    
+    // Search input
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderRoutes();
         });
     }
 }
