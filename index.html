@@ -13,107 +13,118 @@
             <div class="auth-section">
                 <button id="auth-btn" class="btn btn-primary">Login to Edit</button>
                 <span id="auth-status" class="auth-status"></span>
-                <button id="strava-connect-btn" class="btn btn-strava">Connect Strava</button>
+                <button id="strava-connect-btn" class="btn btn-primary">Connect Strava</button>
                 <span id="strava-status" class="auth-status"></span>
             </div>
         </header>
 
         <div class="stats-dashboard">
-            <div class="stat-card">
-                <div class="stat-value" id="total-routes">0</div>
-                <div class="stat-label">Total Routes</div>
+            <div class="stats-section">
+                <h3 class="stats-section-title">Overview</h3>
+                <div class="stats-grid">
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Total:</span>
+                        <span class="stat-value-inline" id="total-routes">0</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Completed:</span>
+                        <span class="stat-value-inline" id="completed-routes">0</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Remaining:</span>
+                        <span class="stat-value-inline" id="remaining-routes">0</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Progress:</span>
+                        <span class="stat-value-inline" id="percentage-complete">0%</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="completed-routes">0</div>
-                <div class="stat-label">Completed</div>
+            
+            <div class="stats-section">
+                <h3 class="stats-section-title">Distance</h3>
+                <div class="stats-grid">
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Total:</span>
+                        <span class="stat-value-inline" id="total-distance">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Completed:</span>
+                        <span class="stat-value-inline" id="completed-distance">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Remaining:</span>
+                        <span class="stat-value-inline" id="remaining-distance">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (All):</span>
+                        <span class="stat-value-inline" id="avg-distance-all">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (Done):</span>
+                        <span class="stat-value-inline" id="avg-distance-completed">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (Remaining):</span>
+                        <span class="stat-value-inline" id="avg-distance-remaining">0.0 km</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="remaining-routes">0</div>
-                <div class="stat-label">Remaining</div>
+            
+            <div class="stats-section">
+                <h3 class="stats-section-title">Elevation</h3>
+                <div class="stats-grid">
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Total:</span>
+                        <span class="stat-value-inline" id="total-elevation">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Completed:</span>
+                        <span class="stat-value-inline" id="completed-elevation">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Remaining:</span>
+                        <span class="stat-value-inline" id="remaining-elevation">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (All):</span>
+                        <span class="stat-value-inline" id="avg-elevation-all">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (Done):</span>
+                        <span class="stat-value-inline" id="avg-elevation-completed">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (Remaining):</span>
+                        <span class="stat-value-inline" id="avg-elevation-remaining">0 m</span>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="percentage-complete">0%</div>
-                <div class="stat-label">Progress</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="total-distance">0.0 km</div>
-                <div class="stat-label">Total Distance</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="completed-distance">0.0 km</div>
-                <div class="stat-label">Completed Distance</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="remaining-distance">0.0 km</div>
-                <div class="stat-label">Remaining Distance</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avg-distance-all">0.0 km</div>
-                <div class="stat-label">Avg Distance (All)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avg-distance-completed">0.0 km</div>
-                <div class="stat-label">Avg Distance (Completed)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avg-distance-remaining">0.0 km</div>
-                <div class="stat-label">Avg Distance (Remaining)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="total-distance-leadin">0.0 km</div>
-                <div class="stat-label">Total Distance (w/ Lead-in)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="completed-distance-leadin">0.0 km</div>
-                <div class="stat-label">Completed Distance (w/ Lead-in)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="remaining-distance-leadin">0.0 km</div>
-                <div class="stat-label">Remaining Distance (w/ Lead-in)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="total-elevation">0 m</div>
-                <div class="stat-label">Total Elevation</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="completed-elevation">0 m</div>
-                <div class="stat-label">Completed Elevation</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="remaining-elevation">0 m</div>
-                <div class="stat-label">Remaining Elevation</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avg-elevation-all">0 m</div>
-                <div class="stat-label">Avg Elevation (All)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avg-elevation-completed">0 m</div>
-                <div class="stat-label">Avg Elevation (Completed)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avg-elevation-remaining">0 m</div>
-                <div class="stat-label">Avg Elevation (Remaining)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="strava-total-distance">0.0 km</div>
-                <div class="stat-label">Strava Total Distance</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="strava-total-elevation">0 m</div>
-                <div class="stat-label">Strava Total Elevation</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="strava-total-moving-time">0:00</div>
-                <div class="stat-label">Strava Total Moving Time</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="strava-total-elapsed-time">0:00</div>
-                <div class="stat-label">Strava Total Elapsed Time</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="strava-total-calories">0</div>
-                <div class="stat-label">Strava Total Calories</div>
+            
+            <div class="stats-section">
+                <h3 class="stats-section-title">Strava Activities</h3>
+                <div class="stats-grid">
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Distance:</span>
+                        <span class="stat-value-inline" id="strava-total-distance">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Elevation:</span>
+                        <span class="stat-value-inline" id="strava-total-elevation">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Moving Time:</span>
+                        <span class="stat-value-inline" id="strava-total-moving-time">0:00</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Elapsed Time:</span>
+                        <span class="stat-value-inline" id="strava-total-elapsed-time">0:00</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Calories:</span>
+                        <span class="stat-value-inline" id="strava-total-calories">0</span>
+                    </div>
+                </div>
             </div>
         </div>
 

@@ -898,7 +898,8 @@ function createRouteCard(route) {
                 ${hasActivity ? `
                     <div class="activity-header">
                         <button class="btn-view-activity" data-route="${route.route}">
-                            🏃 View Strava Activity
+                            <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
+                            <span>View activity</span>
                         </button>
                         ${isEditMode ? `<button class="btn-unlink-activity" data-route="${route.route}" title="Unlink activity">✕</button>` : ''}
                     </div>
@@ -949,7 +950,8 @@ function createRouteCard(route) {
                     activitySection.innerHTML = `
                         <div class="activity-header">
                             <button class="btn-view-activity" data-route="${routeName}">
-                                🏃 View Strava Activity
+                                <span>View on</span>
+                                <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
                             </button>
                             ${isEditMode ? `<button class="btn-unlink-activity" data-route="${routeName}" title="Unlink activity">✕</button>` : ''}
                         </div>
@@ -1172,7 +1174,9 @@ function renderActivityDetails(activity) {
             </div>
             <div class="activity-footer">
                 <a href="${activity.activityUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-strava btn-small">
-                    View on Strava →
+                    <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
+                    <span>View on Strava</span>
+                    <span>→</span>
                 </a>
             </div>
         </div>
@@ -1266,20 +1270,12 @@ function updateStats() {
     const remaining = total - completed;
     const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
     
-    // Calculate distances (without lead-in)
+    // Calculate distances
     const totalDistance = routes.reduce((sum, route) => sum + (route.length || 0), 0);
     const completedDistance = routes
         .filter(route => completedRoutes.has(route.route))
         .reduce((sum, route) => sum + (route.length || 0), 0);
     const remainingDistance = totalDistance - completedDistance;
-    
-    // Calculate distances with lead-in
-    const totalDistanceWithLeadIn = routes.reduce((sum, route) => 
-        sum + (route.length || 0) + (route.leadIn || 0), 0);
-    const completedDistanceWithLeadIn = routes
-        .filter(route => completedRoutes.has(route.route))
-        .reduce((sum, route) => sum + (route.length || 0) + (route.leadIn || 0), 0);
-    const remainingDistanceWithLeadIn = totalDistanceWithLeadIn - completedDistanceWithLeadIn;
     
     // Calculate elevations
     const totalElevation = routes.reduce((sum, route) => sum + (route.elevation || 0), 0);
@@ -1303,21 +1299,17 @@ function updateStats() {
     document.getElementById('remaining-routes').textContent = remaining;
     document.getElementById('percentage-complete').textContent = `${percentage}%`;
     
+    // Calculate completion percentages
+    const distanceCompletionPercent = totalDistance > 0 ? Math.round((completedDistance / totalDistance) * 100) : 0;
+    const elevationCompletionPercent = totalElevation > 0 ? Math.round((completedElevation / totalElevation) * 100) : 0;
+    
     // Update distance stats (without lead-in)
     document.getElementById('total-distance').textContent = formatDistance(totalDistance);
-    document.getElementById('completed-distance').textContent = formatDistance(completedDistance);
+    document.getElementById('completed-distance').textContent = `${formatDistance(completedDistance)} (${distanceCompletionPercent}%)`;
     document.getElementById('remaining-distance').textContent = formatDistance(remainingDistance);
     document.getElementById('avg-distance-all').textContent = formatDistance(avgDistanceAll);
     document.getElementById('avg-distance-completed').textContent = formatDistance(avgDistanceCompleted);
     document.getElementById('avg-distance-remaining').textContent = formatDistance(avgDistanceRemaining);
-    
-    // Update distance stats with lead-in
-    const totalDistanceLeadInEl = document.getElementById('total-distance-leadin');
-    const completedDistanceLeadInEl = document.getElementById('completed-distance-leadin');
-    const remainingDistanceLeadInEl = document.getElementById('remaining-distance-leadin');
-    if (totalDistanceLeadInEl) totalDistanceLeadInEl.textContent = formatDistance(totalDistanceWithLeadIn);
-    if (completedDistanceLeadInEl) completedDistanceLeadInEl.textContent = formatDistance(completedDistanceWithLeadIn);
-    if (remainingDistanceLeadInEl) remainingDistanceLeadInEl.textContent = formatDistance(remainingDistanceWithLeadIn);
     
     // Update elevation stats
     const totalElevationEl = document.getElementById('total-elevation');
@@ -1328,7 +1320,7 @@ function updateStats() {
     const avgElevationRemainingEl = document.getElementById('avg-elevation-remaining');
     
     if (totalElevationEl) totalElevationEl.textContent = formatElevation(totalElevation);
-    if (completedElevationEl) completedElevationEl.textContent = formatElevation(completedElevation);
+    if (completedElevationEl) completedElevationEl.textContent = `${formatElevation(completedElevation)} (${elevationCompletionPercent}%)`;
     if (remainingElevationEl) remainingElevationEl.textContent = formatElevation(remainingElevation);
     if (avgElevationAllEl) avgElevationAllEl.textContent = formatElevation(avgElevationAll);
     if (avgElevationCompletedEl) avgElevationCompletedEl.textContent = formatElevation(avgElevationCompleted);
