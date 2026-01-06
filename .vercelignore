@@ -1,0 +1,6 @@
+# Ignore files that shouldn't be deployed to Vercel
+routes.csv
+api/netlify-function.js
+api/cloudflare-worker.js
+api/README.md
+

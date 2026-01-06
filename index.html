@@ -13,6 +13,8 @@
             <div class="auth-section">
                 <button id="auth-btn" class="btn btn-primary">Login to Edit</button>
                 <span id="auth-status" class="auth-status"></span>
+                <button id="strava-connect-btn" class="btn btn-strava">Connect Strava</button>
+                <span id="strava-status" class="auth-status"></span>
             </div>
         </header>
 
@@ -77,6 +79,27 @@
                 <input type="text" id="gist-id-input" placeholder="Gist ID (optional)">
                 <button id="gist-submit" class="btn btn-primary">Save Gist ID</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Activity Linking Modal -->
+    <div id="activity-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-activity">&times;</span>
+            <h2>Link Strava Activity</h2>
+            <div id="activity-modal-content">
+                <div class="activity-link-option">
+                    <h3>Option 1: Enter Activity URL or ID</h3>
+                    <input type="text" id="activity-input" placeholder="https://www.strava.com/activities/123456789 or 123456789">
+                    <button id="activity-link-btn" class="btn btn-primary">Link Activity</button>
+                </div>
+                <div class="activity-link-option" id="recent-activities-option" style="display: none;">
+                    <h3>Option 2: Select from Recent Activities</h3>
+                    <div id="recent-activities-list" class="recent-activities-list"></div>
+                    <button id="load-activities-btn" class="btn btn-secondary">Load Recent Activities</button>
+                </div>
+            </div>
+            <div id="activity-linking-status" class="activity-status"></div>
         </div>
     </div>
 

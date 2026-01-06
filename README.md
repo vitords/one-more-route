@@ -12,6 +12,8 @@ A simple web application to track your progress completing all Zwift routes. Hos
 - Multi-device sync via GitHub Gist
 - Public viewing (perfect for sharing on Strava)
 - Authenticated editing (only you can mark routes)
+- **Strava Integration**: Link Strava activities to completed routes
+- **Activity Details**: View detailed stats (distance, time, power, heart rate, etc.) from linked Strava activities
 
 ## Setup Instructions
 
@@ -34,7 +36,65 @@ A simple web application to track your progress completing all Zwift routes. Hos
 5. Click "Generate token"
 6. **Copy the token immediately** - you won't be able to see it again!
 
-### 3. Initial Setup
+### 3. Strava Integration Setup (Optional)
+
+**Security Note**: The Client Secret must NEVER be in client-side code. We use a serverless function proxy to keep it secure.
+
+1. Go to [Strava API Settings](https://www.strava.com/settings/api)
+2. Click "Create App" or use an existing app
+3. Fill in the required fields:
+   - **Application Name**: Zwift Route Tracker (or any name)
+   - **Category**: Website
+   - **Website**: Your GitHub Pages URL (e.g., `https://username.github.io/repo-name/`)
+   - **Authorization Callback Domain**: `github.io` (or your domain)
+4. Click "Create"
+5. Copy your **Client ID** and **Client Secret**
+
+6. **Deploy to Vercel**:
+   
+   **Method 1: Using Vercel CLI (Recommended)**
+   ```bash
+   # Install Vercel CLI globally
+   npm i -g vercel
+   
+   # Navigate to your project directory
+   cd /path/to/one-more-route
+   
+   # Deploy (follow the prompts)
+   vercel
+   
+   # Set the environment variable
+   vercel env add STRAVA_CLIENT_SECRET
+   # When prompted, enter your Strava Client Secret
+   # Select "Production" environment (or all environments)
+   
+   # Redeploy to apply the environment variable
+   vercel --prod
+   ```
+   
+   **Method 2: Using Vercel Dashboard**
+   - Go to [vercel.com](https://vercel.com) and sign in
+   - Click "Add New Project"
+   - Import your GitHub repository
+   - In Project Settings > Environment Variables, add:
+     - Name: `STRAVA_CLIENT_SECRET`
+     - Value: Your Strava Client Secret
+     - Environment: Production (and Preview if you want)
+   - Deploy the project
+   
+   After deployment, your function will be available at:
+   `https://your-project-name.vercel.app/api/strava-token`
+
+7. **Configure the app**:
+   - Open `app.js` and set:
+     ```javascript
+     STRAVA_CLIENT_ID: 'your_client_id_here',  // Safe to be public
+     STRAVA_TOKEN_PROXY_URL: 'https://your-project-name.vercel.app/api/strava-token'
+     ```
+   - Replace `your-project-name` with your actual Vercel project name
+   - The Client Secret stays secure in Vercel's environment variables
+
+### 4. Initial Setup
 
 1. Open your GitHub Pages site
 2. Click "Login to Edit"
@@ -45,14 +105,20 @@ A simple web application to track your progress completing all Zwift routes. Hos
    - Click "Save Gist ID"
 6. If you don't have a Gist yet:
    - The app will automatically create one when you mark your first route as completed
+7. (Optional) Click "Connect Strava" to link your Strava account for activity tracking
 
-### 4. Using the Tracker
+### 5. Using the Tracker
 
 - **Viewing**: Anyone can view your progress (perfect for Strava links!)
 - **Editing**: Click "Login to Edit" and enter your token to mark routes as completed
 - **Filtering**: Use the filter buttons to show All, Completed, or Remaining routes
 - **Searching**: Type in the search box to find specific routes
 - **Grouping**: Routes are grouped by map/location with collapsible sections
+- **Linking Activities**: 
+  - Mark a route as completed
+  - Click "Link Strava Activity" on the route card
+  - Enter a Strava activity URL/ID or select from recent activities
+  - View detailed activity stats (power, heart rate, speed, etc.) on the route card
 
 ## File Structure
 
@@ -77,9 +143,11 @@ A simple web application to track your progress completing all Zwift routes. Hos
 ## Security Notes
 
 - Your GitHub token is stored in `sessionStorage` (cleared when browser closes)
+- Your Strava token is stored in `sessionStorage` (cleared when browser closes)
 - The Gist ID is stored in `localStorage` (persists across sessions)
-- Never share your Personal Access Token publicly
+- Never share your Personal Access Token or Strava Client Secret publicly
 - The Gist is public, so your progress is visible to anyone with the link
+- Strava activity data is cached locally to reduce API calls
 
 ## Troubleshooting
 
@@ -97,6 +165,28 @@ A simple web application to track your progress completing all Zwift routes. Hos
 - Ensure `routes.json` is in the repository root
 - Check that GitHub Pages is serving from the correct branch
 - Verify file paths are correct (case-sensitive)
+
+### Strava Integration Issues
+
+#### "Strava Client ID not configured"
+- Make sure you've set `STRAVA_CLIENT_ID` in `app.js`
+- Verify the value is correct (no extra spaces or quotes)
+
+#### "Strava token proxy URL not configured"
+- Make sure you've deployed a serverless function and set `STRAVA_TOKEN_PROXY_URL` in `app.js`
+- Verify the function URL is correct and accessible
+- Check that `STRAVA_CLIENT_SECRET` is set as an environment variable in your serverless function platform
+
+#### "Strava authentication expired"
+- Strava tokens may expire. Click "Disconnect Strava" and reconnect
+- Check that your Strava app's redirect URI matches your site URL
+
+#### "Failed to fetch activity"
+- Verify you're connected to Strava
+- Check that the activity ID/URL is correct
+- Ensure the activity is public or belongs to your account
+- Check browser console for detailed error messages
+- Strava API has rate limits (600 requests per 15 minutes) - wait if you've hit the limit
 
 ## Updating Routes
 

@@ -1,0 +1,12 @@
+{
+  "name": "zwift-route-tracker",
+  "version": "1.0.0",
+  "description": "Zwift Route Tracker with Strava integration",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}
+

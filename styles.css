@@ -409,6 +409,256 @@ h1 {
     font-size: 0.9rem;
 }
 
+/* Strava Styling */
+.btn-strava {
+    background: #fc4c02;
+    color: white;
+}
+
+.btn-strava:hover {
+    background: #e64402;
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+.activity-badge {
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+.route-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.route-activity-section {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+}
+
+.activity-link-section {
+    text-align: center;
+}
+
+.btn-link-activity {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.btn-link-activity:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+    color: var(--text-primary);
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.btn-activity-toggle {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn-activity-toggle:hover {
+    background: var(--surface-hover);
+}
+
+.activity-toggle-icon {
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+}
+
+.btn-unlink-activity {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-unlink-activity:hover {
+    background: #f85149;
+    border-color: #f85149;
+    color: white;
+}
+
+.activity-details {
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.activity-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.activity-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.activity-name a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.activity-name a:hover {
+    text-decoration: underline;
+}
+
+.activity-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.activity-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.activity-stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.activity-stat-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.activity-footer {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
+/* Activity Modal Styling */
+.activity-link-option {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--background);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.activity-link-option h3 {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.activity-link-option input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.activity-link-option input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.recent-activities-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 15px 0;
+}
+
+.activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.activity-item:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary-color);
+}
+
+.activity-item-info {
+    flex: 1;
+}
+
+.activity-item-info strong {
+    display: block;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.activity-item-meta {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.activity-status {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.close-activity {
+    color: var(--text-secondary);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 20px;
+}
+
+.close-activity:hover {
+    color: var(--text-primary);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header {
@@ -436,6 +686,15 @@ h1 {
 
     .map-content {
         grid-template-columns: 1fr;
+    }
+    
+    .activity-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .auth-section {
+        flex-wrap: wrap;
+        gap: 10px;
     }
 }
 
