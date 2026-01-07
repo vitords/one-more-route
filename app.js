@@ -888,17 +888,49 @@ function createRouteCard(route) {
             </div>
         </div>
         <div class="route-details">
-            <div class="route-detail">
-                <div class="route-detail-label">Length</div>
-                <div class="route-detail-value">${route.length} km</div>
+            <div class="route-details-section">
+                <div class="route-details-section-title">Route</div>
+                <div class="route-detail">
+                    <div class="route-detail-label">Distance</div>
+                    <div class="route-detail-value">${route.length} km</div>
+                </div>
+                <div class="route-detail">
+                    <div class="route-detail-label">Elevation</div>
+                    <div class="route-detail-value">${route.elevation} m</div>
+                </div>
             </div>
-            <div class="route-detail">
-                <div class="route-detail-label">Elevation</div>
-                <div class="route-detail-value">${route.elevation} m</div>
+            <div class="route-details-section">
+                <div class="route-details-section-title">Lead-In</div>
+                <div class="route-detail">
+                    <div class="route-detail-label">Distance</div>
+                    <div class="route-detail-value">${route.leadIn} km</div>
+                </div>
+                <div class="route-detail">
+                    <div class="route-detail-label">Elevation</div>
+                    <div class="route-detail-value">${route.leadInElevation || 0} m</div>
+                </div>
             </div>
-            <div class="route-detail">
-                <div class="route-detail-label">Lead-In</div>
-                <div class="route-detail-value">${route.leadIn} km</div>
+            <div class="route-details-section">
+                <div class="route-details-section-title">Total</div>
+                <div class="route-detail">
+                    <div class="route-detail-label">Distance</div>
+                    <div class="route-detail-value">${route.totalDistance || (route.length + route.leadIn).toFixed(1)} km</div>
+                </div>
+                <div class="route-detail">
+                    <div class="route-detail-label">Elevation</div>
+                    <div class="route-detail-value">${route.totalElevation || (route.elevation + (route.leadInElevation || 0))} m</div>
+                </div>
+            </div>
+            <div class="route-details-section">
+                <div class="route-details-section-title">Stats</div>
+                <div class="route-detail">
+                    <div class="route-detail-label">Climb Rate</div>
+                    <div class="route-detail-value">${route.climbRate || 0} m/km</div>
+                </div>
+                <div class="route-detail">
+                    <div class="route-detail-label">Difficulty</div>
+                    <div class="route-detail-value">${formatDifficulty(route.difficulty)}</div>
+                </div>
             </div>
         </div>
         ${hasActivity ? `
@@ -1285,6 +1317,29 @@ function formatDistance(km) {
 // Format elevation in meters
 function formatElevation(meters) {
     return Math.round(meters) + ' m';
+}
+
+// Format difficulty as visual circles (5 circles, filled based on difficulty)
+function formatDifficulty(difficulty) {
+    if (!difficulty) return '<div class="difficulty-circles"></div>';
+    
+    // Parse difficulty string like "2 / 5" or "3.5 / 5"
+    const match = difficulty.match(/(\d+(?:\.\d+)?)\s*\/\s*5/);
+    if (!match) {
+        return `<div class="difficulty-circles"><span class="difficulty-text">${difficulty}</span></div>`;
+    }
+    
+    const level = parseFloat(match[1]);
+    const filled = Math.round(level); // Round to nearest integer for filled circles
+    
+    let circlesHTML = '<div class="difficulty-circles">';
+    for (let i = 1; i <= 5; i++) {
+        const isFilled = i <= filled;
+        circlesHTML += `<span class="difficulty-circle ${isFilled ? 'filled' : ''}"></span>`;
+    }
+    circlesHTML += '</div>';
+    
+    return circlesHTML;
 }
 
 // Format completed date from Strava activity start date
