@@ -1,4 +1,4 @@
-# Zwift Route Tracker
+# One More Route
 
 A simple web application to track your progress completing all Zwift routes. Hosted on GitHub Pages with multi-device sync via GitHub Gist.
 
@@ -31,7 +31,7 @@ A simple web application to track your progress completing all Zwift routes. Hos
 
 1. Go to [GitHub Settings > Developer settings > Personal access tokens > Tokens (classic)](https://github.com/settings/tokens)
 2. Click "Generate new token (classic)"
-3. Give it a descriptive name (e.g., "Zwift Route Tracker")
+3. Give it a descriptive name (e.g., "One More Route")
 4. Select the `gist` scope (this allows creating and updating Gists)
 5. Click "Generate token"
 6. **Copy the token immediately** - you won't be able to see it again!
@@ -43,7 +43,7 @@ A simple web application to track your progress completing all Zwift routes. Hos
 1. Go to [Strava API Settings](https://www.strava.com/settings/api)
 2. Click "Create App" or use an existing app
 3. Fill in the required fields:
-   - **Application Name**: Zwift Route Tracker (or any name)
+   - **Application Name**: One More Route (or any name)
    - **Category**: Website
    - **Website**: Your GitHub Pages URL (e.g., `https://username.github.io/repo-name/`)
    - **Authorization Callback Domain**: `github.io` (or your domain)

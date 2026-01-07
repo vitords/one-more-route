@@ -1,7 +1,7 @@
 {
-  "name": "zwift-route-tracker",
+  "name": "one-more-route",
   "version": "1.0.0",
-  "description": "Zwift Route Tracker with Strava integration",
+  "description": "Zwift route tracker with Strava integration",
   "scripts": {
     "dev": "vercel dev"
   },

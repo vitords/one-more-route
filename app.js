@@ -349,7 +349,7 @@ async function syncToGist(token) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    description: 'Zwift Route Tracker - Completed Routes',
+                    description: 'One More Route - Completed Routes',
                     public: true,
                     files: {
                         [CONFIG.GIST_FILENAME]: {
@@ -393,7 +393,7 @@ async function syncToGist(token) {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        description: 'Zwift Route Tracker - Completed Routes',
+                        description: 'One More Route - Completed Routes',
                         public: true,
                         files: {
                             [CONFIG.GIST_FILENAME]: {
@@ -896,8 +896,8 @@ function createRouteCard(route) {
             <div class="route-activity-section">
                 <div class="activity-header">
                     <button class="btn-view-activity" data-route="${route.route}">
-                        <span>View on</span>
                         <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
+                        <span>View activity</span>
                     </button>
                     ${isEditMode ? `<button class="btn-unlink-activity" data-route="${route.route}" title="Unlink activity">✕</button>` : ''}
                 </div>
