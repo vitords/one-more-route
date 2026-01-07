@@ -113,11 +113,64 @@ h1 {
     justify-content: space-between;
     align-items: center;
     transition: all 0.2s;
+    position: relative;
 }
 
 .stat-card-compact:hover {
     border-color: var(--primary-color);
     background: var(--surface-hover);
+}
+
+/* Custom tooltip for faster display */
+.stat-card-compact[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: var(--text-primary);
+    color: var(--background);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.3s ease-out forwards;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card-compact[title]:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 2px;
+    border: 6px solid transparent;
+    border-top-color: var(--text-primary);
+    z-index: 1001;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Hide native tooltip when custom one is shown */
+.stat-card-compact[title]:hover {
+    pointer-events: auto;
 }
 
 .stat-label-inline {
@@ -311,6 +364,9 @@ h1 {
     font-weight: 600;
     color: var(--text-primary);
     flex: 1;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 4px;
+    display: inline-block;
 }
 
 .route-checkbox {
@@ -403,6 +459,29 @@ h1 {
     max-width: 600px;
     max-height: 80vh;
     overflow-y: auto;
+}
+
+.modal-title-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-title-route {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.modal-title-details {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+}
+
+#activity-details-title {
+    display: flex;
+    align-items: flex-start;
 }
 
 .close {

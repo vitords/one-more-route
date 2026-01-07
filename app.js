@@ -875,7 +875,6 @@ function createRouteCard(route) {
         <div class="route-header">
             <div class="route-name">${route.route}</div>
             <div class="route-header-actions">
-                ${hasActivity ? '<span class="activity-badge" title="Has Strava activity">🏃</span>' : ''}
                 ${checkboxHTML}
             </div>
         </div>
@@ -893,23 +892,23 @@ function createRouteCard(route) {
                 <div class="route-detail-value">${route.leadIn} km</div>
             </div>
         </div>
-        ${isCompleted ? `
+        ${hasActivity ? `
             <div class="route-activity-section">
-                ${hasActivity ? `
-                    <div class="activity-header">
-                        <button class="btn-view-activity" data-route="${route.route}">
-                            <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
-                            <span>View activity</span>
-                        </button>
-                        ${isEditMode ? `<button class="btn-unlink-activity" data-route="${route.route}" title="Unlink activity">✕</button>` : ''}
-                    </div>
-                ` : isEditMode ? `
-                    <div class="activity-link-section">
-                        <button class="btn-link-activity" data-route="${route.route}">
-                            ${isStravaAuthenticated ? '🔗 Link Strava Activity' : '🔗 Connect Strava to Link Activity'}
-                        </button>
-                    </div>
-                ` : ''}
+                <div class="activity-header">
+                    <button class="btn-view-activity" data-route="${route.route}">
+                        <span>View on</span>
+                        <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
+                    </button>
+                    ${isEditMode ? `<button class="btn-unlink-activity" data-route="${route.route}" title="Unlink activity">✕</button>` : ''}
+                </div>
+            </div>
+        ` : isCompleted && isEditMode ? `
+            <div class="route-activity-section">
+                <div class="activity-link-section">
+                    <button class="btn-link-activity" data-route="${route.route}">
+                        ${isStravaAuthenticated ? '🔗 Link Strava Activity' : '🔗 Connect Strava to Link Activity'}
+                    </button>
+                </div>
             </div>
         ` : ''}
     `;
@@ -1191,7 +1190,16 @@ function showActivityDetailsModal(activity, routeName) {
     
     if (!modal || !title || !content) return;
     
-    title.textContent = `Strava Activity - ${routeName}`;
+    // Find route details for the modal title
+    const route = routes.find(r => r.route === routeName);
+    const routeDetails = route ? `${route.length} km • ${route.elevation} m` : '';
+    
+    title.innerHTML = `
+        <span class="modal-title-text">
+            <span class="modal-title-route">${routeName}</span>
+            ${routeDetails ? `<span class="modal-title-details">${routeDetails}</span>` : ''}
+        </span>
+    `;
     content.innerHTML = renderActivityDetails(activity);
     
     // Ensure close button works (set up event listener if not already set)
@@ -1293,25 +1301,67 @@ function updateStats() {
     const avgElevationCompleted = completed > 0 ? completedElevation / completed : 0;
     const avgElevationRemaining = remaining > 0 ? remainingElevation / remaining : 0;
     
-    // Update route count stats
-    document.getElementById('total-routes').textContent = total;
-    document.getElementById('completed-routes').textContent = completed;
-    document.getElementById('remaining-routes').textContent = remaining;
-    document.getElementById('percentage-complete').textContent = `${percentage}%`;
+    // Update route count stats with tooltips
+    const totalRoutesEl = document.getElementById('total-routes');
+    const completedRoutesEl = document.getElementById('completed-routes');
+    const remainingRoutesEl = document.getElementById('remaining-routes');
+    const percentageCompleteEl = document.getElementById('percentage-complete');
+    
+    if (totalRoutesEl) {
+        totalRoutesEl.textContent = total;
+        totalRoutesEl.closest('.stat-card-compact').title = "Total number of Zwift routes";
+    }
+    if (completedRoutesEl) {
+        completedRoutesEl.textContent = completed;
+        completedRoutesEl.closest('.stat-card-compact').title = "Number of routes you've completed";
+    }
+    if (remainingRoutesEl) {
+        remainingRoutesEl.textContent = remaining;
+        remainingRoutesEl.closest('.stat-card-compact').title = "Number of routes still to complete";
+    }
+    if (percentageCompleteEl) {
+        percentageCompleteEl.textContent = `${percentage}%`;
+        percentageCompleteEl.closest('.stat-card-compact').title = "Percentage of routes completed";
+    }
     
     // Calculate completion percentages
     const distanceCompletionPercent = totalDistance > 0 ? Math.round((completedDistance / totalDistance) * 100) : 0;
     const elevationCompletionPercent = totalElevation > 0 ? Math.round((completedElevation / totalElevation) * 100) : 0;
     
-    // Update distance stats (without lead-in)
-    document.getElementById('total-distance').textContent = formatDistance(totalDistance);
-    document.getElementById('completed-distance').textContent = `${formatDistance(completedDistance)} (${distanceCompletionPercent}%)`;
-    document.getElementById('remaining-distance').textContent = formatDistance(remainingDistance);
-    document.getElementById('avg-distance-all').textContent = formatDistance(avgDistanceAll);
-    document.getElementById('avg-distance-completed').textContent = formatDistance(avgDistanceCompleted);
-    document.getElementById('avg-distance-remaining').textContent = formatDistance(avgDistanceRemaining);
+    // Update distance stats (without lead-in) with tooltips
+    const totalDistanceEl = document.getElementById('total-distance');
+    const completedDistanceEl = document.getElementById('completed-distance');
+    const remainingDistanceEl = document.getElementById('remaining-distance');
+    const avgDistanceAllEl = document.getElementById('avg-distance-all');
+    const avgDistanceCompletedEl = document.getElementById('avg-distance-completed');
+    const avgDistanceRemainingEl = document.getElementById('avg-distance-remaining');
     
-    // Update elevation stats
+    if (totalDistanceEl) {
+        totalDistanceEl.textContent = formatDistance(totalDistance);
+        totalDistanceEl.closest('.stat-card-compact').title = "Total distance of all routes";
+    }
+    if (completedDistanceEl) {
+        completedDistanceEl.textContent = `${formatDistance(completedDistance)} (${distanceCompletionPercent}%)`;
+        completedDistanceEl.closest('.stat-card-compact').title = "Total distance of completed routes";
+    }
+    if (remainingDistanceEl) {
+        remainingDistanceEl.textContent = formatDistance(remainingDistance);
+        remainingDistanceEl.closest('.stat-card-compact').title = "Total distance of remaining routes";
+    }
+    if (avgDistanceAllEl) {
+        avgDistanceAllEl.textContent = formatDistance(avgDistanceAll);
+        avgDistanceAllEl.closest('.stat-card-compact').title = "Average distance per route (all routes)";
+    }
+    if (avgDistanceCompletedEl) {
+        avgDistanceCompletedEl.textContent = formatDistance(avgDistanceCompleted);
+        avgDistanceCompletedEl.closest('.stat-card-compact').title = "Average distance per route (completed routes)";
+    }
+    if (avgDistanceRemainingEl) {
+        avgDistanceRemainingEl.textContent = formatDistance(avgDistanceRemaining);
+        avgDistanceRemainingEl.closest('.stat-card-compact').title = "Average distance per route (remaining routes)";
+    }
+    
+    // Update elevation stats with tooltips
     const totalElevationEl = document.getElementById('total-elevation');
     const completedElevationEl = document.getElementById('completed-elevation');
     const remainingElevationEl = document.getElementById('remaining-elevation');
@@ -1319,12 +1369,30 @@ function updateStats() {
     const avgElevationCompletedEl = document.getElementById('avg-elevation-completed');
     const avgElevationRemainingEl = document.getElementById('avg-elevation-remaining');
     
-    if (totalElevationEl) totalElevationEl.textContent = formatElevation(totalElevation);
-    if (completedElevationEl) completedElevationEl.textContent = `${formatElevation(completedElevation)} (${elevationCompletionPercent}%)`;
-    if (remainingElevationEl) remainingElevationEl.textContent = formatElevation(remainingElevation);
-    if (avgElevationAllEl) avgElevationAllEl.textContent = formatElevation(avgElevationAll);
-    if (avgElevationCompletedEl) avgElevationCompletedEl.textContent = formatElevation(avgElevationCompleted);
-    if (avgElevationRemainingEl) avgElevationRemainingEl.textContent = formatElevation(avgElevationRemaining);
+    if (totalElevationEl) {
+        totalElevationEl.textContent = formatElevation(totalElevation);
+        totalElevationEl.closest('.stat-card-compact').title = "Total elevation gain of all routes";
+    }
+    if (completedElevationEl) {
+        completedElevationEl.textContent = `${formatElevation(completedElevation)} (${elevationCompletionPercent}%)`;
+        completedElevationEl.closest('.stat-card-compact').title = "Total elevation gain of completed routes";
+    }
+    if (remainingElevationEl) {
+        remainingElevationEl.textContent = formatElevation(remainingElevation);
+        remainingElevationEl.closest('.stat-card-compact').title = "Total elevation gain of remaining routes";
+    }
+    if (avgElevationAllEl) {
+        avgElevationAllEl.textContent = formatElevation(avgElevationAll);
+        avgElevationAllEl.closest('.stat-card-compact').title = "Average elevation gain per route (all routes)";
+    }
+    if (avgElevationCompletedEl) {
+        avgElevationCompletedEl.textContent = formatElevation(avgElevationCompleted);
+        avgElevationCompletedEl.closest('.stat-card-compact').title = "Average elevation gain per route (completed routes)";
+    }
+    if (avgElevationRemainingEl) {
+        avgElevationRemainingEl.textContent = formatElevation(avgElevationRemaining);
+        avgElevationRemainingEl.closest('.stat-card-compact').title = "Average elevation gain per route (remaining routes)";
+    }
     
     // Update Strava activity stats
     updateStravaStats();
@@ -1359,7 +1427,7 @@ function updateStravaStats() {
     const totalElapsedTime = activities.reduce((sum, activity) => sum + (activity.elapsedTime || 0), 0);
     const totalCalories = activities.reduce((sum, activity) => sum + (activity.calories || 0), 0);
     
-    // Update Strava stat elements
+    // Update Strava stat elements with tooltips
     const stravaDistanceEl = document.getElementById('strava-total-distance');
     const stravaElevationEl = document.getElementById('strava-total-elevation');
     const stravaMovingTimeEl = document.getElementById('strava-total-moving-time');
@@ -1368,18 +1436,23 @@ function updateStravaStats() {
     
     if (stravaDistanceEl) {
         stravaDistanceEl.textContent = formatDistance(totalDistance / 1000); // Convert meters to km
+        stravaDistanceEl.closest('.stat-card-compact').title = "Total distance from all linked Strava activities";
     }
     if (stravaElevationEl) {
         stravaElevationEl.textContent = formatElevation(totalElevation);
+        stravaElevationEl.closest('.stat-card-compact').title = "Total elevation gain from all linked Strava activities";
     }
     if (stravaMovingTimeEl) {
         stravaMovingTimeEl.textContent = formatTime(totalMovingTime);
+        stravaMovingTimeEl.closest('.stat-card-compact').title = "Total moving time from all linked Strava activities";
     }
     if (stravaElapsedTimeEl) {
         stravaElapsedTimeEl.textContent = formatTime(totalElapsedTime);
+        stravaElapsedTimeEl.closest('.stat-card-compact').title = "Total elapsed time from all linked Strava activities";
     }
     if (stravaCaloriesEl) {
         stravaCaloriesEl.textContent = totalCalories.toLocaleString();
+        stravaCaloriesEl.closest('.stat-card-compact').title = "Total calories burned from all linked Strava activities";
     }
 }
 
