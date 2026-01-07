@@ -157,6 +157,14 @@ h1 {
     color: var(--text-primary);
     margin: 0 0 12px 0;
     text-transform: uppercase;
+}
+
+.stats-section-subtitle {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin: 0 0 8px 0;
+    font-style: italic;
     letter-spacing: 0.5px;
     border-bottom: 2px solid var(--border);
     padding-bottom: 8px;
@@ -186,8 +194,8 @@ h1 {
 }
 
 /* Custom tooltip for faster display */
-.stat-card-compact[title]:hover::after {
-    content: attr(title);
+.stat-card-compact[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
     left: 50%;
@@ -202,11 +210,11 @@ h1 {
     z-index: 1000;
     pointer-events: none;
     opacity: 0;
-    animation: tooltipFadeIn 0.3s ease-out forwards;
+    animation: tooltipFadeIn 0.15s ease-out forwards;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.stat-card-compact[title]:hover::before {
+.stat-card-compact[data-tooltip]:hover::before {
     content: '';
     position: absolute;
     bottom: 100%;
@@ -218,7 +226,7 @@ h1 {
     z-index: 1001;
     pointer-events: none;
     opacity: 0;
-    animation: tooltipFadeIn 0.3s ease-out forwards;
+    animation: tooltipFadeIn 0.15s ease-out forwards;
 }
 
 @keyframes tooltipFadeIn {
@@ -232,9 +240,46 @@ h1 {
     }
 }
 
-/* Hide native tooltip when custom one is shown */
-.stat-card-compact[title]:hover {
-    pointer-events: auto;
+/* Custom tooltip for subtitle */
+.stats-section-subtitle[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+.stats-section-subtitle[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: var(--text-primary);
+    color: var(--background);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    white-space: normal;
+    max-width: 250px;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.15s ease-out forwards;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.stats-section-subtitle[data-tooltip]:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 2px;
+    border: 6px solid transparent;
+    border-top-color: var(--text-primary);
+    z-index: 1001;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.15s ease-out forwards;
 }
 
 .stat-label-inline {

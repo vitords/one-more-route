@@ -1375,21 +1375,35 @@ function updateStats() {
     const remaining = total - completed;
     const percentage = total > 0 ? ((completed / total) * 100).toFixed(1) : '0.0';
     
-    // Calculate distances
+    // Calculate distances (route only)
     const totalDistance = routes.reduce((sum, route) => sum + (route.length || 0), 0);
     const completedDistance = routes
         .filter(route => completedRoutes.has(route.route))
         .reduce((sum, route) => sum + (route.length || 0), 0);
     const remainingDistance = totalDistance - completedDistance;
     
-    // Calculate elevations
+    // Calculate distances (with lead-in)
+    const totalDistanceLeadIn = routes.reduce((sum, route) => sum + (route.length || 0) + (route.leadIn || 0), 0);
+    const completedDistanceLeadIn = routes
+        .filter(route => completedRoutes.has(route.route))
+        .reduce((sum, route) => sum + (route.length || 0) + (route.leadIn || 0), 0);
+    const remainingDistanceLeadIn = totalDistanceLeadIn - completedDistanceLeadIn;
+    
+    // Calculate elevations (route only)
     const totalElevation = routes.reduce((sum, route) => sum + (route.elevation || 0), 0);
     const completedElevation = routes
         .filter(route => completedRoutes.has(route.route))
         .reduce((sum, route) => sum + (route.elevation || 0), 0);
     const remainingElevation = totalElevation - completedElevation;
     
-    // Calculate averages
+    // Calculate elevations (with lead-in)
+    const totalElevationLeadIn = routes.reduce((sum, route) => sum + (route.elevation || 0) + (route.leadInElevation || 0), 0);
+    const completedElevationLeadIn = routes
+        .filter(route => completedRoutes.has(route.route))
+        .reduce((sum, route) => sum + (route.elevation || 0) + (route.leadInElevation || 0), 0);
+    const remainingElevationLeadIn = totalElevationLeadIn - completedElevationLeadIn;
+    
+    // Calculate averages (route only)
     const avgDistanceAll = total > 0 ? totalDistance / total : 0;
     const avgDistanceCompleted = completed > 0 ? completedDistance / completed : 0;
     const avgDistanceRemaining = remaining > 0 ? remainingDistance / remaining : 0;
@@ -1397,6 +1411,15 @@ function updateStats() {
     const avgElevationAll = total > 0 ? totalElevation / total : 0;
     const avgElevationCompleted = completed > 0 ? completedElevation / completed : 0;
     const avgElevationRemaining = remaining > 0 ? remainingElevation / remaining : 0;
+    
+    // Calculate averages (with lead-in)
+    const avgDistanceAllLeadIn = total > 0 ? totalDistanceLeadIn / total : 0;
+    const avgDistanceCompletedLeadIn = completed > 0 ? completedDistanceLeadIn / completed : 0;
+    const avgDistanceRemainingLeadIn = remaining > 0 ? remainingDistanceLeadIn / remaining : 0;
+    
+    const avgElevationAllLeadIn = total > 0 ? totalElevationLeadIn / total : 0;
+    const avgElevationCompletedLeadIn = completed > 0 ? completedElevationLeadIn / completed : 0;
+    const avgElevationRemainingLeadIn = remaining > 0 ? remainingElevationLeadIn / remaining : 0;
     
     // Update route count stats with tooltips
     const totalRoutesEl = document.getElementById('total-routes');
@@ -1406,19 +1429,19 @@ function updateStats() {
     
     if (totalRoutesEl) {
         totalRoutesEl.textContent = total;
-        totalRoutesEl.closest('.stat-card-compact').title = "Total number of Zwift routes";
+        totalRoutesEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total number of Zwift routes");
     }
     if (completedRoutesEl) {
         completedRoutesEl.textContent = completed;
-        completedRoutesEl.closest('.stat-card-compact').title = "Number of routes you've completed";
+        completedRoutesEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Number of routes you've completed");
     }
     if (remainingRoutesEl) {
         remainingRoutesEl.textContent = remaining;
-        remainingRoutesEl.closest('.stat-card-compact').title = "Number of routes still to complete";
+        remainingRoutesEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Number of routes still to complete");
     }
     if (percentageCompleteEl) {
         percentageCompleteEl.textContent = `${percentage}%`;
-        percentageCompleteEl.closest('.stat-card-compact').title = "Percentage of routes completed";
+        percentageCompleteEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Percentage of routes completed");
     }
     
     // Calculate completion percentages
@@ -1435,27 +1458,27 @@ function updateStats() {
     
     if (totalDistanceEl) {
         totalDistanceEl.textContent = formatDistance(totalDistance);
-        totalDistanceEl.closest('.stat-card-compact').title = "Total distance of all routes";
+        totalDistanceEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of all routes");
     }
     if (completedDistanceEl) {
         completedDistanceEl.textContent = `${formatDistance(completedDistance)} (${distanceCompletionPercent}%)`;
-        completedDistanceEl.closest('.stat-card-compact').title = "Total distance of completed routes";
+        completedDistanceEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of completed routes");
     }
     if (remainingDistanceEl) {
         remainingDistanceEl.textContent = formatDistance(remainingDistance);
-        remainingDistanceEl.closest('.stat-card-compact').title = "Total distance of remaining routes";
+        remainingDistanceEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of remaining routes");
     }
     if (avgDistanceAllEl) {
         avgDistanceAllEl.textContent = formatDistance(avgDistanceAll);
-        avgDistanceAllEl.closest('.stat-card-compact').title = "Average distance per route (all routes)";
+        avgDistanceAllEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average distance per route (all routes)");
     }
     if (avgDistanceCompletedEl) {
         avgDistanceCompletedEl.textContent = formatDistance(avgDistanceCompleted);
-        avgDistanceCompletedEl.closest('.stat-card-compact').title = "Average distance per route (completed routes)";
+        avgDistanceCompletedEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average distance per route (completed routes)");
     }
     if (avgDistanceRemainingEl) {
         avgDistanceRemainingEl.textContent = formatDistance(avgDistanceRemaining);
-        avgDistanceRemainingEl.closest('.stat-card-compact').title = "Average distance per route (remaining routes)";
+        avgDistanceRemainingEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average distance per route (remaining routes)");
     }
     
     // Update elevation stats with tooltips
@@ -1468,27 +1491,97 @@ function updateStats() {
     
     if (totalElevationEl) {
         totalElevationEl.textContent = formatElevation(totalElevation);
-        totalElevationEl.closest('.stat-card-compact').title = "Total elevation gain of all routes";
+        totalElevationEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of all routes");
     }
     if (completedElevationEl) {
         completedElevationEl.textContent = `${formatElevation(completedElevation)} (${elevationCompletionPercent}%)`;
-        completedElevationEl.closest('.stat-card-compact').title = "Total elevation gain of completed routes";
+        completedElevationEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of completed routes");
     }
     if (remainingElevationEl) {
         remainingElevationEl.textContent = formatElevation(remainingElevation);
-        remainingElevationEl.closest('.stat-card-compact').title = "Total elevation gain of remaining routes";
+        remainingElevationEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of remaining routes");
     }
     if (avgElevationAllEl) {
         avgElevationAllEl.textContent = formatElevation(avgElevationAll);
-        avgElevationAllEl.closest('.stat-card-compact').title = "Average elevation gain per route (all routes)";
+        avgElevationAllEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average elevation gain per route (all routes)");
     }
     if (avgElevationCompletedEl) {
         avgElevationCompletedEl.textContent = formatElevation(avgElevationCompleted);
-        avgElevationCompletedEl.closest('.stat-card-compact').title = "Average elevation gain per route (completed routes)";
+        avgElevationCompletedEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average elevation gain per route (completed routes)");
     }
     if (avgElevationRemainingEl) {
         avgElevationRemainingEl.textContent = formatElevation(avgElevationRemaining);
-        avgElevationRemainingEl.closest('.stat-card-compact').title = "Average elevation gain per route (remaining routes)";
+        avgElevationRemainingEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average elevation gain per route (remaining routes)");
+    }
+    
+    // Calculate completion percentages for lead-in
+    const distanceCompletionPercentLeadIn = totalDistanceLeadIn > 0 ? ((completedDistanceLeadIn / totalDistanceLeadIn) * 100).toFixed(1) : '0.0';
+    const elevationCompletionPercentLeadIn = totalElevationLeadIn > 0 ? ((completedElevationLeadIn / totalElevationLeadIn) * 100).toFixed(1) : '0.0';
+    
+    // Update distance stats (with lead-in) with tooltips
+    const totalDistanceLeadInEl = document.getElementById('total-distance-leadin');
+    const completedDistanceLeadInEl = document.getElementById('completed-distance-leadin');
+    const remainingDistanceLeadInEl = document.getElementById('remaining-distance-leadin');
+    const avgDistanceAllLeadInEl = document.getElementById('avg-distance-all-leadin');
+    const avgDistanceCompletedLeadInEl = document.getElementById('avg-distance-completed-leadin');
+    const avgDistanceRemainingLeadInEl = document.getElementById('avg-distance-remaining-leadin');
+    
+    if (totalDistanceLeadInEl) {
+        totalDistanceLeadInEl.textContent = formatDistance(totalDistanceLeadIn);
+        totalDistanceLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of all routes including lead-in");
+    }
+    if (completedDistanceLeadInEl) {
+        completedDistanceLeadInEl.textContent = `${formatDistance(completedDistanceLeadIn)} (${distanceCompletionPercentLeadIn}%)`;
+        completedDistanceLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of completed routes including lead-in");
+    }
+    if (remainingDistanceLeadInEl) {
+        remainingDistanceLeadInEl.textContent = formatDistance(remainingDistanceLeadIn);
+        remainingDistanceLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of remaining routes including lead-in");
+    }
+    if (avgDistanceAllLeadInEl) {
+        avgDistanceAllLeadInEl.textContent = formatDistance(avgDistanceAllLeadIn);
+        avgDistanceAllLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average distance per route including lead-in (all routes)");
+    }
+    if (avgDistanceCompletedLeadInEl) {
+        avgDistanceCompletedLeadInEl.textContent = formatDistance(avgDistanceCompletedLeadIn);
+        avgDistanceCompletedLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average distance per route including lead-in (completed routes)");
+    }
+    if (avgDistanceRemainingLeadInEl) {
+        avgDistanceRemainingLeadInEl.textContent = formatDistance(avgDistanceRemainingLeadIn);
+        avgDistanceRemainingLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average distance per route including lead-in (remaining routes)");
+    }
+    
+    // Update elevation stats (with lead-in) with tooltips
+    const totalElevationLeadInEl = document.getElementById('total-elevation-leadin');
+    const completedElevationLeadInEl = document.getElementById('completed-elevation-leadin');
+    const remainingElevationLeadInEl = document.getElementById('remaining-elevation-leadin');
+    const avgElevationAllLeadInEl = document.getElementById('avg-elevation-all-leadin');
+    const avgElevationCompletedLeadInEl = document.getElementById('avg-elevation-completed-leadin');
+    const avgElevationRemainingLeadInEl = document.getElementById('avg-elevation-remaining-leadin');
+    
+    if (totalElevationLeadInEl) {
+        totalElevationLeadInEl.textContent = formatElevation(totalElevationLeadIn);
+        totalElevationLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of all routes including lead-in");
+    }
+    if (completedElevationLeadInEl) {
+        completedElevationLeadInEl.textContent = `${formatElevation(completedElevationLeadIn)} (${elevationCompletionPercentLeadIn}%)`;
+        completedElevationLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of completed routes including lead-in");
+    }
+    if (remainingElevationLeadInEl) {
+        remainingElevationLeadInEl.textContent = formatElevation(remainingElevationLeadIn);
+        remainingElevationLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of remaining routes including lead-in");
+    }
+    if (avgElevationAllLeadInEl) {
+        avgElevationAllLeadInEl.textContent = formatElevation(avgElevationAllLeadIn);
+        avgElevationAllLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average elevation gain per route including lead-in (all routes)");
+    }
+    if (avgElevationCompletedLeadInEl) {
+        avgElevationCompletedLeadInEl.textContent = formatElevation(avgElevationCompletedLeadIn);
+        avgElevationCompletedLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average elevation gain per route including lead-in (completed routes)");
+    }
+    if (avgElevationRemainingLeadInEl) {
+        avgElevationRemainingLeadInEl.textContent = formatElevation(avgElevationRemainingLeadIn);
+        avgElevationRemainingLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average elevation gain per route including lead-in (remaining routes)");
     }
     
     // Update Strava activity stats
@@ -1533,23 +1626,23 @@ function updateStravaStats() {
     
     if (stravaDistanceEl) {
         stravaDistanceEl.textContent = formatDistance(totalDistance / 1000); // Convert meters to km
-        stravaDistanceEl.closest('.stat-card-compact').title = "Total distance from all linked Strava activities";
+        stravaDistanceEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance from all linked Strava activities");
     }
     if (stravaElevationEl) {
         stravaElevationEl.textContent = formatElevation(totalElevation);
-        stravaElevationEl.closest('.stat-card-compact').title = "Total elevation gain from all linked Strava activities";
+        stravaElevationEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain from all linked Strava activities");
     }
     if (stravaMovingTimeEl) {
         stravaMovingTimeEl.textContent = formatTime(totalMovingTime);
-        stravaMovingTimeEl.closest('.stat-card-compact').title = "Total moving time from all linked Strava activities";
+        stravaMovingTimeEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total moving time from all linked Strava activities");
     }
     if (stravaElapsedTimeEl) {
         stravaElapsedTimeEl.textContent = formatTime(totalElapsedTime);
-        stravaElapsedTimeEl.closest('.stat-card-compact').title = "Total elapsed time from all linked Strava activities";
+        stravaElapsedTimeEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elapsed time from all linked Strava activities");
     }
     if (stravaCaloriesEl) {
         stravaCaloriesEl.textContent = totalCalories.toLocaleString();
-        stravaCaloriesEl.closest('.stat-card-compact').title = "Total calories burned from all linked Strava activities";
+        stravaCaloriesEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total calories burned from all linked Strava activities");
     }
 }
 

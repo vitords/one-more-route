@@ -57,6 +57,7 @@
             
             <div class="stats-section">
                 <h3 class="stats-section-title">Distance</h3>
+                <h4 class="stats-section-subtitle">Routes Only</h4>
                 <div class="stats-grid">
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Total:</span>
@@ -83,10 +84,38 @@
                         <span class="stat-value-inline" id="avg-distance-remaining">0.0 km</span>
                     </div>
                 </div>
+                <h4 class="stats-section-subtitle" data-tooltip="Lead-in values are approximate. Lead-in is the distance/elevation that needs to be ridden before reaching the official start of the route.">With Lead-In</h4>
+                <div class="stats-grid">
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Total:</span>
+                        <span class="stat-value-inline" id="total-distance-leadin">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Completed:</span>
+                        <span class="stat-value-inline" id="completed-distance-leadin">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Remaining:</span>
+                        <span class="stat-value-inline" id="remaining-distance-leadin">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (All):</span>
+                        <span class="stat-value-inline" id="avg-distance-all-leadin">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (Done):</span>
+                        <span class="stat-value-inline" id="avg-distance-completed-leadin">0.0 km</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (Remaining):</span>
+                        <span class="stat-value-inline" id="avg-distance-remaining-leadin">0.0 km</span>
+                    </div>
+                </div>
             </div>
             
             <div class="stats-section">
                 <h3 class="stats-section-title">Elevation</h3>
+                <h4 class="stats-section-subtitle">Routes Only</h4>
                 <div class="stats-grid">
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Total:</span>
@@ -111,6 +140,33 @@
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Avg (Remaining):</span>
                         <span class="stat-value-inline" id="avg-elevation-remaining">0 m</span>
+                    </div>
+                </div>
+                <h4 class="stats-section-subtitle" data-tooltip="Lead-in values are approximate. Lead-in is the distance/elevation that needs to be ridden before reaching the official start of the route.">With Lead-In</h4>
+                <div class="stats-grid">
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Total:</span>
+                        <span class="stat-value-inline" id="total-elevation-leadin">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Completed:</span>
+                        <span class="stat-value-inline" id="completed-elevation-leadin">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Remaining:</span>
+                        <span class="stat-value-inline" id="remaining-elevation-leadin">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (All):</span>
+                        <span class="stat-value-inline" id="avg-elevation-all-leadin">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (Done):</span>
+                        <span class="stat-value-inline" id="avg-elevation-completed-leadin">0 m</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg (Remaining):</span>
+                        <span class="stat-value-inline" id="avg-elevation-remaining-leadin">0 m</span>
                     </div>
                 </div>
             </div>
