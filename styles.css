@@ -672,13 +672,13 @@ h1 {
 
 /* Strava Styling */
 .btn-strava {
-    background: #fc4c02;
+    background: var(--primary-color);
     color: white;
     text-decoration: none;
 }
 
 .btn-strava:hover {
-    background: #e64402;
+    background: var(--primary-hover);
     text-decoration: none;
 }
 

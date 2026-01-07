@@ -818,7 +818,8 @@ function renderRoutes() {
         const mapGroup = document.createElement('div');
         mapGroup.className = 'map-group';
         
-        const routesInMap = grouped[map];
+        // Sort routes within each map by distance (shortest to longest)
+        const routesInMap = grouped[map].sort((a, b) => (a.length || 0) - (b.length || 0));
         const completedInMap = routesInMap.filter(r => completedRoutes.has(r.route)).length;
         
         const header = document.createElement('div');
@@ -1317,7 +1318,7 @@ function updateStats() {
     const total = routes.length;
     const completed = completedRoutes.size;
     const remaining = total - completed;
-    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+    const percentage = total > 0 ? ((completed / total) * 100).toFixed(1) : '0.0';
     
     // Calculate distances
     const totalDistance = routes.reduce((sum, route) => sum + (route.length || 0), 0);
@@ -1366,8 +1367,8 @@ function updateStats() {
     }
     
     // Calculate completion percentages
-    const distanceCompletionPercent = totalDistance > 0 ? Math.round((completedDistance / totalDistance) * 100) : 0;
-    const elevationCompletionPercent = totalElevation > 0 ? Math.round((completedElevation / totalElevation) * 100) : 0;
+    const distanceCompletionPercent = totalDistance > 0 ? ((completedDistance / totalDistance) * 100).toFixed(1) : '0.0';
+    const elevationCompletionPercent = totalElevation > 0 ? ((completedElevation / totalElevation) * 100).toFixed(1) : '0.0';
     
     // Update distance stats (without lead-in) with tooltips
     const totalDistanceEl = document.getElementById('total-distance');
