@@ -1867,7 +1867,66 @@ function showNavigation() {
         editLink.className = 'btn btn-primary';
         editLink.textContent = 'Edit Progress →';
         navContainer.appendChild(editLink);
+        
+        // Add scroll detection for mobile bottom button
+        setupScrollDetection();
     }
+}
+
+// Setup scroll detection to show/hide Edit Progress button at bottom on mobile
+function setupScrollDetection() {
+    const editLink = document.getElementById('nav-edit-link');
+    if (!editLink) return;
+    
+    // Prevent duplicate setup
+    if (editLink.dataset.scrollSetup === 'true') return;
+    editLink.dataset.scrollSetup = 'true';
+    
+    let ticking = false;
+    
+    function checkScrollPosition() {
+        // Only check on mobile
+        const isMobile = window.innerWidth <= 768;
+        if (!isMobile) {
+            editLink.classList.remove('show-at-bottom');
+            return;
+        }
+        
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        
+        // Show button when within 100px of bottom
+        const threshold = 100;
+        const isAtBottom = scrollTop + windowHeight >= documentHeight - threshold;
+        
+        if (isAtBottom) {
+            editLink.classList.add('show-at-bottom');
+        } else {
+            editLink.classList.remove('show-at-bottom');
+        }
+        
+        ticking = false;
+    }
+    
+    function onScroll() {
+        if (!ticking) {
+            window.requestAnimationFrame(checkScrollPosition);
+            ticking = true;
+        }
+    }
+    
+    function onResize() {
+        checkScrollPosition();
+    }
+    
+    // Add listeners
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
+    
+    // Check initial position and after a short delay (to account for content loading)
+    checkScrollPosition();
+    setTimeout(checkScrollPosition, 500);
 }
 
 // Setup event listeners for showcase mode (limited functionality)

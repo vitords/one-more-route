@@ -54,6 +54,16 @@ header {
     gap: 15px;
 }
 
+.navigation-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navigation-links a {
+    text-decoration: none;
+}
+
 .header-intro {
     display: flex;
     align-items: center;
@@ -1041,6 +1051,29 @@ a.btn-strava:visited {
     .header-bottom {
         flex-direction: column;
         align-items: stretch;
+    }
+    
+    /* Move Edit Progress button to bottom of page on mobile - hidden by default */
+    #nav-edit-link {
+        position: fixed !important;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        width: calc(100% - 40px);
+        max-width: 300px;
+        text-align: center;
+        margin: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    
+    /* Show button when at bottom of page */
+    #nav-edit-link.show-at-bottom {
+        opacity: 1;
+        visibility: visible;
     }
 }
 
