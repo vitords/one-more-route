@@ -860,6 +860,14 @@ function createRouteCard(route) {
     const activity = routeActivities[route.route];
     const hasActivity = !!activity;
     
+    // Add tooltip for completed routes with activities
+    if (hasActivity && activity.startDate) {
+        const completedDate = formatCompletedDate(activity.startDate);
+        if (completedDate) {
+            card.setAttribute('title', `Completed on ${completedDate}`);
+        }
+    }
+    
     // Show checkbox only in edit mode
     const checkboxHTML = isEditMode ? `
         <input 
@@ -1102,6 +1110,8 @@ function renderActivityDetails(activity) {
         return (mps * 3.6).toFixed(1) + ' km/h';
     };
     
+    const completedDate = activity.startDate ? formatCompletedDate(activity.startDate) : '';
+    
     return `
         <div class="activity-info">
             <div class="activity-name">
@@ -1109,6 +1119,11 @@ function renderActivityDetails(activity) {
                     ${activity.name || 'Strava Activity'}
                 </a>
             </div>
+            ${completedDate ? `
+            <div class="activity-completed-date">
+                Completed on ${completedDate}
+            </div>
+            ` : ''}
             <div class="activity-stats-grid">
                 <div class="activity-stat">
                     <div class="activity-stat-label">Distance</div>
@@ -1269,6 +1284,31 @@ function formatDistance(km) {
 // Format elevation in meters
 function formatElevation(meters) {
     return Math.round(meters) + ' m';
+}
+
+// Format completed date from Strava activity start date
+function formatCompletedDate(dateString) {
+    if (!dateString) return '';
+    
+    try {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '';
+        
+        // Format as "January 15, 2026 at 2:30 PM"
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        };
+        
+        return date.toLocaleDateString('en-US', options);
+    } catch (e) {
+        console.error('Error formatting date:', e);
+        return '';
+    }
 }
 
 // Update statistics

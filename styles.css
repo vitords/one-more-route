@@ -406,6 +406,47 @@ h1 {
     opacity: 0.7;
 }
 
+/* Custom tooltip for route cards with activities */
+.route-card[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: var(--text-primary);
+    color: var(--background);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.15s ease-out forwards;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.route-card[title]:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 2px;
+    border: 6px solid transparent;
+    border-top-color: var(--text-primary);
+    z-index: 1001;
+    pointer-events: none;
+    opacity: 0;
+    animation: tooltipFadeIn 0.15s ease-out forwards;
+}
+
+/* Hide native tooltip when custom one is shown */
+.route-card[title]:hover {
+    pointer-events: auto;
+}
+
 .route-header {
     display: flex;
     justify-content: space-between;
@@ -762,6 +803,13 @@ a.btn-strava:visited {
 
 .activity-name a:hover {
     text-decoration: underline;
+}
+
+.activity-completed-date {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: -5px;
 }
 
 .activity-stats-grid {
