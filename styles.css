@@ -37,14 +37,68 @@ body {
 }
 
 header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--border);
+}
+
+.header-top {
+    margin-bottom: 20px;
+}
+
+.header-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     flex-wrap: wrap;
     gap: 15px;
+}
+
+.header-intro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.intro-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+    min-width: 250px;
+}
+
+.strava-profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.strava-profile-badge:hover {
+    border-color: var(--primary-color);
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.strava-logo-badge {
+    height: 1.2em;
+    width: auto;
+    vertical-align: middle;
 }
 
 .nav-container {
@@ -924,6 +978,21 @@ a.btn-strava:visited {
     .auth-section {
         flex-wrap: wrap;
         gap: 10px;
+    }
+    
+    .header-intro {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .intro-text {
+        min-width: auto;
+    }
+    
+    .header-bottom {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 

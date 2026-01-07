@@ -13,7 +13,7 @@ const CONFIG = {
     // Token exchange endpoint - must be a serverless function that keeps Client Secret secure
     STRAVA_TOKEN_PROXY_URL: 'https://one-more-route.vercel.app/api/strava-token',
     // Showcase Gist ID - for public viewing (set this to your Gist ID)
-    SHOWCASE_GIST_ID: 'c8d7387ee7688232d7eb9c890a2e329b' // Set this to your Gist ID for public showcase
+    SHOWCASE_GIST_ID: '5a5c3c849409700679ee32ae772c137e' // Set this to your Gist ID for public showcase
 };
 
 // State
@@ -949,8 +949,8 @@ function createRouteCard(route) {
                     activitySection.innerHTML = `
                         <div class="activity-header">
                             <button class="btn-view-activity" data-route="${routeName}">
-                                <span>View on</span>
                                 <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
+                                <span>View activity</span>
                             </button>
                             ${isEditMode ? `<button class="btn-unlink-activity" data-route="${routeName}" title="Unlink activity">✕</button>` : ''}
                         </div>
@@ -1776,13 +1776,22 @@ function showNavigation() {
     const header = document.querySelector('header');
     if (!header) return;
     
+    // Find or create navigation container
+    let navContainer = header.querySelector('.navigation-links');
+    if (!navContainer) {
+        // If navigation-links doesn't exist, find header-bottom and create it there
+        const headerBottom = header.querySelector('.header-bottom');
+        if (headerBottom) {
+            navContainer = headerBottom.querySelector('.navigation-links');
+        }
+    }
+    
+    if (!navContainer) return;
+    
     // Check if navigation already exists
     if (document.getElementById('nav-edit-link') || document.getElementById('nav-showcase-link')) {
         return;
     }
-    
-    const navContainer = document.createElement('div');
-    navContainer.className = 'nav-container';
     
     if (isEditMode) {
         // Show link to showcase
@@ -1818,17 +1827,6 @@ function showNavigation() {
         editLink.className = 'btn btn-primary';
         editLink.textContent = 'Edit Progress →';
         navContainer.appendChild(editLink);
-    }
-    
-    // Insert navigation into header (after h1, before auth-section)
-    const h1 = header.querySelector('h1');
-    const authSection = header.querySelector('.auth-section');
-    if (h1) {
-        if (authSection) {
-            header.insertBefore(navContainer, authSection);
-        } else {
-            header.appendChild(navContainer);
-        }
     }
 }
 
