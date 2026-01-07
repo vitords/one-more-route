@@ -1294,17 +1294,18 @@ function formatCompletedDate(dateString) {
         const date = new Date(dateString);
         if (isNaN(date.getTime())) return '';
         
-        // Format as "January 15, 2026 at 2:30 PM"
-        const options = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        };
+        // Format as "15 January 2026 at 2:30 PM" (day before month)
+        const day = date.getDate();
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'];
+        const month = monthNames[date.getMonth()];
+        const year = date.getFullYear();
         
-        return date.toLocaleDateString('en-US', options);
+        // Format time in 24-hour format
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        
+        return `${day} ${month} ${year} at ${hours}:${minutes}`;
     } catch (e) {
         console.error('Error formatting date:', e);
         return '';
