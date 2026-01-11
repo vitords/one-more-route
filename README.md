@@ -1,222 +1,97 @@
 # One More Route
 
-A simple web application to track your progress completing all Zwift routes. Hosted on GitHub Pages with multi-device sync via GitHub Gist.
+A web application to track progress completing all Zwift routes. Hosted on GitHub Pages with multi-device sync via GitHub Gist and Strava integration.
 
 ## Features
 
-- View all 223 Zwift routes organized by map/location
-- Mark routes as completed (requires authentication)
-- Track progress with statistics (total, completed, remaining, percentage)
-- Filter routes: All / Completed / Remaining
-- Search routes by name or map
-- Multi-device sync via GitHub Gist
-- Public viewing (perfect for sharing on Strava)
-- Authenticated editing (only you can mark routes)
-- **Strava Integration**: Link Strava activities to completed routes
-- **Activity Details**: View detailed stats (distance, time, power, heart rate, etc.) from linked Strava activities
+- View all 223 Zwift routes organized by map
+- Mark routes as completed (authenticated editing)
+- Track progress with comprehensive statistics
+- Filter and search routes
+- Link Strava activities to completed routes
+- View detailed activity stats (power, heart rate, speed, etc.)
+- Public showcase page and private edit page
 
-## Setup Instructions
+## Quick Setup
 
-### 1. Enable GitHub Pages
+### 1. GitHub Pages
 
-1. Go to your repository settings on GitHub
-2. Navigate to "Pages" in the left sidebar
-3. Under "Source", select:
-   - **Branch**: `main` (or your default branch)
-   - **Folder**: `/ (root)`
-4. Click "Save"
-5. Your site will be available at: `https://[username].github.io/[repository-name]`
+1. Repository Settings → Pages
+2. Source: `main` branch, `/ (root)` folder
+3. Site: `https://[username].github.io/[repository-name]`
 
-### 2. Create a GitHub Personal Access Token
+### 2. Configure Gist ID
 
-1. Go to [GitHub Settings > Developer settings > Personal access tokens > Tokens (classic)](https://github.com/settings/tokens)
-2. Click "Generate new token (classic)"
-3. Give it a descriptive name (e.g., "One More Route")
-4. Select the `gist` scope (this allows creating and updating Gists)
-5. Click "Generate token"
-6. **Copy the token immediately** - you won't be able to see it again!
+Edit `app.js` and set your Gist ID:
 
-### 3. Strava Integration Setup (Optional)
+```javascript
+SHOWCASE_GIST_ID: 'your-gist-id-here'
+```
 
-**Security Note**: The Client Secret must NEVER be in client-side code. We use a serverless function proxy to keep it secure.
+The app will use this Gist for both viewing and editing across all devices.
 
-1. Go to [Strava API Settings](https://www.strava.com/settings/api)
-2. Click "Create App" or use an existing app
-3. Fill in the required fields:
-   - **Application Name**: One More Route (or any name)
-   - **Category**: Website
-   - **Website**: Your GitHub Pages URL (e.g., `https://username.github.io/repo-name/`)
-   - **Authorization Callback Domain**: `github.io` (or your domain)
-4. Click "Create"
-5. Copy your **Client ID** and **Client Secret**
+### 3. GitHub Authentication
 
-6. **Deploy to Vercel**:
-   
-   **Method 1: Using Vercel CLI (Recommended)**
-   ```bash
-   # Install Vercel CLI globally
-   npm i -g vercel
-   
-   # Navigate to your project directory
-   cd /path/to/one-more-route
-   
-   # Deploy (follow the prompts)
-   vercel
-   
-   # Set the environment variable
-   vercel env add STRAVA_CLIENT_SECRET
-   # When prompted, enter your Strava Client Secret
-   # Select "Production" environment (or all environments)
-   
-   # Redeploy to apply the environment variable
-   vercel --prod
-   ```
-   
-   **Method 2: Using Vercel Dashboard**
-   - Go to [vercel.com](https://vercel.com) and sign in
-   - Click "Add New Project"
-   - Import your GitHub repository
-   - In Project Settings > Environment Variables, add:
-     - Name: `STRAVA_CLIENT_SECRET`
-     - Value: Your Strava Client Secret
-     - Environment: Production (and Preview if you want)
-   - Deploy the project
-   
-   After deployment, your function will be available at:
-   `https://your-project-name.vercel.app/api/strava-token`
+1. Create a [Personal Access Token](https://github.com/settings/tokens) with `gist` scope
+2. On the edit page, click "Login to Edit" and paste your token
 
-7. **Configure the app**:
-   - Open `app.js` and set:
-     ```javascript
-     STRAVA_CLIENT_ID: 'your_client_id_here',  // Safe to be public
-     STRAVA_TOKEN_PROXY_URL: 'https://your-project-name.vercel.app/api/strava-token'
-     ```
-   - Replace `your-project-name` with your actual Vercel project name
-   - The Client Secret stays secure in Vercel's environment variables
+### 4. Strava Integration (Optional)
 
-### 4. Initial Setup
+1. Create a [Strava API app](https://www.strava.com/settings/api)
+2. Set `STRAVA_CLIENT_ID` in `app.js`
+3. Deploy the serverless function:
 
-1. Open your GitHub Pages site
-2. Click "Login to Edit"
-3. Paste your GitHub Personal Access Token
-4. Click "Use Token"
-5. If you have an existing Gist with your progress:
-   - Enter the Gist ID in the "Gist Setup" section
-   - Click "Save Gist ID"
-6. If you don't have a Gist yet:
-   - The app will automatically create one when you mark your first route as completed
-7. (Optional) Click "Connect Strava" to link your Strava account for activity tracking
+**Vercel (Recommended)**
+```bash
+npm i -g vercel
+vercel
+vercel env add STRAVA_CLIENT_SECRET
+vercel --prod
+```
 
-### 5. Using the Tracker
+4. Update `STRAVA_TOKEN_PROXY_URL` in `app.js` with your Vercel function URL
 
-- **Viewing**: Anyone can view your progress (perfect for Strava links!)
-- **Editing**: Click "Login to Edit" and enter your token to mark routes as completed
-- **Filtering**: Use the filter buttons to show All, Completed, or Remaining routes
-- **Searching**: Type in the search box to find specific routes
-- **Grouping**: Routes are grouped by map/location with collapsible sections
-- **Linking Activities**: 
-  - Mark a route as completed
-  - Click "Link Strava Activity" on the route card
-  - Enter a Strava activity URL/ID or select from recent activities
-  - View detailed activity stats (power, heart rate, speed, etc.) on the route card
+See `VERCEL_DEPLOY.md` for detailed deployment instructions.
 
 ## File Structure
 
 ```
 /
-├── index.html          # Main HTML page
+├── index.html          # Showcase page (public viewing)
+├── edit.html           # Edit page (authenticated editing)
 ├── app.js              # Application logic
 ├── styles.css          # Styling
-├── routes.json         # Route data (converted from routes.csv)
-├── routes.csv          # Original route data
-└── README.md           # This file
+├── routes.json         # Route data
+├── api/
+│   └── strava-token.js # Serverless function for Strava OAuth
+└── package.json        # Node.js config for Vercel
 ```
 
 ## How It Works
 
-1. **Route Data**: Routes are loaded from `routes.json` (converted from `routes.csv`)
-2. **Progress Storage**: Completed routes are stored in a GitHub Gist
-3. **Authentication**: Uses GitHub Personal Access Token for write access
-4. **Public Access**: Gist is public, so anyone can view your progress
-5. **Multi-Device Sync**: Progress syncs across all devices via the Gist
+- **Route Data**: Loaded from `routes.json`
+- **Progress Storage**: GitHub Gist (public, synced across devices)
+- **Authentication**: GitHub Personal Access Token for editing
+- **Strava**: OAuth via serverless function proxy (keeps Client Secret secure)
 
-## Security Notes
+## Configuration
 
-- Your GitHub token is stored in `sessionStorage` (cleared when browser closes)
-- Your Strava token is stored in `sessionStorage` (cleared when browser closes)
-- The Gist ID is stored in `localStorage` (persists across sessions)
-- Never share your Personal Access Token or Strava Client Secret publicly
-- The Gist is public, so your progress is visible to anyone with the link
-- Strava activity data is cached locally to reduce API calls
+Edit `app.js` to configure:
+
+- `SHOWCASE_GIST_ID`: Your Gist ID (required)
+- `STRAVA_CLIENT_ID`: Your Strava Client ID (optional)
+- `STRAVA_TOKEN_PROXY_URL`: Your serverless function URL (optional)
+
+## Security
+
+- Tokens stored in `sessionStorage` (cleared on browser close)
+- Strava Client Secret stored in Vercel environment variables (never in code)
+- Gist is public (progress visible to anyone with the link)
 
 ## Troubleshooting
 
-### "Failed to load Gist"
-- Make sure your Gist ID is correct
-- Verify the Gist exists and is public
-- Check browser console for detailed error messages
+**Routes not loading**: Ensure `routes.json` exists in the repository root.
 
-### "Failed to save progress"
-- Verify your token has the `gist` scope
-- Make sure your token hasn't expired
-- Check that you're authenticated (token in sessionStorage)
+**Gist sync issues**: Verify your token has `gist` scope and `SHOWCASE_GIST_ID` is correct.
 
-### Routes not loading
-- Ensure `routes.json` is in the repository root
-- Check that GitHub Pages is serving from the correct branch
-- Verify file paths are correct (case-sensitive)
-
-### Strava Integration Issues
-
-#### "Strava Client ID not configured"
-- Make sure you've set `STRAVA_CLIENT_ID` in `app.js`
-- Verify the value is correct (no extra spaces or quotes)
-
-#### "Strava token proxy URL not configured"
-- Make sure you've deployed a serverless function and set `STRAVA_TOKEN_PROXY_URL` in `app.js`
-- Verify the function URL is correct and accessible
-- Check that `STRAVA_CLIENT_SECRET` is set as an environment variable in your serverless function platform
-
-#### "Strava authentication expired"
-- Strava tokens may expire. Click "Disconnect Strava" and reconnect
-- Check that your Strava app's redirect URI matches your site URL
-
-#### "Failed to fetch activity"
-- Verify you're connected to Strava
-- Check that the activity ID/URL is correct
-- Ensure the activity is public or belongs to your account
-- Check browser console for detailed error messages
-- Strava API has rate limits (600 requests per 15 minutes) - wait if you've hit the limit
-
-## Updating Routes
-
-If Zwift adds new routes:
-
-1. Update `routes.csv` with new routes
-2. Run the conversion script (or manually update `routes.json`):
-   ```python
-   import csv
-   import json
-   
-   routes = []
-   with open('routes.csv', 'r', encoding='utf-8') as f:
-       reader = csv.DictReader(f)
-       for row in reader:
-           routes.append({
-               'route': row['Route'],
-               'map': row['Map'],
-               'length': float(row['Length (Km)']),
-               'elevation': int(row['Elevation (m)']),
-               'leadIn': float(row['Lead-In (Km'])
-           })
-   
-   with open('routes.json', 'w', encoding='utf-8') as f:
-       json.dump(routes, f, indent=2, ensure_ascii=False)
-   ```
-3. Commit and push to GitHub
-4. GitHub Pages will automatically update
-
-## License
-
-This project is open source and available for personal use.
-
+**Strava integration**: Check that `STRAVA_CLIENT_SECRET` is set in Vercel environment variables and the function URL is correct.

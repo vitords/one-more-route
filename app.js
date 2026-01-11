@@ -101,8 +101,8 @@ async function initEdit() {
     // Check for Strava OAuth callback
     handleStravaCallback();
     
-    // Load saved Gist ID and token from localStorage
-    gistId = localStorage.getItem(CONFIG.GIST_ID_KEY);
+    // Always use SHOWCASE_GIST_ID in edit mode for consistency across devices
+    gistId = CONFIG.SHOWCASE_GIST_ID || localStorage.getItem(CONFIG.GIST_ID_KEY);
     const savedToken = sessionStorage.getItem(CONFIG.TOKEN_KEY);
     
     if (savedToken) {
@@ -338,8 +338,11 @@ async function syncToGist(token) {
     try {
         let gist;
         
+        // Always use SHOWCASE_GIST_ID if set, otherwise use current gistId
+        const targetGistId = CONFIG.SHOWCASE_GIST_ID || gistId;
+        
         // If no Gist ID is set, create a new Gist
-        if (!gistId) {
+        if (!targetGistId) {
             console.log(`[${timestamp}] syncToGist: No Gist ID, creating new Gist`);
             const response = await fetch('https://api.github.com/gists', {
                 method: 'POST',
@@ -367,13 +370,16 @@ async function syncToGist(token) {
             
             gist = await response.json();
             gistId = gist.id;
-            localStorage.setItem(CONFIG.GIST_ID_KEY, gistId);
+            // Don't save to localStorage - always use SHOWCASE_GIST_ID if set
             if (gistIdInput) {
                 gistIdInput.value = gistId;
             }
             console.log(`[${timestamp}] syncToGist: ✓ Created new Gist: ${gistId}`);
+            console.warn(`[${timestamp}] syncToGist: ⚠ Warning: Created new Gist instead of using SHOWCASE_GIST_ID. Please set CONFIG.SHOWCASE_GIST_ID in app.js`);
         } else {
-            console.log(`[${timestamp}] syncToGist: Gist ID exists (${gistId}), checking if it exists`);
+            // Use the target Gist ID (SHOWCASE_GIST_ID or existing gistId)
+            gistId = targetGistId;
+            console.log(`[${timestamp}] syncToGist: Using Gist ID: ${gistId}${CONFIG.SHOWCASE_GIST_ID ? ' (SHOWCASE_GIST_ID)' : ''}`);
             // Check if Gist exists
             let response = await fetch(`https://api.github.com/gists/${gistId}`, {
                 headers: {
@@ -385,6 +391,7 @@ async function syncToGist(token) {
             if (response.status === 404) {
                 console.log(`[${timestamp}] syncToGist: Gist not found (404), creating new one`);
                 // Gist doesn't exist, create a new one
+                // Note: GitHub will assign a new ID, but we'll continue using SHOWCASE_GIST_ID for future operations
                 response = await fetch('https://api.github.com/gists', {
                     method: 'POST',
                     headers: {
@@ -410,12 +417,18 @@ async function syncToGist(token) {
                 }
                 
                 gist = await response.json();
-                gistId = gist.id;
-                localStorage.setItem(CONFIG.GIST_ID_KEY, gistId);
+                const newGistId = gist.id;
+                // If we were trying to use SHOWCASE_GIST_ID but it didn't exist, warn the user
+                if (CONFIG.SHOWCASE_GIST_ID && gistId === CONFIG.SHOWCASE_GIST_ID) {
+                    console.warn(`[${timestamp}] syncToGist: ⚠ SHOWCASE_GIST_ID (${gistId}) didn't exist, created new Gist: ${newGistId}`);
+                    console.warn(`[${timestamp}] syncToGist: ⚠ Please update CONFIG.SHOWCASE_GIST_ID to ${newGistId} if you want to use this Gist`);
+                }
+                // Keep using the original gistId (SHOWCASE_GIST_ID) for consistency
+                // Don't update gistId or localStorage - continue using SHOWCASE_GIST_ID
                 if (gistIdInput) {
                     gistIdInput.value = gistId;
                 }
-                console.log(`[${timestamp}] syncToGist: ✓ Created replacement Gist: ${gistId}`);
+                console.log(`[${timestamp}] syncToGist: ✓ Created new Gist: ${newGistId} (but continuing to use ${gistId} for future operations)`);
             } else {
                 // Update existing Gist
                 if (!response.ok) {
@@ -1734,26 +1747,27 @@ function setupEventListeners() {
             updateAuthUI();
             tokenInput.value = '';
             
-            // Show Gist setup if Gist ID not set, otherwise close modal
-            if (!gistId) {
-                gistSetup.style.display = 'block';
-                // Keep modal open so user can optionally enter existing Gist ID
-            } else {
-                authModal.style.display = 'none';
-            }
+            // Close modal - Gist ID is always set to SHOWCASE_GIST_ID in edit mode
+            authModal.style.display = 'none';
         } catch (error) {
             alert('Invalid token. Please check your GitHub Personal Access Token.');
         }
     });
     
-    // Gist ID submit
+    // Gist ID submit (optional override - normally uses SHOWCASE_GIST_ID)
     gistSubmit.addEventListener('click', () => {
         const newGistId = gistIdInput.value.trim();
         if (newGistId) {
+            // Allow manual override, but warn if it's different from SHOWCASE_GIST_ID
+            if (CONFIG.SHOWCASE_GIST_ID && newGistId !== CONFIG.SHOWCASE_GIST_ID) {
+                if (!confirm(`You're setting a different Gist ID than SHOWCASE_GIST_ID (${CONFIG.SHOWCASE_GIST_ID}). This will only affect this browser session. Continue?`)) {
+                    return;
+                }
+            }
             gistId = newGistId;
-            localStorage.setItem(CONFIG.GIST_ID_KEY, gistId);
+            // Don't save to localStorage - always use SHOWCASE_GIST_ID on next load
             loadCompletedRoutes();
-            alert('Gist ID saved!');
+            alert('Gist ID saved for this session! (Note: Will reset to SHOWCASE_GIST_ID on next page load)');
         } else {
             alert('Please enter a Gist ID');
         }
