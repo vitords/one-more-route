@@ -6,6 +6,7 @@ const CONFIG = {
     LOCAL_STORAGE_KEY: 'zwift_tracker_completed_routes',
     STRAVA_TOKEN_KEY: 'zwift_tracker_strava_token',
     STRAVA_REFRESH_TOKEN_KEY: 'zwift_tracker_strava_refresh_token',
+    STRAVA_TOKEN_EXPIRES_KEY: 'zwift_tracker_strava_token_expires',
     STRAVA_ACTIVITIES_CACHE_KEY: 'zwift_tracker_strava_activities_cache',
     // Strava OAuth
     STRAVA_CLIENT_ID: '194117',
@@ -556,7 +557,7 @@ function connectStrava() {
         return;
     }
     
-    const scope = 'activity:read,activity:read_all';
+    const scope = 'activity:read,activity:read_all,activity:write';
     const redirectUri = encodeURIComponent(CONFIG.STRAVA_REDIRECT_URI);
     const clientId = CONFIG.STRAVA_CLIENT_ID;
     const responseType = 'code';
@@ -604,6 +605,9 @@ async function exchangeStravaToken(code) {
         if (data.refresh_token) {
             sessionStorage.setItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY, data.refresh_token);
         }
+        if (data.expires_at) {
+            sessionStorage.setItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY, data.expires_at.toString());
+        }
         
         isStravaAuthenticated = true;
         updateStravaAuthUI();
@@ -614,6 +618,60 @@ async function exchangeStravaToken(code) {
     }
 }
 
+// Refresh Strava access token using refresh token
+async function refreshStravaToken() {
+    const refreshToken = sessionStorage.getItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY);
+    if (!refreshToken) {
+        return null;
+    }
+    
+    if (!CONFIG.STRAVA_TOKEN_PROXY_URL) {
+        console.error('Strava token proxy URL not configured');
+        return null;
+    }
+    
+    try {
+        // Call our secure serverless function to refresh the token
+        const response = await fetch(CONFIG.STRAVA_TOKEN_PROXY_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                refresh_token: refreshToken,
+                client_id: CONFIG.STRAVA_CLIENT_ID,
+                grant_type: 'refresh_token'
+            })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ message: 'Failed to refresh token' }));
+            throw new Error(error.message || 'Failed to refresh token');
+        }
+        
+        const data = await response.json();
+        sessionStorage.setItem(CONFIG.STRAVA_TOKEN_KEY, data.access_token);
+        if (data.refresh_token) {
+            sessionStorage.setItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY, data.refresh_token);
+        }
+        if (data.expires_at) {
+            sessionStorage.setItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY, data.expires_at.toString());
+        }
+        
+        console.log('Strava token refreshed successfully');
+        return data.access_token;
+    } catch (error) {
+        console.error('Error refreshing Strava token:', error);
+        // If refresh fails, clear tokens and require re-authentication
+        sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
+        sessionStorage.removeItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY);
+        sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY);
+        isStravaAuthenticated = false;
+        updateStravaAuthUI();
+        return null;
+    }
+}
+
 // Get Strava access token (with refresh if needed)
 async function getStravaToken() {
     let token = sessionStorage.getItem(CONFIG.STRAVA_TOKEN_KEY);
@@ -621,8 +679,20 @@ async function getStravaToken() {
         return null;
     }
     
-    // TODO: Check token expiration and refresh if needed
-    // For now, just return the token
+    // Check if token is expired or will expire within 1 hour (3600 seconds)
+    const expiresAt = sessionStorage.getItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY);
+    if (expiresAt) {
+        const expiresTimestamp = parseInt(expiresAt, 10);
+        const now = Math.floor(Date.now() / 1000);
+        const oneHourFromNow = now + 3600;
+        
+        // If token is expired or will expire within 1 hour, refresh it
+        if (expiresTimestamp <= oneHourFromNow) {
+            console.log('Strava token expired or expiring soon, refreshing...');
+            token = await refreshStravaToken();
+        }
+    }
+    
     return token;
 }
 
@@ -675,6 +745,89 @@ async function fetchStravaActivity(activityId) {
         return activity;
     } catch (error) {
         console.error('Error fetching Strava activity:', error);
+        throw error;
+    }
+}
+
+// Update Strava activity description
+async function updateStravaActivityDescription(activityId, activityData = null, tokenToUse = null) {
+    // Use provided token or get fresh token
+    let token = tokenToUse || await getStravaToken();
+    if (!token) {
+        throw new Error('Not authenticated with Strava');
+    }
+    
+    try {
+        // Use provided activity data or fetch it fresh (bypassing cache to validate token)
+        let activity = activityData;
+        if (!activity || activity.description === undefined) {
+            // Always fetch fresh to validate token is still good
+            // Invalidate cache first to force fresh fetch
+            const cacheKey = `strava_activity_${activityId}`;
+            localStorage.removeItem(cacheKey);
+            activity = await fetchStravaActivity(activityId);
+            // Get the token that was just successfully used
+            token = await getStravaToken();
+        }
+        
+        // Check if description already contains the URL to avoid duplicates
+        const toolUrl = 'https://vitords.github.io/one-more-route/';
+        if (activity.description && activity.description.includes(toolUrl)) {
+            console.log(`Activity ${activityId} already has tool link in description, skipping update`);
+            return;
+        }
+        
+        // Format the message to append
+        const message = `${toolUrl}\nI'm riding every Zwift route in 2026 and made a tool to keep track of the progress! Check it out to see how I'm doing.`;
+        
+        // Format the new description
+        let newDescription;
+        if (!activity.description || activity.description.trim() === '') {
+            // If description is empty, append message directly (no newline separator)
+            newDescription = message;
+        } else {
+            // If description exists, append newline separator + message
+            newDescription = `${activity.description}\n${message}`;
+        }
+        
+        // Ensure we have a valid token
+        if (!token) {
+            token = await getStravaToken();
+            if (!token) {
+                throw new Error('Not authenticated with Strava');
+            }
+        }
+        
+        // Make PUT request to update activity description immediately after successful GET
+        const response = await fetch(`https://www.strava.com/api/v3/activities/${activityId}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                description: newDescription
+            })
+        });
+        
+        if (!response.ok) {
+            if (response.status === 401) {
+                // Token expired, need to re-authenticate
+                sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
+                isStravaAuthenticated = false;
+                updateStravaAuthUI();
+                throw new Error('Strava authentication expired. Please reconnect.');
+            }
+            throw new Error(`Failed to update activity description: ${response.statusText}`);
+        }
+        
+        // Invalidate cache for this activity
+        const cacheKey = `strava_activity_${activityId}`;
+        localStorage.removeItem(cacheKey);
+        
+        console.log(`Successfully updated description for activity ${activityId}`);
+    } catch (error) {
+        console.error('Error updating Strava activity description:', error);
         throw error;
     }
 }
@@ -759,6 +912,16 @@ async function linkActivityToRoute(routeName, activityIdOrUrl) {
         // Save immediately
         saveCompletedRoutesToLocal();
         await saveCompletedRoutes();
+        
+        // Update activity description (don't fail linking if this fails)
+        // Pass the already-fetched activity data and token to avoid redundant API call
+        // Get token that was just successfully used in fetchStravaActivity
+        const token = await getStravaToken();
+        try {
+            await updateStravaActivityDescription(activity.id, activity, token);
+        } catch (error) {
+            console.warn('Failed to update activity description, but activity was linked successfully:', error);
+        }
         
         // Re-render to show activity
         renderRoutes();
@@ -1797,6 +1960,7 @@ function setupEventListeners() {
                 if (confirm('Disconnect Strava?')) {
                     sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
                     sessionStorage.removeItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY);
+                    sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY);
                     isStravaAuthenticated = false;
                     updateStravaAuthUI();
                 }

@@ -33,12 +33,7 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { code, client_id, redirect_uri } = req.body;
-
-    if (!code || !client_id || !redirect_uri) {
-        setCorsHeaders(res, origin);
-        return res.status(400).json({ error: 'Missing required parameters' });
-    }
+    const { code, client_id, redirect_uri, refresh_token, grant_type } = req.body;
 
     // Get Client Secret from environment variable (never in code!)
     const client_secret = process.env.STRAVA_CLIENT_SECRET;
@@ -49,18 +44,43 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Exchange code for token on server-side (Client Secret stays secure)
+        let requestBody;
+        
+        // Handle token refresh
+        if (grant_type === 'refresh_token') {
+            if (!refresh_token || !client_id) {
+                setCorsHeaders(res, origin);
+                return res.status(400).json({ error: 'Missing required parameters for token refresh' });
+            }
+            
+            requestBody = {
+                client_id,
+                client_secret,
+                refresh_token,
+                grant_type: 'refresh_token'
+            };
+        } else {
+            // Handle initial token exchange
+            if (!code || !client_id || !redirect_uri) {
+                setCorsHeaders(res, origin);
+                return res.status(400).json({ error: 'Missing required parameters' });
+            }
+            
+            requestBody = {
+                client_id,
+                client_secret,
+                code,
+                grant_type: 'authorization_code'
+            };
+        }
+        
+        // Exchange code for token or refresh token on server-side (Client Secret stays secure)
         const response = await fetch('https://www.strava.com/oauth/token', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                client_id,
-                client_secret,
-                code,
-                grant_type: 'authorization_code'
-            })
+            body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
