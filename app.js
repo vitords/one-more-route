@@ -958,6 +958,42 @@ function updateStravaAuthUI() {
     }
 }
 
+// Get completion order map for routes with Strava activities
+function getCompletionOrderMap() {
+    const orderMap = {};
+    
+    // Get all completed routes that have linked Strava activities with valid startDate
+    const routesWithActivities = [];
+    
+    for (const routeName of completedRoutes) {
+        const activity = routeActivities[routeName];
+        if (activity && activity.startDate) {
+            routesWithActivities.push({
+                routeName: routeName,
+                startDate: activity.startDate
+            });
+        }
+    }
+    
+    // Sort by startDate (earliest first), with route name as secondary sort for consistent ordering
+    routesWithActivities.sort((a, b) => {
+        const dateA = new Date(a.startDate).getTime();
+        const dateB = new Date(b.startDate).getTime();
+        if (dateA !== dateB) {
+            return dateA - dateB;
+        }
+        // If timestamps are equal, sort by route name for consistent ordering
+        return a.routeName.localeCompare(b.routeName);
+    });
+    
+    // Create mapping of route name -> completion order number (1-based)
+    routesWithActivities.forEach((item, index) => {
+        orderMap[item.routeName] = index + 1;
+    });
+    
+    return orderMap;
+}
+
 // Render routes grouped by map
 function renderRoutes() {
     // Filter routes based on current filter and search
@@ -1011,8 +1047,11 @@ function renderRoutes() {
         const content = document.createElement('div');
         content.className = 'map-content';
         
+        // Get completion order map once for all routes
+        const completionOrderMap = getCompletionOrderMap();
+        
         routesInMap.forEach(route => {
-            const card = createRouteCard(route);
+            const card = createRouteCard(route, completionOrderMap);
             content.appendChild(card);
         });
         
@@ -1029,13 +1068,17 @@ function renderRoutes() {
 }
 
 // Create a route card element
-function createRouteCard(route) {
+function createRouteCard(route, completionOrderMap = {}) {
     const card = document.createElement('div');
     card.className = `route-card ${completedRoutes.has(route.route) ? 'completed' : ''}`;
     
     const isCompleted = completedRoutes.has(route.route);
     const activity = routeActivities[route.route];
     const hasActivity = !!activity;
+    
+    // Get completion order number if route is completed and has activity
+    const completionNumber = (isCompleted && hasActivity) ? completionOrderMap[route.route] : null;
+    const routeNameDisplay = completionNumber ? `#${completionNumber} ${route.route}` : route.route;
     
     // Add tooltip for completed routes with activities
     if (hasActivity && activity.startDate) {
@@ -1058,7 +1101,7 @@ function createRouteCard(route) {
     
     card.innerHTML = `
         <div class="route-header">
-            <div class="route-name">${route.route}</div>
+            <div class="route-name">${routeNameDisplay}</div>
             <div class="route-header-actions">
                 ${checkboxHTML}
             </div>
