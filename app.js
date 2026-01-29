@@ -8,6 +8,7 @@ const CONFIG = {
     STRAVA_REFRESH_TOKEN_KEY: 'zwift_tracker_strava_refresh_token',
     STRAVA_TOKEN_EXPIRES_KEY: 'zwift_tracker_strava_token_expires',
     STRAVA_ACTIVITIES_CACHE_KEY: 'zwift_tracker_strava_activities_cache',
+    SORT_KEY: 'zwift_tracker_sort',
     // Strava OAuth
     STRAVA_CLIENT_ID: '194117',
     STRAVA_REDIRECT_URI: window.location.origin + window.location.pathname,
@@ -24,6 +25,7 @@ let routeActivities = {}; // Map of route name -> activity data
 let filteredRoutes = [];
 let currentFilter = 'all';
 let searchQuery = '';
+let currentSort = { by: 'routeDistance', dir: 'asc' };
 let isAuthenticated = false;
 let isStravaAuthenticated = false;
 let gistId = null;
@@ -54,6 +56,19 @@ const filterBtns = document.querySelectorAll('.filter-btn');
 
 // Initialize based on mode
 async function init() {
+    // Restore sort preference from localStorage
+    try {
+        const saved = localStorage.getItem(CONFIG.SORT_KEY);
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed.by && parsed.dir) {
+                currentSort = parsed;
+            }
+        }
+    } catch (e) {
+        console.warn('Could not restore sort preference:', e);
+    }
+
     if (isEditMode) {
         await initEdit();
     } else {
@@ -958,6 +973,41 @@ function updateStravaAuthUI() {
     }
 }
 
+// Get sort value for a route based on currentSort
+function getRouteSortValue(route, completionOrderMap) {
+    switch (currentSort.by) {
+        case 'routeDistance':
+            return route.length || 0;
+        case 'totalDistance':
+            return route.totalDistance ?? (route.length || 0) + (route.leadIn || 0);
+        case 'routeElevation':
+            return route.elevation || 0;
+        case 'totalElevation':
+            return route.totalElevation ?? (route.elevation || 0) + (route.leadInElevation || 0);
+        case 'completionOrder': {
+            const order = completionOrderMap[route.route];
+            if (order != null) return order;
+            return currentSort.dir === 'asc' ? Infinity : -1;
+        }
+        default:
+            return route.length || 0;
+    }
+}
+
+// Compare two routes for sorting
+function compareRoutes(a, b, completionOrderMap) {
+    const valA = getRouteSortValue(a, completionOrderMap);
+    const valB = getRouteSortValue(b, completionOrderMap);
+    let cmp = valA - valB;
+    if (currentSort.by === 'completionOrder' && currentSort.dir === 'desc') {
+        cmp = -cmp;
+    } else if (currentSort.dir === 'desc') {
+        cmp = -cmp;
+    }
+    if (cmp !== 0) return cmp;
+    return a.route.localeCompare(b.route);
+}
+
 // Get completion order map for routes with Strava activities
 function getCompletionOrderMap() {
     const orderMap = {};
@@ -1026,12 +1076,14 @@ function renderRoutes() {
         return;
     }
     
+    const completionOrderMap = getCompletionOrderMap();
+
     Object.keys(grouped).sort().forEach(map => {
         const mapGroup = document.createElement('div');
         mapGroup.className = 'map-group';
         
-        // Sort routes within each map by distance (shortest to longest)
-        const routesInMap = grouped[map].sort((a, b) => (a.length || 0) - (b.length || 0));
+        // Sort routes within each map by current sort option
+        const routesInMap = grouped[map].sort((a, b) => compareRoutes(a, b, completionOrderMap));
         const completedInMap = routesInMap.filter(r => completedRoutes.has(r.route)).length;
         
         const header = document.createElement('div');
@@ -1046,9 +1098,6 @@ function renderRoutes() {
         
         const content = document.createElement('div');
         content.className = 'map-content';
-        
-        // Get completion order map once for all routes
-        const completionOrderMap = getCompletionOrderMap();
         
         routesInMap.forEach(route => {
             const card = createRouteCard(route, completionOrderMap);
@@ -1903,6 +1952,33 @@ function updateAuthUI() {
     });
 }
 
+// Sync sort dropdown UI with currentSort state
+function updateSortSelectUI() {
+    const sortSelect = document.getElementById('sort-select');
+    if (!sortSelect) return;
+    const value = `${currentSort.by}_${currentSort.dir}`;
+    if (sortSelect.value !== value) {
+        sortSelect.value = value;
+    }
+}
+
+// Setup sort dropdown handler (shared by edit and showcase)
+function setupSortSelect() {
+    const sortSelect = document.getElementById('sort-select');
+    if (!sortSelect) return;
+    updateSortSelectUI();
+    sortSelect.addEventListener('change', (e) => {
+        const [by, dir] = e.target.value.split('_');
+        currentSort = { by, dir };
+        try {
+            localStorage.setItem(CONFIG.SORT_KEY, JSON.stringify(currentSort));
+        } catch (err) {
+            console.warn('Could not persist sort preference:', err);
+        }
+        renderRoutes();
+    });
+}
+
 // Setup event listeners
 function setupEventListeners() {
     // Auth button
@@ -1988,6 +2064,9 @@ function setupEventListeners() {
             renderRoutes();
         });
     });
+    
+    // Sort dropdown
+    setupSortSelect();
     
     // Search input
     searchInput.addEventListener('input', (e) => {
@@ -2311,6 +2390,9 @@ function setupShowcaseEventListeners() {
             renderRoutes();
         });
     });
+    
+    // Sort dropdown
+    setupSortSelect();
     
     // Search input
     if (searchInput) {

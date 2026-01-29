@@ -204,6 +204,21 @@
                 <button class="filter-btn" data-filter="completed">Completed</button>
                 <button class="filter-btn" data-filter="remaining">Remaining</button>
             </div>
+            <div class="sort-box">
+                <label for="sort-select" class="sort-label">Sort:</label>
+                <select id="sort-select" class="sort-select">
+                    <option value="routeDistance_asc">Route distance (shortest first)</option>
+                    <option value="routeDistance_desc">Route distance (longest first)</option>
+                    <option value="totalDistance_asc">Total distance (shortest first)</option>
+                    <option value="totalDistance_desc">Total distance (longest first)</option>
+                    <option value="routeElevation_asc">Route elevation (least first)</option>
+                    <option value="routeElevation_desc">Route elevation (most first)</option>
+                    <option value="totalElevation_asc">Total elevation (least first)</option>
+                    <option value="totalElevation_desc">Total elevation (most first)</option>
+                    <option value="completionOrder_asc">Completion order (first completed first)</option>
+                    <option value="completionOrder_desc">Completion order (last completed first)</option>
+                </select>
+            </div>
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="Search routes...">
             </div>
