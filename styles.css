@@ -384,6 +384,81 @@ h1 {
     border-color: var(--primary-color);
 }
 
+.sort-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--surface);
+}
+
+.sort-select {
+    padding: 10px 32px 10px 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    min-width: 160px;
+    height: 42px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.sort-select:hover {
+    background-color: var(--surface-hover);
+}
+
+.sort-select:focus {
+    outline: none;
+}
+
+.sort-direction-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 42px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-left: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.sort-direction-btn:hover {
+    background: var(--surface-hover);
+    color: var(--primary-color);
+}
+
+.sort-direction-icon {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s;
+}
+
+.sort-direction-btn.sort-desc .sort-direction-icon {
+    transform: rotate(180deg);
+}
+
 .routes-container {
     display: flex;
     flex-direction: column;
@@ -1107,6 +1182,20 @@ a.btn-strava:visited {
     .controls {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .sort-box {
+        width: 100%;
+    }
+
+    .sort-controls {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .sort-select {
+        flex: 1;
+        min-width: 0;
     }
 
     .search-box {

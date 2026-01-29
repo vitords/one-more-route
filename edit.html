@@ -204,6 +204,23 @@
                 <button class="filter-btn" data-filter="completed">Completed</button>
                 <button class="filter-btn" data-filter="remaining">Remaining</button>
             </div>
+            <div class="sort-box">
+                <label for="sort-select" class="sort-label">Sort:</label>
+                <div class="sort-controls">
+                    <select id="sort-select" class="sort-select">
+                        <option value="routeDistance">Route distance</option>
+                        <option value="totalDistance">Total distance</option>
+                        <option value="routeElevation">Route elevation</option>
+                        <option value="totalElevation">Total elevation</option>
+                        <option value="completionOrder">Completion order</option>
+                    </select>
+                    <button type="button" id="sort-direction-btn" class="sort-direction-btn" aria-label="Toggle sort direction" title="Toggle sort direction">
+                        <svg class="sort-direction-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 15l5 5 5-5M7 9l5-5 5 5"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
             <div class="search-box">
                 <input type="text" id="search-input" placeholder="Search routes...">
             </div>
