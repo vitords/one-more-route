@@ -119,7 +119,16 @@ async function initEdit() {
     
     // Always use SHOWCASE_GIST_ID in edit mode for consistency across devices
     gistId = CONFIG.SHOWCASE_GIST_ID || localStorage.getItem(CONFIG.GIST_ID_KEY);
-    const savedToken = sessionStorage.getItem(CONFIG.TOKEN_KEY);
+    // Migrate token from sessionStorage (legacy) to localStorage for cross-session persistence
+    let savedToken = localStorage.getItem(CONFIG.TOKEN_KEY);
+    if (!savedToken) {
+        const legacyToken = sessionStorage.getItem(CONFIG.TOKEN_KEY);
+        if (legacyToken) {
+            localStorage.setItem(CONFIG.TOKEN_KEY, legacyToken);
+            sessionStorage.removeItem(CONFIG.TOKEN_KEY);
+            savedToken = legacyToken;
+        }
+    }
     
     if (savedToken) {
         isAuthenticated = true;
@@ -278,6 +287,11 @@ async function loadCompletedRoutes() {
             renderRoutes();
             updateStats();
             updateSyncStatus('synced');
+
+            // Sync merged state to Gist when authenticated (pushes any local-only changes from other sessions/devices)
+            if (isAuthenticated) {
+                saveCompletedRoutes();
+            }
         }
     } catch (error) {
         console.error('Error loading completed routes from Gist:', error);
@@ -313,7 +327,7 @@ async function saveCompletedRoutes() {
         return; // Don't show alert, just save locally
     }
     
-    const token = sessionStorage.getItem(CONFIG.TOKEN_KEY);
+    const token = localStorage.getItem(CONFIG.TOKEN_KEY);
     if (!token) {
         console.log(`[${timestamp}] saveCompletedRoutes: No token found, skipping Gist sync`);
         return; // Save locally only
@@ -2002,7 +2016,7 @@ function setupEventListeners() {
     // Auth button
     authBtn.addEventListener('click', () => {
         if (isAuthenticated) {
-            sessionStorage.removeItem(CONFIG.TOKEN_KEY);
+            localStorage.removeItem(CONFIG.TOKEN_KEY);
             isAuthenticated = false;
             updateAuthUI();
         } else {
@@ -2042,7 +2056,7 @@ function setupEventListeners() {
                 throw new Error('Invalid token');
             }
             
-            sessionStorage.setItem(CONFIG.TOKEN_KEY, token);
+            localStorage.setItem(CONFIG.TOKEN_KEY, token);
             isAuthenticated = true;
             updateAuthUI();
             tokenInput.value = '';
