@@ -292,6 +292,9 @@ h1 {
     color: var(--primary-color);
     font-size: 1rem;
     font-weight: 600;
+    flex: 1 1 0%;
+    min-width: 0;
+    text-align: right;
 }
 
 /* Legacy stat-card styles (kept for backward compatibility if needed) */
@@ -1177,6 +1180,7 @@ a.btn-strava:visited {
     
     .stat-value-inline {
         font-size: 1.1rem;
+        text-align: center;
     }
 
     .controls {
