@@ -82,6 +82,13 @@ header {
     min-width: 250px;
 }
 
+.header-badges {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .strava-profile-badge {
     display: inline-flex;
     align-items: center;
@@ -109,6 +116,7 @@ header {
     height: 1.2em;
     width: auto;
     vertical-align: middle;
+    flex-shrink: 0;
 }
 
 .nav-container {
