@@ -1501,6 +1501,17 @@ function renderActivityDetails(activity) {
                 </div>
                 ` : ''}
             </div>
+            ${activity.activityId ? `
+            <div class="activity-power-stream-block">
+                <h4 class="activity-stream-heading">Power curve</h4>
+                <p class="activity-stream-hint">Second-by-second power from Strava. Not saved to your synced progress.</p>
+                <button type="button" class="btn btn-secondary btn-small activity-load-power-curve-btn">Load power curve</button>
+                <div class="activity-power-stream-chart-inner" hidden>
+                    <svg class="activity-power-stream-svg" role="img" aria-label="Power in watts over time during this activity"></svg>
+                </div>
+                <p class="activity-power-stream-msg" aria-live="polite"></p>
+            </div>
+            ` : ''}
             <div class="activity-footer">
                 <a href="${activity.activityUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-strava btn-small">
                     <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
@@ -1531,6 +1542,34 @@ function showActivityDetailsModal(activity, routeName) {
         </span>
     `;
     content.innerHTML = renderActivityDetails(activity);
+
+    const loadCurveBtn = content.querySelector('.activity-load-power-curve-btn');
+    const streamChartInner = content.querySelector('.activity-power-stream-chart-inner');
+    const streamSvg = content.querySelector('.activity-power-stream-svg');
+    const streamMsg = content.querySelector('.activity-power-stream-msg');
+    if (loadCurveBtn && streamChartInner && streamSvg && streamMsg) {
+        loadCurveBtn.addEventListener('click', async () => {
+            if (!isStravaAuthenticated) {
+                connectStrava();
+                streamMsg.textContent = 'Connect Strava to load the power stream.';
+                return;
+            }
+            streamMsg.textContent = 'Loading…';
+            loadCurveBtn.disabled = true;
+            try {
+                const { times, watts } = await fetchStravaActivityStreams(activity.activityId);
+                renderActivityPowerStreamSvg(streamSvg, times, watts);
+                streamChartInner.hidden = false;
+                streamMsg.textContent = '';
+            } catch (err) {
+                console.error('Power stream:', err);
+                streamMsg.textContent = err.message || 'Could not load power curve.';
+                streamChartInner.hidden = true;
+            } finally {
+                loadCurveBtn.disabled = false;
+            }
+        });
+    }
     
     // Ensure close button works (set up event listener if not already set)
     const closeBtn = modal.querySelector('.close-activity-details');
@@ -1870,6 +1909,475 @@ function updateStats() {
     updateStravaStats();
 }
 
+// ==================== Strava power visualizations ====================
+
+function buildPowerSeriesFromRouteActivities() {
+    const points = [];
+    for (const [routeName, activity] of Object.entries(routeActivities)) {
+        if (!activity || !activity.startDate) continue;
+        const avg = activity.averageWatts;
+        const weighted = activity.weightedAverageWatts;
+        if (avg == null && weighted == null) continue;
+        const date = new Date(activity.startDate);
+        if (Number.isNaN(date.getTime())) continue;
+        points.push({
+            routeName,
+            date,
+            avg: avg != null ? Number(avg) : null,
+            weighted: weighted != null ? Number(weighted) : null
+        });
+    }
+    points.sort((a, b) => a.date - b.date);
+    return points;
+}
+
+function ensureStravaPowerChartTooltip(chartInner) {
+    let tip = chartInner.querySelector('.strava-power-chart-tooltip');
+    if (!tip) {
+        tip = document.createElement('div');
+        tip.className = 'strava-power-chart-tooltip';
+        tip.setAttribute('role', 'tooltip');
+        tip.hidden = true;
+        chartInner.appendChild(tip);
+    }
+    return tip;
+}
+
+function formatPowerTooltipDate(d) {
+    try {
+        return d.toLocaleDateString(undefined, {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch {
+        return '';
+    }
+}
+
+function positionStravaPowerTooltip(clientX, clientY, chartInner, tooltip) {
+    const innerRect = chartInner.getBoundingClientRect();
+    tooltip.hidden = false;
+    const margin = 10;
+    const offset = 14;
+    let left = clientX - innerRect.left + offset;
+    let top = clientY - innerRect.top - offset;
+
+    const tw = tooltip.offsetWidth;
+    const th = tooltip.offsetHeight;
+    if (left + tw > innerRect.width - margin) {
+        left = clientX - innerRect.left - tw - offset;
+    }
+    if (left < margin) left = margin;
+    if (top < margin) {
+        top = clientY - innerRect.top + offset;
+    }
+    if (top + th > innerRect.height - margin) {
+        top = innerRect.height - th - margin;
+    }
+
+    tooltip.style.left = `${left}px`;
+    tooltip.style.top = `${top}px`;
+}
+
+function buildPowerTooltipHtml(p) {
+    const avgLine =
+        p.avg != null && !Number.isNaN(p.avg)
+            ? `<div class="strava-power-tooltip-row"><span class="strava-power-tooltip-label strava-power-tooltip-label--avg">Avg power</span><span class="strava-power-tooltip-value">${Math.round(p.avg)} W</span></div>`
+            : '';
+    const wLine =
+        p.weighted != null && !Number.isNaN(p.weighted)
+            ? `<div class="strava-power-tooltip-row"><span class="strava-power-tooltip-label strava-power-tooltip-label--weighted">Weighted</span><span class="strava-power-tooltip-value">${Math.round(p.weighted)} W</span></div>`
+            : '';
+    return `
+        <div class="strava-power-tooltip-title">${escapeHtml(p.routeName)}</div>
+        <div class="strava-power-tooltip-date">${escapeHtml(formatPowerTooltipDate(p.date))}</div>
+        ${avgLine}${wLine}
+    `;
+}
+
+function escapeHtml(s) {
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function renderStravaPowerTrendChart() {
+    const wrap = document.getElementById('strava-power-chart-wrap');
+    const svg = document.getElementById('strava-power-chart');
+    if (!wrap || !svg) return;
+
+    const points = buildPowerSeriesFromRouteActivities();
+    const chartInner = svg.parentElement;
+    const existingTip = chartInner?.querySelector('.strava-power-chart-tooltip');
+    if (points.length === 0) {
+        wrap.classList.add('strava-power-chart-wrap--empty');
+        svg.replaceChildren();
+        if (existingTip) existingTip.hidden = true;
+        return;
+    }
+
+    wrap.classList.remove('strava-power-chart-wrap--empty');
+
+    const W = 640;
+    const H = 260;
+    const pl = 48;
+    const pr = 14;
+    const pt = 14;
+    const pb = 40;
+    const plotW = W - pl - pr;
+    const plotH = H - pt - pb;
+
+    const values = [];
+    points.forEach(p => {
+        if (p.avg != null && !Number.isNaN(p.avg)) values.push(p.avg);
+        if (p.weighted != null && !Number.isNaN(p.weighted)) values.push(p.weighted);
+    });
+    let yMin = Math.min(...values);
+    let yMax = Math.max(...values);
+    if (yMin === yMax) {
+        yMin = Math.max(0, yMin - 25);
+        yMax = yMax + 25;
+    } else {
+        const pad = (yMax - yMin) * 0.08;
+        yMin = Math.max(0, yMin - pad);
+        yMax = yMax + pad;
+    }
+
+    const tMs = points.map(p => p.date.getTime());
+    const tMin = Math.min(...tMs);
+    const tMax = Math.max(...tMs);
+    const xAt = (t) => {
+        if (tMax <= tMin) return pl + plotW / 2;
+        return pl + ((t - tMin) / (tMax - tMin)) * plotW;
+    };
+    const yAt = (watts) => pt + plotH - ((watts - yMin) / (yMax - yMin)) * plotH;
+
+    function pathFor(getter) {
+        let d = '';
+        let penUp = true;
+        for (const p of points) {
+            const v = getter(p);
+            if (v == null || Number.isNaN(v)) {
+                penUp = true;
+                continue;
+            }
+            const x = xAt(p.date.getTime());
+            const y = yAt(v);
+            d += penUp ? `M${x.toFixed(1)},${y.toFixed(1)}` : `L${x.toFixed(1)},${y.toFixed(1)}`;
+            penUp = false;
+        }
+        return d;
+    }
+
+    const avgPath = pathFor(p => p.avg);
+    const weightedPath = pathFor(p => p.weighted);
+
+    const yTicks = 4;
+    const tickLabels = [];
+    for (let i = 0; i <= yTicks; i++) {
+        const w = yMin + (i / yTicks) * (yMax - yMin);
+        const y = yAt(w);
+        tickLabels.push({ w: Math.round(w), y });
+    }
+
+    const formatShortDate = (d) => {
+        try {
+            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        } catch {
+            return '';
+        }
+    };
+    const xLabelCandidates = [];
+    if (points.length === 1) {
+        xLabelCandidates.push({ t: points[0].date.getTime(), x: xAt(points[0].date.getTime()), text: formatShortDate(points[0].date) });
+    } else {
+        xLabelCandidates.push({ t: tMin, x: xAt(tMin), text: formatShortDate(points[0].date) });
+        if (points.length > 2) {
+            const mid = points[Math.floor(points.length / 2)];
+            xLabelCandidates.push({ t: mid.date.getTime(), x: xAt(mid.date.getTime()), text: formatShortDate(mid.date) });
+        }
+        const last = points[points.length - 1];
+        xLabelCandidates.push({ t: tMax, x: xAt(tMax), text: formatShortDate(last.date) });
+    }
+
+    const ns = 'http://www.w3.org/2000/svg';
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.replaceChildren();
+
+    const frag = document.createDocumentFragment();
+
+    const border = document.createElementNS(ns, 'rect');
+    border.setAttribute('x', pl);
+    border.setAttribute('y', pt);
+    border.setAttribute('width', plotW);
+    border.setAttribute('height', plotH);
+    border.setAttribute('fill', 'none');
+    border.setAttribute('class', 'strava-power-chart-plot-border');
+    frag.appendChild(border);
+
+    tickLabels.forEach(({ w, y }) => {
+        const line = document.createElementNS(ns, 'line');
+        line.setAttribute('x1', pl);
+        line.setAttribute('x2', pl + plotW);
+        line.setAttribute('y1', y);
+        line.setAttribute('y2', y);
+        line.setAttribute('class', 'strava-power-chart-grid');
+        frag.appendChild(line);
+        const text = document.createElementNS(ns, 'text');
+        text.setAttribute('x', pl - 8);
+        text.setAttribute('y', y + 4);
+        text.setAttribute('text-anchor', 'end');
+        text.setAttribute('class', 'strava-power-chart-axis-text');
+        text.textContent = String(w);
+        frag.appendChild(text);
+    });
+
+    xLabelCandidates.forEach(({ x, text }) => {
+        const t = document.createElementNS(ns, 'text');
+        t.setAttribute('x', x);
+        t.setAttribute('y', H - 10);
+        t.setAttribute('text-anchor', 'middle');
+        t.setAttribute('class', 'strava-power-chart-axis-text');
+        t.textContent = text;
+        frag.appendChild(t);
+    });
+
+    const yAxis = document.createElementNS(ns, 'text');
+    yAxis.setAttribute('x', 12);
+    yAxis.setAttribute('y', pt + plotH / 2);
+    yAxis.setAttribute('text-anchor', 'middle');
+    yAxis.setAttribute('transform', `rotate(-90,12,${pt + plotH / 2})`);
+    yAxis.setAttribute('class', 'strava-power-chart-axis-label');
+    yAxis.textContent = 'Watts';
+    frag.appendChild(yAxis);
+
+    if (weightedPath) {
+        const pEl = document.createElementNS(ns, 'path');
+        pEl.setAttribute('d', weightedPath);
+        pEl.setAttribute('fill', 'none');
+        pEl.setAttribute('class', 'strava-power-line strava-power-line--weighted');
+        frag.appendChild(pEl);
+    }
+    if (avgPath) {
+        const pEl = document.createElementNS(ns, 'path');
+        pEl.setAttribute('d', avgPath);
+        pEl.setAttribute('fill', 'none');
+        pEl.setAttribute('class', 'strava-power-line strava-power-line--avg');
+        frag.appendChild(pEl);
+    }
+
+    const tooltip = chartInner ? ensureStravaPowerChartTooltip(chartInner) : null;
+
+    points.forEach(p => {
+        const cx = xAt(p.date.getTime());
+        const ys = [];
+        if (p.avg != null && !Number.isNaN(p.avg)) ys.push(yAt(p.avg));
+        if (p.weighted != null && !Number.isNaN(p.weighted)) ys.push(yAt(p.weighted));
+        if (ys.length === 0) return;
+
+        const g = document.createElementNS(ns, 'g');
+        g.setAttribute('class', 'strava-power-marker-group');
+
+        if (p.avg != null && !Number.isNaN(p.avg)) {
+            const c = document.createElementNS(ns, 'circle');
+            c.setAttribute('cx', cx);
+            c.setAttribute('cy', yAt(p.avg));
+            c.setAttribute('r', 4);
+            c.setAttribute('class', 'strava-power-dot strava-power-dot--avg');
+            g.appendChild(c);
+        }
+        if (p.weighted != null && !Number.isNaN(p.weighted)) {
+            const c = document.createElementNS(ns, 'circle');
+            c.setAttribute('cx', cx);
+            c.setAttribute('cy', yAt(p.weighted));
+            c.setAttribute('r', 4);
+            c.setAttribute('class', 'strava-power-dot strava-power-dot--weighted');
+            g.appendChild(c);
+        }
+
+        const yTop = Math.min(...ys) - 18;
+        const yBot = Math.max(...ys) + 18;
+        const hit = document.createElementNS(ns, 'rect');
+        hit.setAttribute('x', cx - 18);
+        hit.setAttribute('y', yTop);
+        hit.setAttribute('width', 36);
+        hit.setAttribute('height', Math.max(yBot - yTop, 24));
+        hit.setAttribute('fill', 'transparent');
+        hit.setAttribute('class', 'strava-power-hit');
+        g.appendChild(hit);
+
+        if (tooltip && chartInner) {
+            const onEnterMove = evt => {
+                g.classList.add('strava-power-marker-group--hover');
+                tooltip.innerHTML = buildPowerTooltipHtml(p);
+                positionStravaPowerTooltip(evt.clientX, evt.clientY, chartInner, tooltip);
+            };
+            const onLeave = () => {
+                g.classList.remove('strava-power-marker-group--hover');
+                tooltip.hidden = true;
+            };
+            hit.addEventListener('mouseenter', onEnterMove);
+            hit.addEventListener('mousemove', evt => {
+                positionStravaPowerTooltip(evt.clientX, evt.clientY, chartInner, tooltip);
+            });
+            hit.addEventListener('mouseleave', onLeave);
+        }
+
+        frag.appendChild(g);
+    });
+
+    svg.appendChild(frag);
+}
+
+function downsamplePairs(times, watts, maxPoints) {
+    const n = times.length;
+    if (n <= maxPoints) return { times, watts };
+    const step = Math.ceil(n / maxPoints);
+    const tOut = [];
+    const wOut = [];
+    for (let i = 0; i < n; i += step) {
+        tOut.push(times[i]);
+        wOut.push(watts[i]);
+    }
+    if (tOut[tOut.length - 1] !== times[n - 1]) {
+        tOut.push(times[n - 1]);
+        wOut.push(watts[n - 1]);
+    }
+    return { times: tOut, watts: wOut };
+}
+
+function renderActivityPowerStreamSvg(svg, times, watts) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const W = 600;
+    const H = 200;
+    const pl = 44;
+    const pr = 10;
+    const pt = 10;
+    const pb = 28;
+    const plotW = W - pl - pr;
+    const plotH = H - pt - pb;
+
+    const wMin = Math.min(...watts);
+    const wMax = Math.max(...watts);
+    const yLo = wMin === wMax ? Math.max(0, wMin - 20) : wMin - (wMax - wMin) * 0.05;
+    const yHi = wMin === wMax ? wMax + 20 : wMax + (wMax - wMin) * 0.05;
+
+    const t0 = times[0];
+    const t1 = times[times.length - 1];
+    const span = Math.max(t1 - t0, 1e-6);
+
+    const xAt = (t) => pl + ((t - t0) / span) * plotW;
+    const yAt = (w) => pt + plotH - ((w - yLo) / (yHi - yLo)) * plotH;
+
+    let d = `M${xAt(times[0]).toFixed(1)},${yAt(watts[0]).toFixed(1)}`;
+    for (let i = 1; i < times.length; i++) {
+        d += `L${xAt(times[i]).toFixed(1)},${yAt(watts[i]).toFixed(1)}`;
+    }
+
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+    svg.replaceChildren();
+
+    const border = document.createElementNS(ns, 'rect');
+    border.setAttribute('x', pl);
+    border.setAttribute('y', pt);
+    border.setAttribute('width', plotW);
+    border.setAttribute('height', plotH);
+    border.setAttribute('fill', 'none');
+    border.setAttribute('class', 'strava-power-chart-plot-border');
+    svg.appendChild(border);
+
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('class', 'strava-power-line strava-power-line--stream');
+    svg.appendChild(path);
+
+    const formatElapsed = (sec) => {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    [0, 0.5, 1].forEach(fraction => {
+        const sec = t0 + fraction * span;
+        const x = xAt(sec);
+        const text = document.createElementNS(ns, 'text');
+        text.setAttribute('x', x);
+        text.setAttribute('y', H - 6);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('class', 'strava-power-chart-axis-text');
+        text.textContent = formatElapsed(sec - t0);
+        svg.appendChild(text);
+    });
+
+    const yTicks = 3;
+    for (let i = 0; i <= yTicks; i++) {
+        const w = yLo + (i / yTicks) * (yHi - yLo);
+        const y = yAt(w);
+        const text = document.createElementNS(ns, 'text');
+        text.setAttribute('x', pl - 6);
+        text.setAttribute('y', y + 4);
+        text.setAttribute('text-anchor', 'end');
+        text.setAttribute('class', 'strava-power-chart-axis-text');
+        text.textContent = String(Math.round(w));
+        svg.appendChild(text);
+    }
+}
+
+async function fetchStravaActivityStreams(activityId) {
+    const token = await getStravaToken();
+    if (!token) {
+        throw new Error('Not authenticated with Strava');
+    }
+
+    const url = `https://www.strava.com/api/v3/activities/${activityId}/streams?keys=time,watts&key_by_type=true`;
+    const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+        if (response.status === 401) {
+            sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
+            isStravaAuthenticated = false;
+            updateStravaAuthUI();
+            throw new Error('Strava authentication expired. Please reconnect.');
+        }
+        throw new Error('Could not load activity streams from Strava.');
+    }
+
+    const body = await response.json();
+    let timeStream;
+    let wattsStream;
+
+    if (Array.isArray(body)) {
+        timeStream = body.find(s => s.type === 'time');
+        wattsStream = body.find(s => s.type === 'watts');
+    } else if (body && typeof body === 'object') {
+        timeStream = body.time;
+        wattsStream = body.watts;
+    }
+
+    if (!wattsStream || !Array.isArray(wattsStream.data) || wattsStream.data.length === 0) {
+        throw new Error('No power stream for this activity (no power meter or data unavailable).');
+    }
+
+    const watts = wattsStream.data.map(n => (n == null ? 0 : Number(n)));
+    let times;
+    if (timeStream && Array.isArray(timeStream.data) && timeStream.data.length === watts.length) {
+        times = timeStream.data.map(n => Number(n));
+    } else {
+        times = watts.map((_, i) => i);
+    }
+
+    return downsamplePairs(times, watts, 900);
+}
+
 // Format time in seconds to readable format
 function formatTime(seconds) {
     if (!seconds || seconds === 0) return '0:00';
@@ -1926,6 +2434,58 @@ function updateStravaStats() {
         stravaCaloriesEl.textContent = totalCalories.toLocaleString();
         stravaCaloriesEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total calories burned from all linked Strava activities");
     }
+
+    const withPower = activities.filter(
+        a => a.averageWatts != null || a.weightedAverageWatts != null
+    );
+    const withAvg = activities.filter(a => a.averageWatts != null);
+    const withWeighted = activities.filter(a => a.weightedAverageWatts != null);
+
+    const avgPowerMean =
+        withAvg.length > 0
+            ? Math.round(withAvg.reduce((s, a) => s + Number(a.averageWatts), 0) / withAvg.length)
+            : null;
+    const weightedMean =
+        withWeighted.length > 0
+            ? Math.round(
+                  withWeighted.reduce((s, a) => s + Number(a.weightedAverageWatts), 0) /
+                      withWeighted.length
+              )
+            : null;
+
+    const powerCountEl = document.getElementById('strava-power-rides-count');
+    const avgPowerEl = document.getElementById('strava-avg-power');
+    const avgWeightedEl = document.getElementById('strava-avg-weighted-power');
+
+    if (powerCountEl) {
+        powerCountEl.textContent = String(withPower.length);
+        powerCountEl
+            .closest('.stat-card-compact')
+            ?.setAttribute(
+                'data-tooltip',
+                'Linked activities that include average or weighted average power from Strava'
+            );
+    }
+    if (avgPowerEl) {
+        avgPowerEl.textContent = avgPowerMean != null ? `${avgPowerMean} W` : '—';
+        avgPowerEl
+            .closest('.stat-card-compact')
+            ?.setAttribute(
+                'data-tooltip',
+                'Mean of average power across linked activities that report it'
+            );
+    }
+    if (avgWeightedEl) {
+        avgWeightedEl.textContent = weightedMean != null ? `${weightedMean} W` : '—';
+        avgWeightedEl
+            .closest('.stat-card-compact')
+            ?.setAttribute(
+                'data-tooltip',
+                'Mean of weighted average power across linked activities that report it'
+            );
+    }
+
+    renderStravaPowerTrendChart();
 }
 
 // Update map stats in headers without full re-render

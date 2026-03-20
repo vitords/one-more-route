@@ -21,6 +21,9 @@
     --zwift-orange: #ff6b35;
     --zwift-orange-light: #ff8c5a;
     --zwift-orange-dark: #e55a2b;
+    /* Power trend chart: orange vs blue for clear distinction */
+    --power-chart-avg: #ea580c;
+    --power-chart-weighted: #2563eb;
 }
 
 body {
@@ -1150,6 +1153,261 @@ a.btn-strava:visited {
     display: inline-block;
     margin-left: 6px;
     filter: brightness(0) invert(1);
+}
+
+/* Strava power trend chart (dashboard) */
+.strava-power-chart-wrap {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.strava-power-chart-wrap--empty .strava-power-chart-legend,
+.strava-power-chart-wrap--empty .strava-power-chart-inner {
+    display: none;
+}
+
+.strava-power-chart-wrap--empty .strava-power-chart-empty {
+    display: block;
+}
+
+.strava-power-chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.strava-power-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.strava-power-legend-swatch {
+    width: 14px;
+    height: 3px;
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+
+.strava-power-legend-avg .strava-power-legend-swatch {
+    background: var(--power-chart-avg);
+}
+
+.strava-power-legend-weighted .strava-power-legend-swatch {
+    background: var(--power-chart-weighted);
+}
+
+.strava-power-chart-inner {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.strava-power-chart-tooltip {
+    position: absolute;
+    z-index: 20;
+    min-width: 160px;
+    max-width: min(280px, 90vw);
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--text-primary);
+    color: var(--background);
+    font-size: 0.82rem;
+    line-height: 1.45;
+    box-shadow: var(--card-shadow);
+    pointer-events: none;
+    text-align: left;
+}
+
+.strava-power-tooltip-title {
+    font-weight: 600;
+    font-size: 0.88rem;
+    margin-bottom: 4px;
+    color: var(--background);
+}
+
+.strava-power-tooltip-date {
+    font-size: 0.78rem;
+    opacity: 0.85;
+    margin-bottom: 8px;
+    color: var(--background);
+}
+
+.strava-power-tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.strava-power-tooltip-label {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.78rem;
+}
+
+.strava-power-tooltip-label--avg::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border-radius: 1px;
+    background: var(--power-chart-avg);
+}
+
+.strava-power-tooltip-label--weighted::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border-radius: 1px;
+    background: var(--power-chart-weighted);
+}
+
+.strava-power-tooltip-value {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.strava-power-hit {
+    cursor: pointer;
+}
+
+.strava-power-marker-group--hover .strava-power-dot {
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.25));
+}
+
+.strava-power-marker-group--hover .strava-power-dot--avg {
+    stroke-width: 2.5;
+}
+
+.strava-power-marker-group--hover .strava-power-dot--weighted {
+    stroke-width: 2.5;
+}
+
+.strava-power-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    max-height: 280px;
+}
+
+.strava-power-chart-empty {
+    display: none;
+    margin: 0;
+    padding: 12px 0 4px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.strava-power-chart-grid {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+}
+
+.strava-power-chart-plot-border {
+    stroke: var(--border);
+    stroke-width: 1;
+}
+
+.strava-power-chart-axis-text {
+    fill: var(--text-secondary);
+    font-size: 11px;
+}
+
+.strava-power-chart-axis-label {
+    fill: var(--text-secondary);
+    font-size: 11px;
+}
+
+.strava-power-line--avg {
+    stroke: var(--power-chart-avg);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.strava-power-line--weighted {
+    stroke: var(--power-chart-weighted);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.strava-power-line--stream {
+    stroke: var(--power-chart-avg);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.strava-power-dot--avg {
+    fill: var(--background);
+    stroke: var(--power-chart-avg);
+    stroke-width: 2;
+}
+
+.strava-power-dot--weighted {
+    fill: var(--background);
+    stroke: var(--power-chart-weighted);
+    stroke-width: 2;
+}
+
+/* Activity modal: per-ride power stream */
+.activity-power-stream-block {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.activity-stream-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.activity-stream-hint {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.45;
+}
+
+.activity-load-power-curve-btn {
+    margin-bottom: 12px;
+}
+
+.activity-power-stream-chart-inner {
+    margin-bottom: 8px;
+    width: 100%;
+}
+
+.activity-power-stream-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 160px;
+    max-height: 220px;
+}
+
+.activity-power-stream-msg {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-height: 1.2em;
 }
 
 /* Responsive Design */

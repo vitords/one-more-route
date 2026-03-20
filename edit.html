@@ -203,6 +203,31 @@
                         <span class="stat-value-inline" id="strava-total-calories">0</span>
                     </div>
                 </div>
+                <h4 class="stats-section-subtitle">Power (linked activities)</h4>
+                <div class="stats-grid">
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Rides w/ power:</span>
+                        <span class="stat-value-inline" id="strava-power-rides-count">0</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg power:</span>
+                        <span class="stat-value-inline" id="strava-avg-power">—</span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Avg weighted:</span>
+                        <span class="stat-value-inline" id="strava-avg-weighted-power">—</span>
+                    </div>
+                </div>
+                <div id="strava-power-chart-wrap" class="strava-power-chart-wrap strava-power-chart-wrap--empty">
+                    <div class="strava-power-chart-legend">
+                        <span class="strava-power-legend-item strava-power-legend-avg"><span class="strava-power-legend-swatch"></span>Avg power</span>
+                        <span class="strava-power-legend-item strava-power-legend-weighted"><span class="strava-power-legend-swatch"></span>Weighted avg</span>
+                    </div>
+                    <div class="strava-power-chart-inner">
+                        <svg id="strava-power-chart" class="strava-power-chart" role="img" aria-label="Average and weighted average power over linked Strava activities by date"></svg>
+                    </div>
+                    <p id="strava-power-chart-empty" class="strava-power-chart-empty">Link Strava activities with power data to see trends.</p>
+                </div>
             </div>
         </div>
 
