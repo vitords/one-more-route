@@ -1158,6 +1158,44 @@ a.btn-strava:visited {
     filter: brightness(0) invert(1);
 }
 
+.strava-charts-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 20px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    margin-bottom: 4px;
+}
+
+.strava-charts-nav[hidden] {
+    display: none !important;
+}
+
+.strava-charts-nav-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+    min-width: 12rem;
+    line-height: 1.4;
+}
+
+.strava-charts-nav-btn {
+    flex-shrink: 0;
+}
+
+.strava-chart-period-empty-msg {
+    fill: var(--text-secondary);
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.strava-power-hit:focus,
+.strava-hr-hit:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
 /* Strava trend charts row: stacked on small screens, side-by-side on desktop */
 .strava-charts-row {
     display: flex;
@@ -1166,6 +1204,14 @@ a.btn-strava:visited {
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid var(--border);
+    touch-action: none;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.strava-charts-row--panning {
+    cursor: grabbing;
 }
 
 .strava-charts-row > .strava-power-chart-wrap,
@@ -1245,6 +1291,7 @@ a.btn-strava:visited {
     width: 100%;
     max-width: 100%;
     overflow: hidden;
+    touch-action: none;
 }
 
 .strava-power-chart-tooltip,
@@ -1363,6 +1410,7 @@ a.btn-strava:visited {
     height: auto;
     min-height: 200px;
     max-height: 280px;
+    touch-action: none;
 }
 
 .strava-power-chart-empty {
@@ -1479,6 +1527,7 @@ a.btn-strava:visited {
     width: 100%;
     max-width: 100%;
     overflow: hidden;
+    touch-action: none;
 }
 
 .strava-hr-hit {
@@ -1500,6 +1549,7 @@ a.btn-strava:visited {
     height: auto;
     min-height: 200px;
     max-height: 280px;
+    touch-action: none;
 }
 
 .strava-hr-chart-empty {

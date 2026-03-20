@@ -32,6 +32,20 @@ let gistId = null;
 let syncTimeout = null;
 let isSyncing = false;
 
+const STRAVA_CHART_WINDOW_DAYS = 30;
+const STRAVA_CHART_SWIPE_DRAG_THRESHOLD_PX = 4;
+let stravaChartsWindowStartMs = null;
+let stravaChartsPanPreviewOffsetMs = 0;
+let stravaChartsSwipeState = null;
+let stravaChartsSwipeRaf = null;
+let stravaChartsSwipeDocMove = null;
+let stravaChartsSwipeDocEnd = null;
+let stravaChartsSwipeDocTouchMove = null;
+let stravaChartsSwipeDocTouchEnd = null;
+let stravaChartsInteractionListenersBound = false;
+let stravaTrendArmedHit = null;
+let stravaTrendOutsideDismissInstalled = false;
+
 // Route detection - determine if we're in edit mode
 const isEditMode = (() => {
     const pathname = window.location.pathname;
@@ -1944,6 +1958,469 @@ function formatMaxHeartRateForDisplay(bpm) {
     return `${Math.round(bpm)} bpm`;
 }
 
+function startOfLocalDay(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function getLatestActivityDate() {
+    let latest = null;
+    Object.values(routeActivities).forEach(a => {
+        if (!a?.startDate) return;
+        const t = new Date(a.startDate).getTime();
+        if (!Number.isNaN(t) && (latest == null || t > latest)) latest = t;
+    });
+    return latest == null ? null : new Date(latest);
+}
+
+function computeDefaultStravaChartsWindowStart() {
+    const latest = getLatestActivityDate();
+    const anchor = latest ? startOfLocalDay(latest) : startOfLocalDay(new Date());
+    const start = new Date(anchor);
+    start.setDate(start.getDate() - (STRAVA_CHART_WINDOW_DAYS - 1));
+    return startOfLocalDay(start).getTime();
+}
+
+function initStravaChartsWindowIfNeeded() {
+    if (stravaChartsWindowStartMs == null) {
+        stravaChartsWindowStartMs = computeDefaultStravaChartsWindowStart();
+    }
+}
+
+function getStravaChartsWindowRange() {
+    const baseStart = stravaChartsWindowStartMs ?? computeDefaultStravaChartsWindowStart();
+    const startNorm = startOfLocalDay(new Date(baseStart));
+    const offset = stravaChartsPanPreviewOffsetMs || 0;
+    const rangeStart = new Date(startNorm.getTime() + offset);
+    const end = new Date(startNorm);
+    end.setDate(end.getDate() + (STRAVA_CHART_WINDOW_DAYS - 1));
+    end.setHours(23, 59, 59, 999);
+    const rangeEnd = new Date(end.getTime() + offset);
+    return { start: rangeStart, end: rangeEnd };
+}
+
+function getMaxStravaChartsWindowStartMs() {
+    const today = startOfLocalDay(new Date());
+    const maxStart = new Date(today);
+    maxStart.setDate(maxStart.getDate() - (STRAVA_CHART_WINDOW_DAYS - 1));
+    return maxStart.getTime();
+}
+
+function clampStravaChartsWindow() {
+    if (stravaChartsWindowStartMs == null) return;
+    const maxStart = getMaxStravaChartsWindowStartMs();
+    if (stravaChartsWindowStartMs > maxStart) stravaChartsWindowStartMs = maxStart;
+}
+
+function shiftStravaChartsWindow(deltaDays) {
+    stravaChartsPanPreviewOffsetMs = 0;
+    initStravaChartsWindowIfNeeded();
+    const d = new Date(stravaChartsWindowStartMs);
+    d.setDate(d.getDate() + deltaDays);
+    stravaChartsWindowStartMs = startOfLocalDay(d).getTime();
+    clampStravaChartsWindow();
+}
+
+function getStravaChartsSwipePlotWidth() {
+    const row = document.getElementById('strava-charts-row');
+    const svg =
+        row?.querySelector('.strava-power-chart') || row?.querySelector('.strava-hr-chart');
+    const w = svg?.getBoundingClientRect().width;
+    return w && w > 0 ? w : 320;
+}
+
+function clampStravaChartsPanPreviewOffset() {
+    const base = stravaChartsWindowStartMs ?? computeDefaultStravaChartsWindowStart();
+    const startNorm = startOfLocalDay(new Date(base));
+    const maxStart = getMaxStravaChartsWindowStartMs();
+    const maxOffset = maxStart - startNorm.getTime();
+    if (stravaChartsPanPreviewOffsetMs > maxOffset) {
+        stravaChartsPanPreviewOffsetMs = maxOffset;
+    }
+}
+
+function commitStravaChartsPanPreview() {
+    if (!stravaChartsPanPreviewOffsetMs) return;
+    initStravaChartsWindowIfNeeded();
+    const base = stravaChartsWindowStartMs;
+    const startNorm = startOfLocalDay(new Date(base));
+    const finalMs = startNorm.getTime() + stravaChartsPanPreviewOffsetMs;
+    stravaChartsWindowStartMs = startOfLocalDay(new Date(finalMs)).getTime();
+    stravaChartsPanPreviewOffsetMs = 0;
+    clampStravaChartsWindow();
+}
+
+function cancelStravaChartsSwipeRaf() {
+    if (stravaChartsSwipeRaf != null) {
+        cancelAnimationFrame(stravaChartsSwipeRaf);
+        stravaChartsSwipeRaf = null;
+    }
+}
+
+function requestStravaChartsSwipeFrame() {
+    if (stravaChartsSwipeRaf != null) {
+        cancelAnimationFrame(stravaChartsSwipeRaf);
+    }
+    stravaChartsSwipeRaf = requestAnimationFrame(() => {
+        stravaChartsSwipeRaf = null;
+        renderStravaPowerTrendChart();
+        renderStravaHeartTrendChart();
+        updateStravaChartsNavUI();
+    });
+}
+
+function removeStravaChartsSwipeDocumentListeners() {
+    if (stravaChartsSwipeDocMove) {
+        window.removeEventListener('pointermove', stravaChartsSwipeDocMove, {
+            capture: true,
+            passive: false
+        });
+        window.removeEventListener('pointerup', stravaChartsSwipeDocEnd, { capture: true });
+        window.removeEventListener('pointercancel', stravaChartsSwipeDocEnd, { capture: true });
+        stravaChartsSwipeDocMove = null;
+        stravaChartsSwipeDocEnd = null;
+    }
+    if (stravaChartsSwipeDocTouchMove) {
+        window.removeEventListener('touchmove', stravaChartsSwipeDocTouchMove, {
+            capture: true,
+            passive: false
+        });
+        window.removeEventListener('touchend', stravaChartsSwipeDocTouchEnd, { capture: true });
+        window.removeEventListener('touchcancel', stravaChartsSwipeDocTouchEnd, { capture: true });
+        stravaChartsSwipeDocTouchMove = null;
+        stravaChartsSwipeDocTouchEnd = null;
+    }
+}
+
+function stravaChartsSwipeFindTouch(ev, touchId) {
+    for (let i = 0; i < ev.touches.length; i++) {
+        if (ev.touches[i].identifier === touchId) return ev.touches[i];
+    }
+    return null;
+}
+
+function stravaChartsSwipeTryBeginDrag(st, clientX, clientY, row) {
+    const dx = clientX - st.originX;
+    const dy = clientY - st.originY;
+    if (st.dragging) return true;
+    if (dx * dx + dy * dy < STRAVA_CHART_SWIPE_DRAG_THRESHOLD_PX ** 2) return false;
+    st.dragging = true;
+    st.plotWCached = Math.max(getStravaChartsSwipePlotWidth(), 120);
+    row.classList.add('strava-charts-row--panning');
+    if (st.pointerId != null) {
+        try {
+            row.setPointerCapture(st.pointerId);
+        } catch {
+            /* ignore */
+        }
+    }
+    return true;
+}
+
+function stravaChartsSwipeApplyClientX(st, clientX) {
+    initStravaChartsWindowIfNeeded();
+    const plotW = st.plotWCached || Math.max(getStravaChartsSwipePlotWidth(), 120);
+    const dx = clientX - st.originX;
+    const windowMs = STRAVA_CHART_WINDOW_DAYS * 86400000;
+    stravaChartsPanPreviewOffsetMs = (-dx / plotW) * windowMs;
+    clampStravaChartsPanPreviewOffset();
+    requestStravaChartsSwipeFrame();
+}
+
+function stravaChartsSwipeFinish(row, st, cancelled, swallowSyntheticClick) {
+    stravaChartsSwipeState = null;
+    removeStravaChartsSwipeDocumentListeners();
+    row.classList.remove('strava-charts-row--panning');
+    cancelStravaChartsSwipeRaf();
+    if (st.pointerId != null) {
+        try {
+            row.releasePointerCapture(st.pointerId);
+        } catch {
+            /* ignore */
+        }
+    }
+
+    if (st.dragging) {
+        if (cancelled) {
+            stravaChartsPanPreviewOffsetMs = 0;
+        } else {
+            commitStravaChartsPanPreview();
+            if (swallowSyntheticClick) {
+                const swallowClick = ce => {
+                    ce.preventDefault();
+                    ce.stopPropagation();
+                    ce.stopImmediatePropagation();
+                    document.removeEventListener('click', swallowClick, true);
+                };
+                document.addEventListener('click', swallowClick, true);
+                setTimeout(() => {
+                    document.removeEventListener('click', swallowClick, true);
+                }, 800);
+            }
+        }
+        renderStravaPowerTrendChart();
+        renderStravaHeartTrendChart();
+        updateStravaChartsNavUI();
+    } else {
+        stravaChartsPanPreviewOffsetMs = 0;
+    }
+}
+
+function setupStravaChartsSwipeListeners() {
+    const row = document.getElementById('strava-charts-row');
+    if (!row) return;
+
+    // Touch (required on iOS WebKit — Firefox on iOS, Safari; pointer move/up often unreliable)
+    row.addEventListener(
+        'touchstart',
+        e => {
+            if (!hasAnyStravaTrendChartData()) return;
+            if (e.touches.length !== 1) return;
+
+            removeStravaChartsSwipeDocumentListeners();
+            cancelStravaChartsSwipeRaf();
+
+            const t = e.touches[0];
+            stravaChartsSwipeState = {
+                source: 'touch',
+                touchId: t.identifier,
+                pointerId: null,
+                originX: t.clientX,
+                originY: t.clientY,
+                dragging: false,
+                plotWCached: null
+            };
+
+            stravaChartsSwipeDocTouchMove = ev => {
+                const st = stravaChartsSwipeState;
+                if (!st || st.source !== 'touch') return;
+                const touch = stravaChartsSwipeFindTouch(ev, st.touchId);
+                if (!touch) return;
+
+                if (!stravaChartsSwipeTryBeginDrag(st, touch.clientX, touch.clientY, row)) return;
+                stravaChartsSwipeApplyClientX(st, touch.clientX);
+                ev.preventDefault();
+            };
+
+            stravaChartsSwipeDocTouchEnd = ev => {
+                const st = stravaChartsSwipeState;
+                if (!st || st.source !== 'touch') return;
+                let ended = false;
+                for (let i = 0; i < ev.changedTouches.length; i++) {
+                    if (ev.changedTouches[i].identifier === st.touchId) {
+                        ended = true;
+                        break;
+                    }
+                }
+                if (!ended) return;
+
+                const cancelled = ev.type === 'touchcancel';
+                stravaChartsSwipeFinish(row, st, cancelled, true);
+            };
+
+            window.addEventListener('touchmove', stravaChartsSwipeDocTouchMove, {
+                capture: true,
+                passive: false
+            });
+            window.addEventListener('touchend', stravaChartsSwipeDocTouchEnd, { capture: true });
+            window.addEventListener('touchcancel', stravaChartsSwipeDocTouchEnd, { capture: true });
+        },
+        { capture: true, passive: false }
+    );
+
+    // Mouse / pen / touch: pointer events (some mobile browsers only emit pointer for touch)
+    row.addEventListener('pointerdown', e => {
+        if (!hasAnyStravaTrendChartData()) return;
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+
+        removeStravaChartsSwipeDocumentListeners();
+        cancelStravaChartsSwipeRaf();
+
+        stravaChartsSwipeState = {
+            source: 'pointer',
+            pointerId: e.pointerId,
+            originX: e.clientX,
+            originY: e.clientY,
+            dragging: false,
+            plotWCached: null
+        };
+
+        stravaChartsSwipeDocMove = ev => {
+            const st = stravaChartsSwipeState;
+            if (!st || st.source !== 'pointer' || ev.pointerId !== st.pointerId) return;
+
+            if (!stravaChartsSwipeTryBeginDrag(st, ev.clientX, ev.clientY, row)) return;
+            stravaChartsSwipeApplyClientX(st, ev.clientX);
+            ev.preventDefault();
+        };
+
+        stravaChartsSwipeDocEnd = ev => {
+            const st = stravaChartsSwipeState;
+            if (!st || st.source !== 'pointer' || ev.pointerId !== st.pointerId) return;
+
+            const cancelled = ev.type === 'pointercancel';
+            stravaChartsSwipeFinish(row, st, cancelled, true);
+        };
+
+        window.addEventListener('pointermove', stravaChartsSwipeDocMove, {
+            capture: true,
+            passive: false
+        });
+        window.addEventListener('pointerup', stravaChartsSwipeDocEnd, { capture: true });
+        window.addEventListener('pointercancel', stravaChartsSwipeDocEnd, { capture: true });
+    }, { capture: true });
+}
+
+function filterChartPointsByWindow(points, rangeStart, rangeEnd) {
+    const t0 = rangeStart.getTime();
+    const t1 = rangeEnd.getTime();
+    return points.filter(p => {
+        const t = p.date.getTime();
+        return t >= t0 && t <= t1;
+    });
+}
+
+function formatStravaChartsNavLabel(range) {
+    try {
+        const a = range.start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        const b = range.end.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+        return `${a} – ${b}`;
+    } catch {
+        return '';
+    }
+}
+
+function hasAnyStravaTrendChartData() {
+    return (
+        buildPowerSeriesFromRouteActivities().length > 0 ||
+        buildHeartSeriesFromRouteActivities().length > 0
+    );
+}
+
+function updateStravaChartsNavUI() {
+    const nav = document.getElementById('strava-charts-nav');
+    const label = document.getElementById('strava-charts-nav-label');
+    const nextBtn = document.getElementById('strava-charts-nav-next');
+    if (!nav || !label) return;
+    if (!hasAnyStravaTrendChartData()) {
+        nav.hidden = true;
+        return;
+    }
+    nav.hidden = false;
+    initStravaChartsWindowIfNeeded();
+    clampStravaChartsWindow();
+    const range = getStravaChartsWindowRange();
+    label.textContent = formatStravaChartsNavLabel(range);
+    if (nextBtn) {
+        const maxStart = getMaxStravaChartsWindowStartMs();
+        const tentativeStart = startOfLocalDay(range.start).getTime();
+        nextBtn.disabled = tentativeStart >= maxStart;
+    }
+}
+
+function removeStravaTrendOutsideDismissListener() {
+    if (!stravaTrendOutsideDismissInstalled) return;
+    stravaTrendOutsideDismissInstalled = false;
+    document.removeEventListener('pointerdown', stravaTrendOutsideDismissPointerDown, true);
+}
+
+function stravaTrendOutsideDismissPointerDown(ev) {
+    if (!stravaTrendArmedHit) return;
+    if (ev.target === stravaTrendArmedHit) return;
+    clearStravaTrendArmedState();
+}
+
+function installStravaTrendOutsideDismissListener() {
+    if (stravaTrendOutsideDismissInstalled) return;
+    stravaTrendOutsideDismissInstalled = true;
+    document.addEventListener('pointerdown', stravaTrendOutsideDismissPointerDown, true);
+}
+
+function clearStravaTrendArmedState() {
+    removeStravaTrendOutsideDismissListener();
+    if (stravaTrendArmedHit) {
+        const g = stravaTrendArmedHit.parentElement;
+        if (g) {
+            g.classList.remove('strava-power-marker-group--hover', 'strava-hr-marker-group--hover');
+        }
+        stravaTrendArmedHit = null;
+    }
+    document.querySelectorAll('.strava-power-chart-tooltip, .strava-hr-chart-tooltip').forEach(el => {
+        el.hidden = true;
+    });
+}
+
+/** First click/tap: show ride summary tooltip; second on same point: activity modal. */
+function attachStravaTrendPointRevealThenOpen(hit, routeName, opts) {
+    const { tooltip, chartInner, buildTooltipHtml, hoverClass } = opts;
+    const g = hit.parentElement;
+
+    hit.addEventListener('click', evt => {
+        evt.preventDefault();
+        evt.stopPropagation();
+        const act = routeActivities[routeName];
+        if (!act) return;
+
+        if (stravaTrendArmedHit === hit) {
+            clearStravaTrendArmedState();
+            showActivityDetailsModal(act, routeName);
+            return;
+        }
+
+        clearStravaTrendArmedState();
+        stravaTrendArmedHit = hit;
+        if (g) g.classList.add(hoverClass);
+        if (tooltip && chartInner) {
+            tooltip.innerHTML = buildTooltipHtml();
+            positionStravaChartTooltip(evt.clientX, evt.clientY, chartInner, tooltip);
+        }
+        installStravaTrendOutsideDismissListener();
+    });
+
+    hit.addEventListener('keydown', evt => {
+        if (evt.key !== 'Enter' && evt.key !== ' ') return;
+        evt.preventDefault();
+        evt.stopPropagation();
+        const act = routeActivities[routeName];
+        if (!act) return;
+
+        if (stravaTrendArmedHit === hit) {
+            clearStravaTrendArmedState();
+            showActivityDetailsModal(act, routeName);
+            return;
+        }
+
+        clearStravaTrendArmedState();
+        stravaTrendArmedHit = hit;
+        if (g) g.classList.add(hoverClass);
+        if (tooltip && chartInner) {
+            tooltip.innerHTML = buildTooltipHtml();
+            const r = hit.getBoundingClientRect();
+            positionStravaChartTooltip(r.left + r.width / 2, r.top + r.height / 2, chartInner, tooltip);
+        }
+        installStravaTrendOutsideDismissListener();
+    });
+}
+
+function setupStravaChartsInteractionListeners() {
+    if (stravaChartsInteractionListenersBound) return;
+    stravaChartsInteractionListenersBound = true;
+    const prev = document.getElementById('strava-charts-nav-prev');
+    const next = document.getElementById('strava-charts-nav-next');
+    prev?.addEventListener('click', () => {
+        shiftStravaChartsWindow(-STRAVA_CHART_WINDOW_DAYS);
+        renderStravaPowerTrendChart();
+        renderStravaHeartTrendChart();
+        updateStravaChartsNavUI();
+    });
+    next?.addEventListener('click', () => {
+        shiftStravaChartsWindow(STRAVA_CHART_WINDOW_DAYS);
+        renderStravaPowerTrendChart();
+        renderStravaHeartTrendChart();
+        updateStravaChartsNavUI();
+    });
+    setupStravaChartsSwipeListeners();
+}
+
 function buildPowerSeriesFromRouteActivities() {
     const points = [];
     for (const [routeName, activity] of Object.entries(routeActivities)) {
@@ -2078,10 +2555,12 @@ function renderStravaPowerTrendChart() {
     const svg = document.getElementById('strava-power-chart');
     if (!wrap || !svg) return;
 
-    const points = buildPowerSeriesFromRouteActivities();
+    clearStravaTrendArmedState();
+
+    const allPoints = buildPowerSeriesFromRouteActivities();
     const chartInner = svg.parentElement;
     const existingTip = chartInner?.querySelector('.strava-power-chart-tooltip');
-    if (points.length === 0) {
+    if (allPoints.length === 0) {
         wrap.classList.add('strava-power-chart-wrap--empty');
         svg.replaceChildren();
         if (existingTip) existingTip.hidden = true;
@@ -2089,6 +2568,10 @@ function renderStravaPowerTrendChart() {
     }
 
     wrap.classList.remove('strava-power-chart-wrap--empty');
+    initStravaChartsWindowIfNeeded();
+    clampStravaChartsWindow();
+    const range = getStravaChartsWindowRange();
+    const points = filterChartPointsByWindow(allPoints, range.start, range.end);
 
     const W = 640;
     const H = 260;
@@ -2099,30 +2582,35 @@ function renderStravaPowerTrendChart() {
     const plotW = W - pl - pr;
     const plotH = H - pt - pb;
 
+    const tMin = range.start.getTime();
+    const tMax = range.end.getTime();
+    const xSpan = Math.max(tMax - tMin, 1);
+    const xAt = t => pl + ((t - tMin) / xSpan) * plotW;
+
     const values = [];
     points.forEach(p => {
         if (p.avg != null && !Number.isNaN(p.avg)) values.push(p.avg);
         if (p.weighted != null && !Number.isNaN(p.weighted)) values.push(p.weighted);
     });
-    let yMin = Math.min(...values);
-    let yMax = Math.max(...values);
-    if (yMin === yMax) {
-        yMin = Math.max(0, yMin - 25);
-        yMax = yMax + 25;
+    let yMin;
+    let yMax;
+    if (values.length === 0) {
+        yMin = 0;
+        yMax = 280;
     } else {
-        const pad = (yMax - yMin) * 0.08;
-        yMin = Math.max(0, yMin - pad);
-        yMax = yMax + pad;
+        yMin = Math.min(...values);
+        yMax = Math.max(...values);
+        if (yMin === yMax) {
+            yMin = Math.max(0, yMin - 25);
+            yMax = yMax + 25;
+        } else {
+            const pad = (yMax - yMin) * 0.08;
+            yMin = Math.max(0, yMin - pad);
+            yMax = yMax + pad;
+        }
     }
-
-    const tMs = points.map(p => p.date.getTime());
-    const tMin = Math.min(...tMs);
-    const tMax = Math.max(...tMs);
-    const xAt = (t) => {
-        if (tMax <= tMin) return pl + plotW / 2;
-        return pl + ((t - tMin) / (tMax - tMin)) * plotW;
-    };
-    const yAt = (watts) => pt + plotH - ((watts - yMin) / (yMax - yMin)) * plotH;
+    const ySpan = Math.max(yMax - yMin, 1);
+    const yAt = watts => pt + plotH - ((watts - yMin) / ySpan) * plotH;
 
     function pathFor(getter) {
         let d = '';
@@ -2152,25 +2640,20 @@ function renderStravaPowerTrendChart() {
         tickLabels.push({ w: Math.round(w), y });
     }
 
-    const formatShortDate = (d) => {
+    const formatShortDate = d => {
         try {
             return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
         } catch {
             return '';
         }
     };
-    const xLabelCandidates = [];
-    if (points.length === 1) {
-        xLabelCandidates.push({ t: points[0].date.getTime(), x: xAt(points[0].date.getTime()), text: formatShortDate(points[0].date) });
-    } else {
-        xLabelCandidates.push({ t: tMin, x: xAt(tMin), text: formatShortDate(points[0].date) });
-        if (points.length > 2) {
-            const mid = points[Math.floor(points.length / 2)];
-            xLabelCandidates.push({ t: mid.date.getTime(), x: xAt(mid.date.getTime()), text: formatShortDate(mid.date) });
-        }
-        const last = points[points.length - 1];
-        xLabelCandidates.push({ t: tMax, x: xAt(tMax), text: formatShortDate(last.date) });
-    }
+    const midTime = (tMin + tMax) / 2;
+    const midDate = new Date(midTime);
+    const xLabelCandidates = [
+        { x: xAt(tMin), text: formatShortDate(range.start) },
+        { x: xAt(midTime), text: formatShortDate(midDate) },
+        { x: xAt(tMax), text: formatShortDate(range.end) }
+    ];
 
     const ns = 'http://www.w3.org/2000/svg';
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -2239,6 +2722,16 @@ function renderStravaPowerTrendChart() {
         frag.appendChild(pEl);
     }
 
+    if (points.length === 0) {
+        const emptyMsg = document.createElementNS(ns, 'text');
+        emptyMsg.setAttribute('x', pl + plotW / 2);
+        emptyMsg.setAttribute('y', pt + plotH / 2);
+        emptyMsg.setAttribute('text-anchor', 'middle');
+        emptyMsg.setAttribute('class', 'strava-chart-period-empty-msg');
+        emptyMsg.textContent = 'No power data in this period';
+        frag.appendChild(emptyMsg);
+    }
+
     const tooltip = chartInner ? ensureStravaChartTooltip(chartInner, 'strava-power-chart-tooltip') : null;
 
     points.forEach(p => {
@@ -2277,7 +2770,21 @@ function renderStravaPowerTrendChart() {
         hit.setAttribute('height', Math.max(yBot - yTop, 24));
         hit.setAttribute('fill', 'transparent');
         hit.setAttribute('class', 'strava-power-hit');
+        hit.setAttribute('role', 'button');
+        hit.setAttribute('tabindex', '0');
+        hit.setAttribute('focusable', 'true');
+        hit.setAttribute(
+            'aria-label',
+            `${p.routeName}: first tap for summary, second tap for full activity`
+        );
         g.appendChild(hit);
+
+        attachStravaTrendPointRevealThenOpen(hit, p.routeName, {
+            tooltip,
+            chartInner,
+            buildTooltipHtml: () => buildPowerTooltipHtml(p),
+            hoverClass: 'strava-power-marker-group--hover'
+        });
 
         if (tooltip && chartInner) {
             const onEnterMove = evt => {
@@ -2287,7 +2794,7 @@ function renderStravaPowerTrendChart() {
             };
             const onLeave = () => {
                 g.classList.remove('strava-power-marker-group--hover');
-                tooltip.hidden = true;
+                if (stravaTrendArmedHit !== hit) tooltip.hidden = true;
             };
             hit.addEventListener('mouseenter', onEnterMove);
             hit.addEventListener('mousemove', evt => {
@@ -2307,10 +2814,12 @@ function renderStravaHeartTrendChart() {
     const svg = document.getElementById('strava-hr-chart');
     if (!wrap || !svg) return;
 
-    const points = buildHeartSeriesFromRouteActivities();
+    clearStravaTrendArmedState();
+
+    const allPoints = buildHeartSeriesFromRouteActivities();
     const chartInner = svg.parentElement;
     const existingTip = chartInner?.querySelector('.strava-hr-chart-tooltip');
-    if (points.length === 0) {
+    if (allPoints.length === 0) {
         wrap.classList.add('strava-hr-chart-wrap--empty');
         svg.replaceChildren();
         if (existingTip) existingTip.hidden = true;
@@ -2318,6 +2827,10 @@ function renderStravaHeartTrendChart() {
     }
 
     wrap.classList.remove('strava-hr-chart-wrap--empty');
+    initStravaChartsWindowIfNeeded();
+    clampStravaChartsWindow();
+    const range = getStravaChartsWindowRange();
+    const points = filterChartPointsByWindow(allPoints, range.start, range.end);
 
     const W = 640;
     const H = 260;
@@ -2328,30 +2841,35 @@ function renderStravaHeartTrendChart() {
     const plotW = W - pl - pr;
     const plotH = H - pt - pb;
 
+    const tMin = range.start.getTime();
+    const tMax = range.end.getTime();
+    const xSpan = Math.max(tMax - tMin, 1);
+    const xAt = t => pl + ((t - tMin) / xSpan) * plotW;
+
     const values = [];
     points.forEach(p => {
         if (p.avgHr != null && !Number.isNaN(p.avgHr)) values.push(p.avgHr);
         if (p.maxHr != null && !Number.isNaN(p.maxHr)) values.push(p.maxHr);
     });
-    let yMin = Math.min(...values);
-    let yMax = Math.max(...values);
-    if (yMin === yMax) {
-        yMin = Math.max(40, yMin - 8);
-        yMax = yMax + 8;
+    let yMin;
+    let yMax;
+    if (values.length === 0) {
+        yMin = 60;
+        yMax = 180;
     } else {
-        const pad = (yMax - yMin) * 0.08;
-        yMin = Math.max(40, Math.floor(yMin - pad));
-        yMax = Math.ceil(yMax + pad);
+        yMin = Math.min(...values);
+        yMax = Math.max(...values);
+        if (yMin === yMax) {
+            yMin = Math.max(40, yMin - 8);
+            yMax = yMax + 8;
+        } else {
+            const pad = (yMax - yMin) * 0.08;
+            yMin = Math.max(40, Math.floor(yMin - pad));
+            yMax = Math.ceil(yMax + pad);
+        }
     }
-
-    const tMs = points.map(p => p.date.getTime());
-    const tMin = Math.min(...tMs);
-    const tMax = Math.max(...tMs);
-    const xAt = t => {
-        if (tMax <= tMin) return pl + plotW / 2;
-        return pl + ((t - tMin) / (tMax - tMin)) * plotW;
-    };
-    const yAt = bpm => pt + plotH - ((bpm - yMin) / (yMax - yMin)) * plotH;
+    const ySpan = Math.max(yMax - yMin, 1);
+    const yAt = bpm => pt + plotH - ((bpm - yMin) / ySpan) * plotH;
 
     function pathFor(getter) {
         let d = '';
@@ -2388,26 +2906,13 @@ function renderStravaHeartTrendChart() {
             return '';
         }
     };
-    const xLabelCandidates = [];
-    if (points.length === 1) {
-        xLabelCandidates.push({
-            t: points[0].date.getTime(),
-            x: xAt(points[0].date.getTime()),
-            text: formatShortDate(points[0].date)
-        });
-    } else {
-        xLabelCandidates.push({ t: tMin, x: xAt(tMin), text: formatShortDate(points[0].date) });
-        if (points.length > 2) {
-            const mid = points[Math.floor(points.length / 2)];
-            xLabelCandidates.push({
-                t: mid.date.getTime(),
-                x: xAt(mid.date.getTime()),
-                text: formatShortDate(mid.date)
-            });
-        }
-        const last = points[points.length - 1];
-        xLabelCandidates.push({ t: tMax, x: xAt(tMax), text: formatShortDate(last.date) });
-    }
+    const midTime = (tMin + tMax) / 2;
+    const midDate = new Date(midTime);
+    const xLabelCandidates = [
+        { x: xAt(tMin), text: formatShortDate(range.start) },
+        { x: xAt(midTime), text: formatShortDate(midDate) },
+        { x: xAt(tMax), text: formatShortDate(range.end) }
+    ];
 
     const ns = 'http://www.w3.org/2000/svg';
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
@@ -2476,6 +2981,16 @@ function renderStravaHeartTrendChart() {
         frag.appendChild(pEl);
     }
 
+    if (points.length === 0) {
+        const emptyMsg = document.createElementNS(ns, 'text');
+        emptyMsg.setAttribute('x', pl + plotW / 2);
+        emptyMsg.setAttribute('y', pt + plotH / 2);
+        emptyMsg.setAttribute('text-anchor', 'middle');
+        emptyMsg.setAttribute('class', 'strava-chart-period-empty-msg');
+        emptyMsg.textContent = 'No heart rate data in this period';
+        frag.appendChild(emptyMsg);
+    }
+
     const tooltip = chartInner ? ensureStravaChartTooltip(chartInner, 'strava-hr-chart-tooltip') : null;
 
     points.forEach(p => {
@@ -2514,7 +3029,21 @@ function renderStravaHeartTrendChart() {
         hit.setAttribute('height', Math.max(yBot - yTop, 24));
         hit.setAttribute('fill', 'transparent');
         hit.setAttribute('class', 'strava-hr-hit');
+        hit.setAttribute('role', 'button');
+        hit.setAttribute('tabindex', '0');
+        hit.setAttribute('focusable', 'true');
+        hit.setAttribute(
+            'aria-label',
+            `${p.routeName}: first tap for summary, second tap for full activity`
+        );
         g.appendChild(hit);
+
+        attachStravaTrendPointRevealThenOpen(hit, p.routeName, {
+            tooltip,
+            chartInner,
+            buildTooltipHtml: () => buildHeartTooltipHtml(p),
+            hoverClass: 'strava-hr-marker-group--hover'
+        });
 
         if (tooltip && chartInner) {
             const onEnterMove = evt => {
@@ -2524,7 +3053,7 @@ function renderStravaHeartTrendChart() {
             };
             const onLeave = () => {
                 g.classList.remove('strava-hr-marker-group--hover');
-                tooltip.hidden = true;
+                if (stravaTrendArmedHit !== hit) tooltip.hidden = true;
             };
             hit.addEventListener('mouseenter', onEnterMove);
             hit.addEventListener('mousemove', evt => {
@@ -2704,7 +3233,15 @@ function formatTime(seconds) {
 // Update Strava activity-based statistics
 function updateStravaStats() {
     const activities = Object.values(routeActivities);
-    
+    if (activities.length === 0) {
+        stravaChartsWindowStartMs = null;
+        stravaChartsPanPreviewOffsetMs = 0;
+        stravaChartsSwipeState = null;
+    } else {
+        initStravaChartsWindowIfNeeded();
+        clampStravaChartsWindow();
+    }
+
     // Calculate totals from all linked activities
     const totalDistance = activities.reduce((sum, activity) => sum + (activity.distance || 0), 0);
     const totalElevation = activities.reduce((sum, activity) => sum + (activity.totalElevationGain || 0), 0);
@@ -2795,6 +3332,7 @@ function updateStravaStats() {
 
     renderStravaPowerTrendChart();
     renderStravaHeartTrendChart();
+    updateStravaChartsNavUI();
 }
 
 // Update map stats in headers without full re-render
@@ -3133,6 +3671,8 @@ function setupEventListeners() {
             }
         });
     }
+
+    setupStravaChartsInteractionListeners();
 }
 
 // UI Visibility Functions
@@ -3317,6 +3857,8 @@ function setupShowcaseEventListeners() {
             }
         });
     }
+
+    setupStravaChartsInteractionListeners();
 }
 
 // Initialize on page load

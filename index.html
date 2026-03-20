@@ -218,7 +218,12 @@
                         <span class="stat-value-inline" id="strava-avg-weighted-power">—</span>
                     </div>
                 </div>
-                <div class="strava-charts-row">
+                <div id="strava-charts-nav" class="strava-charts-nav" hidden>
+                    <button type="button" class="btn btn-secondary btn-small strava-charts-nav-btn" id="strava-charts-nav-prev" aria-label="Show earlier 30 days">← Earlier</button>
+                    <span id="strava-charts-nav-label" class="strava-charts-nav-label"></span>
+                    <button type="button" class="btn btn-secondary btn-small strava-charts-nav-btn" id="strava-charts-nav-next" aria-label="Show later 30 days">Later →</button>
+                </div>
+                <div id="strava-charts-row" class="strava-charts-row">
                     <div id="strava-power-chart-wrap" class="strava-power-chart-wrap strava-power-chart-wrap--empty">
                         <div class="strava-chart-panel-title">Power</div>
                         <div class="strava-power-chart-legend">
