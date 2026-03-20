@@ -24,6 +24,9 @@
     /* Power trend chart: orange vs blue for clear distinction */
     --power-chart-avg: #ea580c;
     --power-chart-weighted: #2563eb;
+    /* Heart rate chart: magenta vs teal */
+    --hr-chart-avg: #a21caf;
+    --hr-chart-max: #0d9488;
 }
 
 body {
@@ -1155,11 +1158,47 @@ a.btn-strava:visited {
     filter: brightness(0) invert(1);
 }
 
+/* Strava trend charts row: stacked on small screens, side-by-side on desktop */
+.strava-charts-row {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.strava-charts-row > .strava-power-chart-wrap,
+.strava-charts-row > .strava-hr-chart-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+@media (min-width: 900px) {
+    .strava-charts-row {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 28px;
+    }
+
+    .strava-charts-row > .strava-hr-chart-wrap {
+        padding-left: 28px;
+        border-left: 1px solid var(--border);
+    }
+}
+
+.strava-chart-panel-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
 /* Strava power trend chart (dashboard) */
 .strava-power-chart-wrap {
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
 }
 
 .strava-power-chart-wrap--empty .strava-power-chart-legend,
@@ -1208,7 +1247,8 @@ a.btn-strava:visited {
     overflow: hidden;
 }
 
-.strava-power-chart-tooltip {
+.strava-power-chart-tooltip,
+.strava-hr-chart-tooltip {
     position: absolute;
     z-index: 20;
     min-width: 160px;
@@ -1271,6 +1311,28 @@ a.btn-strava:visited {
     vertical-align: middle;
     border-radius: 1px;
     background: var(--power-chart-weighted);
+}
+
+.strava-hr-tooltip-label--avg::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border-radius: 1px;
+    background: var(--hr-chart-avg);
+}
+
+.strava-hr-tooltip-label--max::before {
+    content: '';
+    display: inline-block;
+    width: 10px;
+    height: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border-radius: 1px;
+    background: var(--hr-chart-max);
 }
 
 .strava-power-tooltip-value {
@@ -1363,6 +1425,136 @@ a.btn-strava:visited {
 .strava-power-dot--weighted {
     fill: var(--background);
     stroke: var(--power-chart-weighted);
+    stroke-width: 2;
+}
+
+/* Strava heart rate trend chart */
+.strava-hr-chart-wrap {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+.strava-hr-chart-wrap--empty .strava-hr-chart-legend,
+.strava-hr-chart-wrap--empty .strava-hr-chart-inner {
+    display: none;
+}
+
+.strava-hr-chart-wrap--empty .strava-hr-chart-empty {
+    display: block;
+}
+
+.strava-hr-chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.strava-hr-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.strava-hr-legend-swatch {
+    width: 14px;
+    height: 3px;
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+
+.strava-hr-legend-avg .strava-hr-legend-swatch {
+    background: var(--hr-chart-avg);
+}
+
+.strava-hr-legend-max .strava-hr-legend-swatch {
+    background: var(--hr-chart-max);
+}
+
+.strava-hr-chart-inner {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.strava-hr-hit {
+    cursor: pointer;
+}
+
+.strava-hr-marker-group--hover .strava-hr-dot {
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.25));
+}
+
+.strava-hr-marker-group--hover .strava-hr-dot--avg,
+.strava-hr-marker-group--hover .strava-hr-dot--max {
+    stroke-width: 2.5;
+}
+
+.strava-hr-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    max-height: 280px;
+}
+
+.strava-hr-chart-empty {
+    display: none;
+    margin: 0;
+    padding: 12px 0 4px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.strava-hr-chart-grid {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+}
+
+.strava-hr-chart-plot-border {
+    stroke: var(--border);
+    stroke-width: 1;
+}
+
+.strava-hr-chart-axis-text {
+    fill: var(--text-secondary);
+    font-size: 11px;
+}
+
+.strava-hr-chart-axis-label {
+    fill: var(--text-secondary);
+    font-size: 11px;
+}
+
+.strava-hr-line--avg {
+    stroke: var(--hr-chart-avg);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.strava-hr-line--max {
+    stroke: var(--hr-chart-max);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.strava-hr-dot--avg {
+    fill: var(--background);
+    stroke: var(--hr-chart-avg);
+    stroke-width: 2;
+}
+
+.strava-hr-dot--max {
+    fill: var(--background);
+    stroke: var(--hr-chart-max);
     stroke-width: 2;
 }
 

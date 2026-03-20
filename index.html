@@ -203,11 +203,11 @@
                         <span class="stat-value-inline" id="strava-total-calories">0</span>
                     </div>
                 </div>
-                <h4 class="stats-section-subtitle">Power (linked activities)</h4>
+                <h4 class="stats-section-subtitle">Power &amp; heart rate (linked activities)</h4>
                 <div class="stats-grid">
                     <div class="stat-card-compact">
-                        <span class="stat-label-inline">Rides w/ power:</span>
-                        <span class="stat-value-inline" id="strava-power-rides-count">0</span>
+                        <span class="stat-label-inline">Avg heart rate:</span>
+                        <span class="stat-value-inline" id="strava-avg-heartrate">—</span>
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Avg power:</span>
@@ -218,15 +218,29 @@
                         <span class="stat-value-inline" id="strava-avg-weighted-power">—</span>
                     </div>
                 </div>
-                <div id="strava-power-chart-wrap" class="strava-power-chart-wrap strava-power-chart-wrap--empty">
-                    <div class="strava-power-chart-legend">
-                        <span class="strava-power-legend-item strava-power-legend-avg"><span class="strava-power-legend-swatch"></span>Avg power</span>
-                        <span class="strava-power-legend-item strava-power-legend-weighted"><span class="strava-power-legend-swatch"></span>Weighted avg</span>
+                <div class="strava-charts-row">
+                    <div id="strava-power-chart-wrap" class="strava-power-chart-wrap strava-power-chart-wrap--empty">
+                        <div class="strava-chart-panel-title">Power</div>
+                        <div class="strava-power-chart-legend">
+                            <span class="strava-power-legend-item strava-power-legend-avg"><span class="strava-power-legend-swatch"></span>Avg power</span>
+                            <span class="strava-power-legend-item strava-power-legend-weighted"><span class="strava-power-legend-swatch"></span>Weighted avg</span>
+                        </div>
+                        <div class="strava-power-chart-inner">
+                            <svg id="strava-power-chart" class="strava-power-chart" role="img" aria-label="Average and weighted average power over linked Strava activities by date"></svg>
+                        </div>
+                        <p id="strava-power-chart-empty" class="strava-power-chart-empty">Link Strava activities with power data to see this chart.</p>
                     </div>
-                    <div class="strava-power-chart-inner">
-                        <svg id="strava-power-chart" class="strava-power-chart" role="img" aria-label="Average and weighted average power over linked Strava activities by date"></svg>
+                    <div id="strava-hr-chart-wrap" class="strava-hr-chart-wrap strava-hr-chart-wrap--empty">
+                        <div class="strava-chart-panel-title">Heart rate</div>
+                        <div class="strava-hr-chart-legend">
+                            <span class="strava-hr-legend-item strava-hr-legend-avg"><span class="strava-hr-legend-swatch"></span>Avg HR</span>
+                            <span class="strava-hr-legend-item strava-hr-legend-max"><span class="strava-hr-legend-swatch"></span>Max HR</span>
+                        </div>
+                        <div class="strava-hr-chart-inner">
+                            <svg id="strava-hr-chart" class="strava-hr-chart" role="img" aria-label="Average and maximum heart rate over linked Strava activities by date"></svg>
+                        </div>
+                        <p id="strava-hr-chart-empty" class="strava-hr-chart-empty">Link Strava activities with heart rate data to see this chart.</p>
                     </div>
-                    <p id="strava-power-chart-empty" class="strava-power-chart-empty">Link Strava activities with power data to see trends.</p>
                 </div>
             </div>
         </div>
