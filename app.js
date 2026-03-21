@@ -1112,14 +1112,16 @@ function renderRoutes() {
         
         // Sort routes within each map by current sort option
         const routesInMap = grouped[map].sort((a, b) => compareRoutes(a, b, completionOrderMap));
-        const completedInMap = routesInMap.filter(r => completedRoutes.has(r.route)).length;
-        
+        const allRoutesInThisMap = routes.filter(r => r.map === map);
+        const totalRoutesInMap = allRoutesInThisMap.length;
+        const completedInMap = allRoutesInThisMap.filter(r => completedRoutes.has(r.route)).length;
+
         const header = document.createElement('div');
         header.className = 'map-header';
         header.innerHTML = `
             <div>
                 <div class="map-title">${map}</div>
-                <div class="map-stats">${completedInMap} / ${routesInMap.length} completed</div>
+                <div class="map-stats">${completedInMap} / ${totalRoutesInMap} completed</div>
             </div>
             <span class="collapse-icon">▼</span>
         `;
