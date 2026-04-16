@@ -1388,6 +1388,24 @@ a.btn-strava:visited {
     white-space: nowrap;
 }
 
+.strava-power-tooltip-day-block + .strava-power-tooltip-day-block {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.strava-power-tooltip-day-block:first-of-type {
+    margin-top: 6px;
+}
+
+.strava-power-day-range,
+.strava-hr-day-range {
+    stroke: var(--border);
+    stroke-width: 2;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
 .strava-power-hit {
     cursor: pointer;
 }
