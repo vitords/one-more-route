@@ -73,7 +73,10 @@
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Completed:</span>
-                        <span class="stat-value-inline" id="completed-distance">0.0 km</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="completed-distance">0.0 km</span>
+                            <span class="stat-stat-secondary" id="completed-distance-pct"></span>
+                        </span>
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Remaining:</span>
@@ -100,7 +103,10 @@
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Completed:</span>
-                        <span class="stat-value-inline" id="completed-distance-leadin">0.0 km</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="completed-distance-leadin">0.0 km</span>
+                            <span class="stat-stat-secondary" id="completed-distance-leadin-pct"></span>
+                        </span>
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Remaining:</span>
@@ -131,7 +137,10 @@
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Completed:</span>
-                        <span class="stat-value-inline" id="completed-elevation">0 m</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="completed-elevation">0 m</span>
+                            <span class="stat-stat-secondary" id="completed-elevation-pct"></span>
+                        </span>
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Remaining:</span>
@@ -158,7 +167,10 @@
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Completed:</span>
-                        <span class="stat-value-inline" id="completed-elevation-leadin">0 m</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="completed-elevation-leadin">0 m</span>
+                            <span class="stat-stat-secondary" id="completed-elevation-leadin-pct"></span>
+                        </span>
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Remaining:</span>
@@ -178,6 +190,43 @@
                     </div>
                 </div>
             </div>
+
+            <div class="stats-section">
+                <h3 class="stats-section-title">Estimated ride time (Zwift Insider)</h3>
+                <!-- <h4 class="stats-section-subtitle" data-tooltip="Model-based times from Zwift Insider (ZIMetrics), not your Strava moving time. Profile graphics are by ZwiftHub. Re-run npm run scrape:zwift-insider to refresh.">Planning power</h4> -->
+                <div class="planning-wkg-row">
+                    <label for="planning-wkg-select" class="planning-wkg-label">W/kg for totals:</label>
+                    <select id="planning-wkg-select" class="planning-wkg-select" aria-label="W per kg for estimated time totals">
+                        <option value="2">2 W/kg</option>
+                        <option value="3">3 W/kg</option>
+                        <option value="4">4 W/kg</option>
+                    </select>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Total:</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="zi-estimated-total-hm">—</span>
+                            <span class="stat-duration-dhm" id="zi-estimated-total-dhm"></span>
+                        </span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Completed:</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="zi-estimated-completed-hm">—</span>
+                            <span class="stat-duration-dhm" id="zi-estimated-completed-dhm"></span>
+                        </span>
+                    </div>
+                    <div class="stat-card-compact">
+                        <span class="stat-label-inline">Remaining:</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="zi-estimated-remaining-hm">—</span>
+                            <span class="stat-duration-dhm" id="zi-estimated-remaining-dhm"></span>
+                        </span>
+                    </div>
+                </div>
+                <p class="zi-estimated-meta" id="zi-estimated-meta"></p>
+            </div>
             
             <div class="stats-section">
                 <h3 class="stats-section-title">Strava Activities</h3>
@@ -192,11 +241,17 @@
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Moving Time:</span>
-                        <span class="stat-value-inline" id="strava-total-moving-time">0:00</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="strava-total-moving-time-hm">—</span>
+                            <span class="stat-duration-dhm" id="strava-total-moving-time-dhm"></span>
+                        </span>
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Elapsed Time:</span>
-                        <span class="stat-value-inline" id="strava-total-elapsed-time">0:00</span>
+                        <span class="stat-value-inline stat-value-dual">
+                            <span id="strava-total-elapsed-time-hm">—</span>
+                            <span class="stat-duration-dhm" id="strava-total-elapsed-time-dhm"></span>
+                        </span>
                     </div>
                     <div class="stat-card-compact">
                         <span class="stat-label-inline">Calories:</span>
@@ -264,6 +319,9 @@
                         <option value="totalDistance">Total distance</option>
                         <option value="routeElevation">Route elevation</option>
                         <option value="totalElevation">Total elevation</option>
+                        <option value="estimatedTime2Wkg">Est. time (2 W/kg)</option>
+                        <option value="estimatedTime3Wkg">Est. time (3 W/kg)</option>
+                        <option value="estimatedTime4Wkg">Est. time (4 W/kg)</option>
                         <option value="completionOrder">Completion order</option>
                     </select>
                     <button type="button" id="sort-direction-btn" class="sort-direction-btn" aria-label="Toggle sort direction" title="Toggle sort direction">

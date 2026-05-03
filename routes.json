@@ -6,16 +6,24 @@
     "elevation": 155,
     "leadIn": 3.1,
     "leadInElevation": 108,
-    "totalDistance": 26.0,
+    "totalDistance": 26,
     "totalElevation": 263,
     "climbRate": 6.8,
     "difficulty": "2 / 5",
-    "xp": 460
+    "xp": 460,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/roule-ma-poule/",
+    "timeEstimatesMinutes": {
+      "2": 56,
+      "3": 45,
+      "4": 40
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/roule-ma-poule.png"
   },
   {
     "route": "Douce France",
     "map": "France",
-    "length": 24.0,
+    "length": 24,
     "elevation": 133,
     "leadIn": 0.8,
     "leadInElevation": 3,
@@ -23,7 +31,15 @@
     "totalElevation": 137,
     "climbRate": 5.6,
     "difficulty": "2 / 5",
-    "xp": 465
+    "xp": 465,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/douce-france/",
+    "timeEstimatesMinutes": {
+      "2": 44,
+      "3": 37,
+      "4": 33
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/douce-france-1.png"
   },
   {
     "route": "La Reine",
@@ -36,12 +52,19 @@
     "totalElevation": 1201,
     "climbRate": 53.5,
     "difficulty": "3.5 / 5",
-    "xp": 460
+    "xp": 460,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/la-reine/",
+    "timeEstimatesMinutes": {
+      "2": 120,
+      "3": 84,
+      "4": 67
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/la-reine.png"
   },
   {
     "route": "R.G.V.",
     "map": "France",
-    "length": 24.0,
+    "length": 24,
     "elevation": 133,
     "leadIn": 0.9,
     "leadInElevation": 0,
@@ -49,7 +72,15 @@
     "totalElevation": 133,
     "climbRate": 5.6,
     "difficulty": "2 / 5",
-    "xp": 480
+    "xp": 480,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/rgv/",
+    "timeEstimatesMinutes": {
+      "2": 46,
+      "3": 38,
+      "4": 34
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/r-g-v.png"
   },
   {
     "route": "Tire-Bouchon",
@@ -62,7 +93,15 @@
     "totalElevation": 587,
     "climbRate": 7.9,
     "difficulty": "3.5 / 5",
-    "xp": 1220
+    "xp": 1220,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/tire-bouchon/",
+    "timeEstimatesMinutes": {
+      "2": 132,
+      "3": 106,
+      "4": 95
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/tire-bouchon.png"
   },
   {
     "route": "Ven-Top",
@@ -73,9 +112,16 @@
     "leadInElevation": 0,
     "totalDistance": 20.9,
     "totalElevation": 1535,
-    "climbRate": 74.0,
+    "climbRate": 74,
     "difficulty": "4.5 / 5",
-    "xp": 415
+    "xp": 415,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/ven-top/",
+    "timeEstimatesMinutes": {
+      "2": 143,
+      "3": 98,
+      "4": 77
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/ven-top.png"
   },
   {
     "route": "Petit Boucle",
@@ -86,9 +132,17 @@
     "leadInElevation": 0,
     "totalDistance": 61.7,
     "totalElevation": 483,
-    "climbRate": 8.0,
+    "climbRate": 8,
     "difficulty": "3.5 / 5",
-    "xp": 1220
+    "xp": 1220,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/petit-boucle/",
+    "timeEstimatesMinutes": {
+      "2": 120,
+      "3": 98,
+      "4": 89
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/petit-boucle.png"
   },
   {
     "route": "Casse-Pattes",
@@ -101,7 +155,15 @@
     "totalElevation": 155,
     "climbRate": 6.8,
     "difficulty": "2 / 5",
-    "xp": 460
+    "xp": 460,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/casse-pattes/",
+    "timeEstimatesMinutes": {
+      "2": 45,
+      "3": 37,
+      "4": 34
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/casse-pattes.png"
   },
   {
     "route": "Petite Douleur",
@@ -112,9 +174,17 @@
     "leadInElevation": 192,
     "totalDistance": 24.8,
     "totalElevation": 387,
-    "climbRate": 14.0,
+    "climbRate": 14,
     "difficulty": "3 / 5",
-    "xp": 280
+    "xp": 280,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/petite-douleur/",
+    "timeEstimatesMinutes": {
+      "2": 62,
+      "3": 48,
+      "4": 42
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/Petite-Douleur.png"
   },
   {
     "route": "Sacre Bleu",
@@ -127,7 +197,15 @@
     "totalElevation": 411,
     "climbRate": 5.6,
     "difficulty": "3 / 5",
-    "xp": 1425
+    "xp": 1425,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/sacre-bleu/",
+    "timeEstimatesMinutes": {
+      "2": 132,
+      "3": 110,
+      "4": 99
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/sacre_bleu.png"
   },
   {
     "route": "Three Musketeers",
@@ -140,20 +218,35 @@
     "totalElevation": 209,
     "climbRate": 5.5,
     "difficulty": "3 / 5",
-    "xp": 705
+    "xp": 705,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/three-musketeers/",
+    "timeEstimatesMinutes": {
+      "2": 70,
+      "3": 58,
+      "4": 52
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/three_musketeers.png"
   },
   {
     "route": "Ven-10",
     "map": "France",
-    "length": 10.0,
+    "length": 10,
     "elevation": 780,
     "leadIn": 1.4,
     "leadInElevation": 37,
     "totalDistance": 11.4,
     "totalElevation": 817,
-    "climbRate": 78.0,
+    "climbRate": 78,
     "difficulty": "4 / 5",
-    "xp": 200
+    "xp": 200,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/ven-10/",
+    "timeEstimatesMinutes": {
+      "2": 76,
+      "3": 52,
+      "4": 41
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/ven_10.png"
   },
   {
     "route": "Gentil 8",
@@ -166,7 +259,15 @@
     "totalElevation": 258,
     "climbRate": 10.5,
     "difficulty": "2 / 5",
-    "xp": 465
+    "xp": 465,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/gentil-8/",
+    "timeEstimatesMinutes": {
+      "2": 49,
+      "3": 40,
+      "4": 36
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/gentil_8.png"
   },
   {
     "route": "Croissant",
@@ -179,7 +280,15 @@
     "totalElevation": 73,
     "climbRate": 5.3,
     "difficulty": "2 / 5",
-    "xp": 185
+    "xp": 185,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/croissant/",
+    "timeEstimatesMinutes": {
+      "2": 24,
+      "3": 20,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/croissant.png"
   },
   {
     "route": "Hell of the North",
@@ -192,7 +301,14 @@
     "totalElevation": 241,
     "climbRate": 12.2,
     "difficulty": "3 / 5",
-    "xp": 395
+    "xp": 395,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/hell-of-the-north/",
+    "timeEstimatesMinutes": {
+      "2": 46,
+      "3": 36,
+      "4": 32
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/hell_of_the_north.png"
   },
   {
     "route": "Bon Voyage",
@@ -205,7 +321,14 @@
     "totalElevation": 155,
     "climbRate": 4.7,
     "difficulty": "2 / 5",
-    "xp": 565
+    "xp": 565,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/bon-voyage/",
+    "timeEstimatesMinutes": {
+      "2": 57,
+      "3": 48,
+      "4": 43
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/bon_voyage.png"
   },
   {
     "route": "Knights of the Roundabout",
@@ -218,7 +341,15 @@
     "totalElevation": 359,
     "climbRate": 6.6,
     "difficulty": "4 / 5",
-    "xp": 1025
+    "xp": 1025,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/knights-of-the-roundabout/",
+    "timeEstimatesMinutes": {
+      "2": 103,
+      "3": 85,
+      "4": 77
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/kights_of_the_roundtable.png"
   },
   {
     "route": "Lutscher",
@@ -231,7 +362,15 @@
     "totalElevation": 829,
     "climbRate": 29.3,
     "difficulty": "3 / 5",
-    "xp": 270
+    "xp": 270,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/lutscher/",
+    "timeEstimatesMinutes": {
+      "2": 88,
+      "3": 64,
+      "4": 55
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/lutscher-zwifthub.png"
   },
   {
     "route": "Innsbruckring",
@@ -240,11 +379,19 @@
     "elevation": 77,
     "leadIn": 0.2,
     "leadInElevation": 1,
-    "totalDistance": 9.0,
+    "totalDistance": 9,
     "totalElevation": 78,
     "climbRate": 8.8,
     "difficulty": "1 / 5",
-    "xp": 170
+    "xp": 170,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/innsbruckring/",
+    "timeEstimatesMinutes": {
+      "2": 18,
+      "3": 15,
+      "4": 13
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/04/Update_Innsbruckring_km.png"
   },
   {
     "route": "2018 UCI Worlds Course Short Lap",
@@ -257,7 +404,15 @@
     "totalElevation": 496,
     "climbRate": 20.9,
     "difficulty": "3.5 / 5",
-    "xp": 470
+    "xp": 470,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/2018-worlds-short-lap/",
+    "timeEstimatesMinutes": {
+      "2": 61,
+      "3": 47,
+      "4": 42
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/2018-uci-worlds-course-short-lap-zwifthub.png"
   },
   {
     "route": "Lutscher CCW",
@@ -270,7 +425,15 @@
     "totalElevation": 827,
     "climbRate": 29.2,
     "difficulty": "3 / 5",
-    "xp": 270
+    "xp": 270,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/lutscher-ccw/",
+    "timeEstimatesMinutes": {
+      "2": 85,
+      "3": 62,
+      "4": 52
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/lutscher-ccw-zwifthub.png"
   },
   {
     "route": "Achterbahn",
@@ -283,12 +446,20 @@
     "totalElevation": 990,
     "climbRate": 20.9,
     "difficulty": "4.5 / 5",
-    "xp": 950
+    "xp": 950,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/achterbahn/",
+    "timeEstimatesMinutes": {
+      "2": 122,
+      "3": 94,
+      "4": 83
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/achterbahn-zwifthub.png"
   },
   {
     "route": "Innsbruck KOM After Party",
     "map": "Innsbruck",
-    "length": 37.0,
+    "length": 37,
     "elevation": 657,
     "leadIn": 0.2,
     "leadInElevation": 1,
@@ -296,7 +467,13 @@
     "totalElevation": 658,
     "climbRate": 17.8,
     "difficulty": "3.5 / 5",
-    "xp": 740
+    "xp": 740,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/innsbruck-kom-after-party/",
+    "timeEstimatesMinutes": {
+      "2": 100,
+      "3": 76,
+      "4": 66
+    }
   },
   {
     "route": "The PRL Half",
@@ -309,7 +486,14 @@
     "totalElevation": 1014,
     "climbRate": 14.6,
     "difficulty": "4.5 / 5",
-    "xp": 1380
+    "xp": 1380,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-prl-half/",
+    "timeEstimatesMinutes": {
+      "2": 158,
+      "3": 124,
+      "4": 111
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/the-prl-half-zwifthub.png"
   },
   {
     "route": "London Loop",
@@ -322,7 +506,15 @@
     "totalElevation": 235,
     "climbRate": 15.5,
     "difficulty": "2 / 5",
-    "xp": 300
+    "xp": 300,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/london-loop/",
+    "timeEstimatesMinutes": {
+      "2": 36,
+      "3": 28,
+      "4": 25
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/london-loop-zwifthub.png"
   },
   {
     "route": "The PRL Full",
@@ -335,7 +527,14 @@
     "totalElevation": 2628,
     "climbRate": 15.1,
     "difficulty": "5 / 5",
-    "xp": 3460
+    "xp": 3460,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-prl-full/",
+    "timeEstimatesMinutes": {
+      "2": 397,
+      "3": 313,
+      "4": 280
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/london-the-prl-full-zwifthub.png"
   },
   {
     "route": "London Classique",
@@ -348,7 +547,15 @@
     "totalElevation": 70,
     "climbRate": 4.6,
     "difficulty": "1 / 5",
-    "xp": 110
+    "xp": 110,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/london-classique/",
+    "timeEstimatesMinutes": {
+      "2": 21,
+      "3": 17,
+      "4": 15
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/london-classique-zwifthub.png"
   },
   {
     "route": "London 8",
@@ -361,7 +568,15 @@
     "totalElevation": 260,
     "climbRate": 12.6,
     "difficulty": "2.5 / 5",
-    "xp": 410
+    "xp": 410,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/london-8/",
+    "timeEstimatesMinutes": {
+      "2": 44,
+      "3": 35,
+      "4": 32
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/london-8-zwifthub.png"
   },
   {
     "route": "Greater London 8",
@@ -374,12 +589,20 @@
     "totalElevation": 280,
     "climbRate": 11.6,
     "difficulty": "2.5 / 5",
-    "xp": 480
+    "xp": 480,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/greater-london-8/",
+    "timeEstimatesMinutes": {
+      "2": 52,
+      "3": 42,
+      "4": 37
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/greater-london-8-zwifthub.png"
   },
   {
     "route": "Greater London Loop",
     "map": "London",
-    "length": 21.0,
+    "length": 21,
     "elevation": 255,
     "leadIn": 0.5,
     "leadInElevation": 4,
@@ -387,7 +610,15 @@
     "totalElevation": 260,
     "climbRate": 12.1,
     "difficulty": "2.5 / 5",
-    "xp": 420
+    "xp": 420,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/greater-london-loop/",
+    "timeEstimatesMinutes": {
+      "2": 45,
+      "3": 36,
+      "4": 33
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/greater-london-loop-zwifthub.png"
   },
   {
     "route": "The London Pretzel",
@@ -400,7 +631,15 @@
     "totalElevation": 576,
     "climbRate": 10.3,
     "difficulty": "3.5 / 5",
-    "xp": 1100
+    "xp": 1100,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-london-pretzel/",
+    "timeEstimatesMinutes": {
+      "2": 116,
+      "3": 94,
+      "4": 84
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/the-london-pretzel-zwifthub.png"
   },
   {
     "route": "Greater London Flat",
@@ -413,7 +652,15 @@
     "totalElevation": 98,
     "climbRate": 4.6,
     "difficulty": "1 / 5",
-    "xp": 230
+    "xp": 230,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/greater-london-flat/",
+    "timeEstimatesMinutes": {
+      "2": 31,
+      "3": 26,
+      "4": 24
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/greater-london-flat-zwifthub.png"
   },
   {
     "route": "Greatest London Flat",
@@ -422,24 +669,40 @@
     "elevation": 164,
     "leadIn": 7.4,
     "leadInElevation": 59,
-    "totalDistance": 31.0,
+    "totalDistance": 31,
     "totalElevation": 222,
     "climbRate": 6.9,
     "difficulty": "2 / 5",
-    "xp": 500
+    "xp": 500,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/greatest-london-flat/",
+    "timeEstimatesMinutes": {
+      "2": 61,
+      "3": 50,
+      "4": 45
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/greatest-london-flat-zwifthub.png"
   },
   {
     "route": "Surrey Hills",
     "map": "London",
     "length": 39.1,
     "elevation": 877,
-    "leadIn": 5.0,
+    "leadIn": 5,
     "leadInElevation": 156,
     "totalDistance": 44.1,
     "totalElevation": 1034,
     "climbRate": 22.4,
     "difficulty": "4 / 5",
-    "xp": 820
+    "xp": 820,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/surrey-hills/",
+    "timeEstimatesMinutes": {
+      "2": 120,
+      "3": 91,
+      "4": 80
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/surrey-hills-zwifthub.png"
   },
   {
     "route": "Greatest London Loop",
@@ -452,7 +715,15 @@
     "totalElevation": 360,
     "climbRate": 13.8,
     "difficulty": "3 / 5",
-    "xp": 510
+    "xp": 510,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/greatest-london-loop/",
+    "timeEstimatesMinutes": {
+      "2": 58,
+      "3": 46,
+      "4": 41
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/greatest-london-loop-zwifthub.png"
   },
   {
     "route": "Triple Loops",
@@ -465,12 +736,20 @@
     "totalElevation": 569,
     "climbRate": 13.8,
     "difficulty": "3.5 / 5",
-    "xp": 810
+    "xp": 810,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/triple-loops/",
+    "timeEstimatesMinutes": {
+      "2": 92,
+      "3": 73,
+      "4": 65
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/london-triple-loops-zwifthub.png"
   },
   {
     "route": "London Flat",
     "map": "London",
-    "length": 12.0,
+    "length": 12,
     "elevation": 115,
     "leadIn": 0.4,
     "leadInElevation": 1,
@@ -478,7 +757,15 @@
     "totalElevation": 115,
     "climbRate": 9.6,
     "difficulty": "1 / 5",
-    "xp": 240
+    "xp": 240,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/london-flat/",
+    "timeEstimatesMinutes": {
+      "2": 25,
+      "3": 20,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/London-Flat.png"
   },
   {
     "route": "London Uprising",
@@ -491,7 +778,14 @@
     "totalElevation": 357,
     "climbRate": 17.3,
     "difficulty": "2 / 5",
-    "xp": 420
+    "xp": 420,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/london-uprising/",
+    "timeEstimatesMinutes": {
+      "2": 50,
+      "3": 39,
+      "4": 35
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/London-Uprising.png"
   },
   {
     "route": "London Calling",
@@ -504,7 +798,14 @@
     "totalElevation": 211,
     "climbRate": 6.6,
     "difficulty": "2 / 5",
-    "xp": 625
+    "xp": 625,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/london-calling/",
+    "timeEstimatesMinutes": {
+      "2": 60,
+      "3": 49,
+      "4": 45
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Sea to Tree",
@@ -517,7 +818,14 @@
     "totalElevation": 121,
     "climbRate": 32.8,
     "difficulty": "1.5 / 5",
-    "xp": 65
+    "xp": 65,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/sea-to-tree/",
+    "timeEstimatesMinutes": {
+      "2": 14,
+      "3": 11,
+      "4": 8.7
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/10/sea-to-tree.png"
   },
   {
     "route": "Kappa Quest",
@@ -530,7 +838,15 @@
     "totalElevation": 261,
     "climbRate": 15.4,
     "difficulty": "2 / 5",
-    "xp": 180
+    "xp": 180,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/kappa-quest/",
+    "timeEstimatesMinutes": {
+      "2": 36,
+      "3": 27,
+      "4": 24
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/10/kappa-quest.png"
   },
   {
     "route": "Chain Chomper",
@@ -539,11 +855,19 @@
     "elevation": 183,
     "leadIn": 2.4,
     "leadInElevation": 5,
-    "totalDistance": 16.0,
+    "totalDistance": 16,
     "totalElevation": 189,
     "climbRate": 13.5,
     "difficulty": "2 / 5",
-    "xp": 270
+    "xp": 270,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/chain-chomper/",
+    "timeEstimatesMinutes": {
+      "2": 33,
+      "3": 27,
+      "4": 24
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/10/chain-chomper.png"
   },
   {
     "route": "Countryside Tour",
@@ -556,7 +880,15 @@
     "totalElevation": 185,
     "climbRate": 11.7,
     "difficulty": "2 / 5",
-    "xp": 310
+    "xp": 310,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/countryside-tour/",
+    "timeEstimatesMinutes": {
+      "2": 34,
+      "3": 27,
+      "4": 25
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/10/countryside-tour.png"
   },
   {
     "route": "Flatland Loop",
@@ -569,7 +901,15 @@
     "totalElevation": 100,
     "climbRate": 7.7,
     "difficulty": "1.5 / 5",
-    "xp": 260
+    "xp": 260,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/flatland-loop/",
+    "timeEstimatesMinutes": {
+      "2": 25,
+      "3": 21,
+      "4": 19
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/05/flatland-loop.png"
   },
   {
     "route": "Two Village Loop",
@@ -578,11 +918,19 @@
     "elevation": 88,
     "leadIn": 0.2,
     "leadInElevation": 0,
-    "totalDistance": 13.0,
+    "totalDistance": 13,
     "totalElevation": 88,
     "climbRate": 6.9,
     "difficulty": "1.5 / 5",
-    "xp": 255
+    "xp": 255,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/two-village-loop/",
+    "timeEstimatesMinutes": {
+      "2": 25,
+      "3": 20,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/10/two-village-loop.png"
   },
   {
     "route": "Spirit Forest",
@@ -593,9 +941,16 @@
     "leadInElevation": 122,
     "totalDistance": 13.1,
     "totalElevation": 257,
-    "climbRate": 16.0,
+    "climbRate": 16,
     "difficulty": "2 / 5",
-    "xp": 165
+    "xp": 165,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/spirit-forest/",
+    "timeEstimatesMinutes": {
+      "2": 35,
+      "3": 27,
+      "4": 23
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/10/spirit-forest.jpg"
   },
   {
     "route": "Three Village Loop",
@@ -608,7 +963,15 @@
     "totalElevation": 98,
     "climbRate": 8.8,
     "difficulty": "1.5 / 5",
-    "xp": 210
+    "xp": 210,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/three-village-loop/",
+    "timeEstimatesMinutes": {
+      "2": 24,
+      "3": 20,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/10/three-village-loop.png"
   },
   {
     "route": "Kappa Quest Reverse",
@@ -621,7 +984,15 @@
     "totalElevation": 270,
     "climbRate": 15.4,
     "difficulty": "2 / 5",
-    "xp": 180
+    "xp": 180,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/kappa-quest-reverse/",
+    "timeEstimatesMinutes": {
+      "2": 38,
+      "3": 29,
+      "4": 25
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/08/route101.png"
   },
   {
     "route": "Suki's Playground",
@@ -634,12 +1005,20 @@
     "totalElevation": 150,
     "climbRate": 8.2,
     "difficulty": "2 / 5",
-    "xp": 365
+    "xp": 365,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/sukis-playground/",
+    "timeEstimatesMinutes": {
+      "2": 36,
+      "3": 30,
+      "4": 27
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/08/route100.png"
   },
   {
     "route": "Valley to Mountaintop",
     "map": "Makuri",
-    "length": 5.0,
+    "length": 5,
     "elevation": 130,
     "leadIn": 0.1,
     "leadInElevation": 0,
@@ -647,7 +1026,14 @@
     "totalElevation": 131,
     "climbRate": 26.1,
     "difficulty": "1.5 / 5",
-    "xp": 100
+    "xp": 100,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/valley-to-mountaintop/",
+    "timeEstimatesMinutes": {
+      "2": 17,
+      "3": 13,
+      "4": 11
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/08/valley-to-mountaintop.png"
   },
   {
     "route": "Farmland Loop",
@@ -656,11 +1042,18 @@
     "elevation": 57,
     "leadIn": 0.2,
     "leadInElevation": 0,
-    "totalDistance": 8.0,
+    "totalDistance": 8,
     "totalElevation": 58,
     "climbRate": 7.4,
     "difficulty": "1.5 / 5",
-    "xp": 155
+    "xp": 155,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/farmland-loop/",
+    "timeEstimatesMinutes": {
+      "2": 15,
+      "3": 13,
+      "4": 12
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Railways and Rooftops",
@@ -673,7 +1066,15 @@
     "totalElevation": 92,
     "climbRate": 11.4,
     "difficulty": "1 / 5",
-    "xp": 120
+    "xp": 120,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/railways-and-rooftops/",
+    "timeEstimatesMinutes": {
+      "2": 18,
+      "3": 14,
+      "4": 13
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/11/railways-and-rooftops-zwift-insider.png"
   },
   {
     "route": "Neokyo All-Nighter",
@@ -686,7 +1087,15 @@
     "totalElevation": 168,
     "climbRate": 6.9,
     "difficulty": "2 / 5",
-    "xp": 490
+    "xp": 490,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/neokyo-all-nighter/",
+    "timeEstimatesMinutes": {
+      "2": 47,
+      "3": 38,
+      "4": 35
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/11/neokyo-all-nighter-zwift-insider.png"
   },
   {
     "route": "Temples and Towers",
@@ -699,7 +1108,15 @@
     "totalElevation": 319,
     "climbRate": 9.8,
     "difficulty": "2.5 / 5",
-    "xp": 650
+    "xp": 650,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/temples-and-towers/",
+    "timeEstimatesMinutes": {
+      "2": 68,
+      "3": 55,
+      "4": 49
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/11/temples-and-towers.png"
   },
   {
     "route": "Sleepless City",
@@ -712,7 +1129,15 @@
     "totalElevation": 42,
     "climbRate": 4.4,
     "difficulty": "1.5 / 5",
-    "xp": 190
+    "xp": 190,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/sleepless-city/",
+    "timeEstimatesMinutes": {
+      "2": 17,
+      "3": 14,
+      "4": 13
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/11/sleepless-city-zwift-insider.png"
   },
   {
     "route": "Sprinter's Playground",
@@ -725,7 +1150,15 @@
     "totalElevation": 67,
     "climbRate": 5.5,
     "difficulty": "1.5 / 5",
-    "xp": 250
+    "xp": 250,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/sprinters-playground/",
+    "timeEstimatesMinutes": {
+      "2": 23,
+      "3": 19,
+      "4": 17
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/11/sprinters-playground-zwift-insider.png"
   },
   {
     "route": "Neon Flats",
@@ -734,11 +1167,19 @@
     "elevation": 72,
     "leadIn": 0.3,
     "leadInElevation": 0,
-    "totalDistance": 15.0,
+    "totalDistance": 15,
     "totalElevation": 72,
     "climbRate": 4.9,
     "difficulty": "1.5 / 5",
-    "xp": 290
+    "xp": 290,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/neon-flats/",
+    "timeEstimatesMinutes": {
+      "2": 27,
+      "3": 22,
+      "4": 20
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/11/neon-flats-zwift-insider.png"
   },
   {
     "route": "Rooftop Rendezvous",
@@ -749,9 +1190,17 @@
     "leadInElevation": 26,
     "totalDistance": 6.7,
     "totalElevation": 82,
-    "climbRate": 15.0,
+    "climbRate": 15,
     "difficulty": "1 / 5",
-    "xp": 75
+    "xp": 75,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/rooftop-rendezvous/",
+    "timeEstimatesMinutes": {
+      "2": 15,
+      "3": 12,
+      "4": 11
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/11/rooftop-rendezvous-zwift-insider.png"
   },
   {
     "route": "Wandering Flats",
@@ -764,7 +1213,15 @@
     "totalElevation": 146,
     "climbRate": 5.8,
     "difficulty": "2 / 5",
-    "xp": 500
+    "xp": 500,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/wandering-flats/",
+    "timeEstimatesMinutes": {
+      "2": 47,
+      "3": 39,
+      "4": 35
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/11/wandering-flats-zwift-insider.png"
   },
   {
     "route": "Twilight Harbor",
@@ -777,7 +1234,14 @@
     "totalElevation": 37,
     "climbRate": 4.8,
     "difficulty": "1 / 5",
-    "xp": 135
+    "xp": 135,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/twilight-harbor/",
+    "timeEstimatesMinutes": {
+      "2": 13,
+      "3": 11,
+      "4": 9.8
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Castle to Castle",
@@ -790,33 +1254,56 @@
     "totalElevation": 141,
     "climbRate": 6.2,
     "difficulty": "2 / 5",
-    "xp": 460
+    "xp": 460,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/castle-to-castle/",
+    "timeEstimatesMinutes": {
+      "2": 43,
+      "3": 36,
+      "4": 32
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Electric Loop",
     "map": "Makuri",
     "length": 8.9,
     "elevation": 42,
-    "leadIn": 0.0,
+    "leadIn": 0,
     "leadInElevation": 1,
-    "totalDistance": 9.0,
+    "totalDistance": 9,
     "totalElevation": 42,
     "climbRate": 4.7,
     "difficulty": "2 / 5",
-    "xp": 180
+    "xp": 180,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/electric-loop/",
+    "timeEstimatesMinutes": {
+      "2": 16,
+      "3": 13,
+      "4": 12
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/02/route118.png"
   },
   {
     "route": "Chasing the Sun",
     "map": "Makuri",
     "length": 35.1,
     "elevation": 315,
-    "leadIn": 0.0,
+    "leadIn": 0,
     "leadInElevation": 1,
     "totalDistance": 35.1,
     "totalElevation": 315,
-    "climbRate": 9.0,
+    "climbRate": 9,
     "difficulty": "3 / 5",
-    "xp": 700
+    "xp": 700,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/chasing-the-sun/",
+    "timeEstimatesMinutes": {
+      "2": 70,
+      "3": 57,
+      "4": 52
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/02/route117.png"
   },
   {
     "route": "Island Outskirts",
@@ -829,7 +1316,15 @@
     "totalElevation": 92,
     "climbRate": 7.9,
     "difficulty": "1.5 / 5",
-    "xp": 225
+    "xp": 225,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/island-outskirts/",
+    "timeEstimatesMinutes": {
+      "2": 23,
+      "3": 18,
+      "4": 17
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/11/island-outskirts.png"
   },
   {
     "route": "Fine and Sandy",
@@ -842,7 +1337,15 @@
     "totalElevation": 78,
     "climbRate": 7.2,
     "difficulty": "2 / 5",
-    "xp": 210
+    "xp": 210,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/fine-and-sandy/",
+    "timeEstimatesMinutes": {
+      "2": 21,
+      "3": 17,
+      "4": 15
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/11/fine-and-sandy.png"
   },
   {
     "route": "Country to Coastal",
@@ -855,7 +1358,15 @@
     "totalElevation": 280,
     "climbRate": 8.2,
     "difficulty": "2 / 5",
-    "xp": 665
+    "xp": 665,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/country-to-coastal/",
+    "timeEstimatesMinutes": {
+      "2": 66,
+      "3": 54,
+      "4": 49
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/11/country-to-coastal.png"
   },
   {
     "route": "Makuri 40",
@@ -868,12 +1379,20 @@
     "totalElevation": 313,
     "climbRate": 7.6,
     "difficulty": "2 / 5",
-    "xp": 800
+    "xp": 800,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/makuri-40/",
+    "timeEstimatesMinutes": {
+      "2": 79,
+      "3": 64,
+      "4": 58
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/11/makuri-40.png"
   },
   {
     "route": "Mech Isle Loop",
     "map": "Makuri",
-    "length": 4.0,
+    "length": 4,
     "elevation": 39,
     "leadIn": 0.1,
     "leadInElevation": 1,
@@ -881,7 +1400,15 @@
     "totalElevation": 40,
     "climbRate": 9.6,
     "difficulty": "1.5 / 5",
-    "xp": 80
+    "xp": 80,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/mech-isle-loop/",
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/11/mech-isle-loop.png",
+    "timeEstimatesMinutes": {
+      "2": 8.4,
+      "3": 6.8,
+      "4": 6.1
+    }
   },
   {
     "route": "Bridges and Boardwalks",
@@ -894,12 +1421,20 @@
     "totalElevation": 70,
     "climbRate": 9.4,
     "difficulty": "1.5 / 5",
-    "xp": 125
+    "xp": 125,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/bridges-and-boardwalks/",
+    "timeEstimatesMinutes": {
+      "2": 16,
+      "3": 13,
+      "4": 12
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/11/bridges-and-boardwalks.png"
   },
   {
     "route": "Island Hopper",
     "map": "Makuri",
-    "length": 18.0,
+    "length": 18,
     "elevation": 128,
     "leadIn": 0.2,
     "leadInElevation": 2,
@@ -907,7 +1442,15 @@
     "totalElevation": 130,
     "climbRate": 7.1,
     "difficulty": "2 / 5",
-    "xp": 360
+    "xp": 360,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/island-hopper/",
+    "timeEstimatesMinutes": {
+      "2": 35,
+      "3": 29,
+      "4": 26
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/11/island-hopper.png"
   },
   {
     "route": "Turf N Surf",
@@ -918,9 +1461,17 @@
     "leadInElevation": 2,
     "totalDistance": 24.7,
     "totalElevation": 198,
-    "climbRate": 8.0,
+    "climbRate": 8,
     "difficulty": "2 / 5",
-    "xp": 490
+    "xp": 490,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/turf-n-surf/",
+    "timeEstimatesMinutes": {
+      "2": 48,
+      "3": 40,
+      "4": 36
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/11/turf-n-surf.png"
   },
   {
     "route": "Castle Crit",
@@ -929,24 +1480,40 @@
     "elevation": 43,
     "leadIn": 1.5,
     "leadInElevation": 44,
-    "totalDistance": 5.0,
+    "totalDistance": 5,
     "totalElevation": 88,
     "climbRate": 12.5,
     "difficulty": "2 / 5",
-    "xp": 69
+    "xp": 69,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/castle-crit/",
+    "timeEstimatesMinutes": {
+      "2": 13,
+      "3": 10,
+      "4": 8.9
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/03/castle-crit.png"
   },
   {
     "route": "Shisa Shakedown",
     "map": "Makuri",
     "length": 49.4,
     "elevation": 495,
-    "leadIn": 4.0,
+    "leadIn": 4,
     "leadInElevation": 62,
     "totalDistance": 53.5,
     "totalElevation": 556,
-    "climbRate": 10.0,
+    "climbRate": 10,
     "difficulty": "4 / 5",
-    "xp": 985
+    "xp": 985,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/shisa-shakedown/",
+    "timeEstimatesMinutes": {
+      "2": 112,
+      "3": 90,
+      "4": 81
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/shisa-shakedown.webp"
   },
   {
     "route": "Makuri Pretzel",
@@ -957,9 +1524,17 @@
     "leadInElevation": 5,
     "totalDistance": 78.7,
     "totalElevation": 623,
-    "climbRate": 8.0,
+    "climbRate": 8,
     "difficulty": "5 / 5",
-    "xp": 1550
+    "xp": 1550,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/makuri-pretzel/",
+    "timeEstimatesMinutes": {
+      "2": 154,
+      "3": 125,
+      "4": 113
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/08/makuri-pretzel-1.webp"
   },
   {
     "route": "Makuri Madness",
@@ -972,7 +1547,14 @@
     "totalElevation": 88,
     "climbRate": 5.3,
     "difficulty": "1 / 5",
-    "xp": 325
+    "xp": 325,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/makuri-madness/",
+    "timeEstimatesMinutes": {
+      "2": 29,
+      "3": 24,
+      "4": 22
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/Makuri-Madness.png"
   },
   {
     "route": "Neon After Party",
@@ -985,7 +1567,14 @@
     "totalElevation": 142,
     "climbRate": 8.5,
     "difficulty": "1 / 5",
-    "xp": 325
+    "xp": 325,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/neon-after-party/",
+    "timeEstimatesMinutes": {
+      "2": 36,
+      "3": 29,
+      "4": 26
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/neon_after_party.png"
   },
   {
     "route": "Red Zone Repeats",
@@ -998,7 +1587,13 @@
     "totalElevation": 87,
     "climbRate": 4.5,
     "difficulty": "1 / 5",
-    "xp": 390
+    "xp": 390,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/red-zone-repeats/",
+    "timeEstimatesMinutes": {
+      "2": 35,
+      "3": 29,
+      "4": 27
+    }
   },
   {
     "route": "Tropic Rush",
@@ -1011,7 +1606,14 @@
     "totalElevation": 333,
     "climbRate": 7.9,
     "difficulty": "3 / 5",
-    "xp": 825
+    "xp": 825,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/tropic-rush/",
+    "timeEstimatesMinutes": {
+      "2": 83,
+      "3": 68,
+      "4": 62
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Electric Break",
@@ -1024,7 +1626,13 @@
     "totalElevation": 203,
     "climbRate": 10.7,
     "difficulty": "3 / 5",
-    "xp": 355
+    "xp": 355,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/electric-break/",
+    "timeEstimatesMinutes": {
+      "2": 40,
+      "3": 33,
+      "4": 29
+    }
   },
   {
     "route": "Lady Liberty",
@@ -1037,7 +1645,15 @@
     "totalElevation": 206,
     "climbRate": 16.7,
     "difficulty": "2 / 5",
-    "xp": 240
+    "xp": 240,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/lady-liberty/",
+    "timeEstimatesMinutes": {
+      "2": 29,
+      "3": 23,
+      "4": 21
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/lady-liberty-zwifthub.png"
   },
   {
     "route": "Everything Bagel",
@@ -1050,7 +1666,15 @@
     "totalElevation": 545,
     "climbRate": 15.9,
     "difficulty": "3.5 / 5",
-    "xp": 690
+    "xp": 690,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/everything-bagel/",
+    "timeEstimatesMinutes": {
+      "2": 80,
+      "3": 63,
+      "4": 56
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/everything-bagel-zwifthub.png"
   },
   {
     "route": "Astoria Line 8",
@@ -1059,24 +1683,40 @@
     "elevation": 141,
     "leadIn": 0.4,
     "leadInElevation": 3,
-    "totalDistance": 12.0,
+    "totalDistance": 12,
     "totalElevation": 144,
     "climbRate": 12.2,
     "difficulty": "2 / 5",
-    "xp": 230
+    "xp": 230,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/astoria-line-8/",
+    "timeEstimatesMinutes": {
+      "2": 25,
+      "3": 20,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/astoria-line-8-zwifthub.png"
   },
   {
     "route": "The Highline",
     "map": "New York",
     "length": 10.5,
     "elevation": 179,
-    "leadIn": 10.0,
+    "leadIn": 10,
     "leadInElevation": 203,
     "totalDistance": 20.5,
     "totalElevation": 382,
-    "climbRate": 17.0,
+    "climbRate": 17,
     "difficulty": "2 / 5",
-    "xp": 210
+    "xp": 210,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-highline/",
+    "timeEstimatesMinutes": {
+      "2": 55,
+      "3": 42,
+      "4": 37
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/the-highline-zwifthub.png"
   },
   {
     "route": "Park Perimeter Loop",
@@ -1089,7 +1729,15 @@
     "totalElevation": 129,
     "climbRate": 12.9,
     "difficulty": "1.5 / 5",
-    "xp": 190
+    "xp": 190,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/park-perimeter-loop/",
+    "timeEstimatesMinutes": {
+      "2": 21,
+      "3": 17,
+      "4": 15
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/park-perimeter-loop-zwifthub.png"
   },
   {
     "route": "Grand Central Circuit",
@@ -1100,9 +1748,17 @@
     "leadInElevation": 19,
     "totalDistance": 8.3,
     "totalElevation": 163,
-    "climbRate": 21.0,
+    "climbRate": 21,
     "difficulty": "2 / 5",
-    "xp": 135
+    "xp": 135,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/grand-central-circuit/",
+    "timeEstimatesMinutes": {
+      "2": 21,
+      "3": 16,
+      "4": 14
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/grand-central-circuit-zwifthub.png"
   },
   {
     "route": "Knickerbocker",
@@ -1115,7 +1771,15 @@
     "totalElevation": 365,
     "climbRate": 16.2,
     "difficulty": "3 / 5",
-    "xp": 450
+    "xp": 450,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/knickerbocker/",
+    "timeEstimatesMinutes": {
+      "2": 53,
+      "3": 41,
+      "4": 37
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/knickerbocker-zwifthub.png"
   },
   {
     "route": "Knickerbocker Reverse",
@@ -1128,7 +1792,15 @@
     "totalElevation": 365,
     "climbRate": 16.2,
     "difficulty": "3 / 5",
-    "xp": 450
+    "xp": 450,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/knickerbocker-reverse/",
+    "timeEstimatesMinutes": {
+      "2": 53,
+      "3": 41,
+      "4": 37
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/knickerbocker-reverse-zwifthub.png"
   },
   {
     "route": "Rising Empire",
@@ -1141,7 +1813,15 @@
     "totalElevation": 379,
     "climbRate": 18.1,
     "difficulty": "3 / 5",
-    "xp": 410
+    "xp": 410,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/rising-empire/",
+    "timeEstimatesMinutes": {
+      "2": 50,
+      "3": 39,
+      "4": 35
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/rising-empire-zwifthub.png"
   },
   {
     "route": "The 6 Train",
@@ -1154,7 +1834,15 @@
     "totalElevation": 69,
     "climbRate": 10.7,
     "difficulty": "1 / 5",
-    "xp": 130
+    "xp": 130,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-6-train/",
+    "timeEstimatesMinutes": {
+      "2": 14,
+      "3": 11,
+      "4": 9.9
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/the-6-train-zwifthub.png"
   },
   {
     "route": "Mighty Metropolitan",
@@ -1167,20 +1855,36 @@
     "totalElevation": 321,
     "climbRate": 15.8,
     "difficulty": "2.5 / 5",
-    "xp": 400
+    "xp": 400,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/mighty-metropolitan/",
+    "timeEstimatesMinutes": {
+      "2": 47,
+      "3": 37,
+      "4": 33
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/mighty-metropolitan-zwifthub.png"
   },
   {
     "route": "Gotham Grind",
     "map": "New York",
     "length": 9.3,
     "elevation": 96,
-    "leadIn": 0.0,
+    "leadIn": 0,
     "leadInElevation": 0,
     "totalDistance": 9.3,
     "totalElevation": 96,
     "climbRate": 10.4,
     "difficulty": "3 / 5",
-    "xp": 190
+    "xp": 190,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/gotham-grind/",
+    "timeEstimatesMinutes": {
+      "2": 19,
+      "3": 16,
+      "4": 14
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/04/gotham-grind.png"
   },
   {
     "route": "NYC KOM After Party",
@@ -1189,11 +1893,18 @@
     "elevation": 475,
     "leadIn": 0.4,
     "leadInElevation": 2,
-    "totalDistance": 37.0,
+    "totalDistance": 37,
     "totalElevation": 476,
-    "climbRate": 13.0,
+    "climbRate": 13,
     "difficulty": "3 / 5",
-    "xp": 730
+    "xp": 730,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/nyc-kom-after-party/",
+    "timeEstimatesMinutes": {
+      "2": 83,
+      "3": 66,
+      "4": 59
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/NYC-KOM-After-Party.png"
   },
   {
     "route": "LaGuardia After Party",
@@ -1206,7 +1917,14 @@
     "totalElevation": 295,
     "climbRate": 14.2,
     "difficulty": "2 / 5",
-    "xp": 415
+    "xp": 415,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/laguardia-after-party/",
+    "timeEstimatesMinutes": {
+      "2": 51,
+      "3": 39,
+      "4": 35
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/laguardia_after_party.png"
   },
   {
     "route": "Watts the Limit",
@@ -1215,11 +1933,18 @@
     "elevation": 200,
     "leadIn": 1.4,
     "leadInElevation": 19,
-    "totalDistance": 31.0,
+    "totalDistance": 31,
     "totalElevation": 219,
     "climbRate": 6.8,
     "difficulty": "3 / 5",
-    "xp": 595
+    "xp": 595,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/watts-the-limit/",
+    "timeEstimatesMinutes": {
+      "2": 59,
+      "3": 49,
+      "4": 44
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Times Square Circuit",
@@ -1232,12 +1957,19 @@
     "totalElevation": 20,
     "climbRate": 5.7,
     "difficulty": "2 / 5",
-    "xp": 70
+    "xp": 70,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/times-square-circuit/",
+    "timeEstimatesScope": "lead-in + first lap",
+    "timeEstimatesMinutes": {
+      "2": 7.7,
+      "3": 6.4,
+      "4": 5.9
+    }
   },
   {
     "route": "Double Span Spin",
     "map": "New York",
-    "length": 7.0,
+    "length": 7,
     "elevation": 80,
     "leadIn": 5.6,
     "leadInElevation": 40,
@@ -1245,7 +1977,14 @@
     "totalElevation": 120,
     "climbRate": 11.4,
     "difficulty": "4 / 5",
-    "xp": 145
+    "xp": 145,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/double-span-spin/",
+    "timeEstimatesMinutes": {
+      "2": 27,
+      "3": 21,
+      "4": 19
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Prospect Park Loop",
@@ -1258,7 +1997,14 @@
     "totalElevation": 37,
     "climbRate": 6.9,
     "difficulty": "2 / 5",
-    "xp": 110
+    "xp": 110,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/prospect-park-loop/",
+    "timeEstimatesMinutes": {
+      "2": 10,
+      "3": 8.6,
+      "4": 7.8
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Green to Screen",
@@ -1271,7 +2017,14 @@
     "totalElevation": 207,
     "climbRate": 7.3,
     "difficulty": "3 / 5",
-    "xp": 575
+    "xp": 575,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/green-to-screen/",
+    "timeEstimatesMinutes": {
+      "2": 55,
+      "3": 45,
+      "4": 41
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "No Sleep Till Brooklyn",
@@ -1284,7 +2037,13 @@
     "totalElevation": 251,
     "climbRate": 7.9,
     "difficulty": "4 / 5",
-    "xp": 675
+    "xp": 675,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/no-sleep-till-brooklyn/",
+    "timeEstimatesMinutes": {
+      "2": 62,
+      "3": 51,
+      "4": 46
+    }
   },
   {
     "route": "Double Parked",
@@ -1297,7 +2056,14 @@
     "totalElevation": 330,
     "climbRate": 7.8,
     "difficulty": "3 / 5",
-    "xp": 845
+    "xp": 845,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/double-parked/",
+    "timeEstimatesMinutes": {
+      "2": 82,
+      "3": 67,
+      "4": 61
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Stay Puft Pursuit",
@@ -1310,7 +2076,14 @@
     "totalElevation": 416,
     "climbRate": 13.3,
     "difficulty": "4 / 5",
-    "xp": 625
+    "xp": 625,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/stay-puft-pursuit/",
+    "timeEstimatesMinutes": {
+      "2": 70,
+      "3": 56,
+      "4": 50
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Fuhgeddaboudit",
@@ -1319,11 +2092,18 @@
     "elevation": 838,
     "leadIn": 0.1,
     "leadInElevation": 0,
-    "totalDistance": 79.0,
+    "totalDistance": 79,
     "totalElevation": 838,
     "climbRate": 10.6,
     "difficulty": "5 / 5",
-    "xp": 1595
+    "xp": 1595,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/fuhgeddaboudit/",
+    "timeEstimatesMinutes": {
+      "2": 164,
+      "3": 132,
+      "4": 119
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Spinfinity",
@@ -1336,7 +2116,14 @@
     "totalElevation": 155,
     "climbRate": 8.1,
     "difficulty": "4 / 5",
-    "xp": 390
+    "xp": 390,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/spinfinity/",
+    "timeEstimatesMinutes": {
+      "2": 39,
+      "3": 32,
+      "4": 29
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "The Double Borough",
@@ -1349,12 +2136,18 @@
     "totalElevation": 147,
     "climbRate": 8.3,
     "difficulty": "4 / 5",
-    "xp": 360
+    "xp": 360,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-double-borough/",
+    "timeEstimatesMinutes": {
+      "2": 35,
+      "3": 29,
+      "4": 26
+    }
   },
   {
     "route": "Spinfinity Ultra",
     "map": "New York",
-    "length": 35.0,
+    "length": 35,
     "elevation": 291,
     "leadIn": 0.6,
     "leadInElevation": 0,
@@ -1362,7 +2155,14 @@
     "totalElevation": 291,
     "climbRate": 8.3,
     "difficulty": "5 / 5",
-    "xp": 710
+    "xp": 710,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/spinfinity-ultra/",
+    "timeEstimatesMinutes": {
+      "2": 70,
+      "3": 57,
+      "4": 52
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "The Greenway",
@@ -1373,9 +2173,16 @@
     "leadInElevation": 2,
     "totalDistance": 36.8,
     "totalElevation": 292,
-    "climbRate": 8.0,
+    "climbRate": 8,
     "difficulty": "4 / 5",
-    "xp": 805
+    "xp": 805,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-greenway/",
+    "timeEstimatesMinutes": {
+      "2": 72,
+      "3": 59,
+      "4": 53
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Toefield Tornado",
@@ -1388,7 +2195,14 @@
     "totalElevation": 53,
     "climbRate": 5.2,
     "difficulty": "2 / 5",
-    "xp": 205
+    "xp": 205,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/toefield-tornado/",
+    "timeEstimatesMinutes": {
+      "2": 19,
+      "3": 16,
+      "4": 14
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Avon Flyer",
@@ -1401,7 +2215,14 @@
     "totalElevation": 30,
     "climbRate": 7.5,
     "difficulty": "1 / 5",
-    "xp": 65
+    "xp": 65,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/avon-flyer/",
+    "timeEstimatesScope": "lead-in + first lap",
+    "timeEstimatesMinutes": {
+      "2": 9.6,
+      "3": 7.9,
+      "4": 7.1
+    }
   },
   {
     "route": "Issendorf Express",
@@ -1414,7 +2235,14 @@
     "totalElevation": 53,
     "climbRate": 7.3,
     "difficulty": "2 / 5",
-    "xp": 145
+    "xp": 145,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/issendorf-express/",
+    "timeEstimatesMinutes": {
+      "2": 14,
+      "3": 12,
+      "4": 10
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Lutece Express",
@@ -1425,9 +2253,17 @@
     "leadInElevation": 26,
     "totalDistance": 10.2,
     "totalElevation": 65,
-    "climbRate": 6.0,
+    "climbRate": 6,
     "difficulty": "1 / 5",
-    "xp": 140
+    "xp": 140,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/lutece-express/",
+    "timeEstimatesMinutes": {
+      "2": 20,
+      "3": 16,
+      "4": 15
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/lutece-express.png"
   },
   {
     "route": "Champs-Élysées",
@@ -1438,9 +2274,17 @@
     "leadInElevation": 13,
     "totalDistance": 9.8,
     "totalElevation": 53,
-    "climbRate": 6.0,
+    "climbRate": 6,
     "difficulty": "1 / 5",
-    "xp": 140
+    "xp": 140,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/champs-elysees/",
+    "timeEstimatesMinutes": {
+      "2": 18,
+      "3": 15,
+      "4": 14
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/06/champs-elysees.png"
   },
   {
     "route": "Cobbled Climbs",
@@ -1453,7 +2297,15 @@
     "totalElevation": 136,
     "climbRate": 14.6,
     "difficulty": "1.5 / 5",
-    "xp": 180
+    "xp": 180,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/cobbled-climbs/",
+    "timeEstimatesMinutes": {
+      "2": 21,
+      "3": 16,
+      "4": 15
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/cobbled-climbs-zwifthub.png"
   },
   {
     "route": "The Fan Flats",
@@ -1466,7 +2318,15 @@
     "totalElevation": 40,
     "climbRate": 3.9,
     "difficulty": "1 / 5",
-    "xp": 101
+    "xp": 101,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-fan-flats/",
+    "timeEstimatesMinutes": {
+      "2": 16,
+      "3": 14,
+      "4": 12
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/the-fan-flats-zwifthub.png"
   },
   {
     "route": "Richmond UCI Worlds",
@@ -1479,7 +2339,15 @@
     "totalElevation": 160,
     "climbRate": 9.7,
     "difficulty": "2 / 5",
-    "xp": 320
+    "xp": 320,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/2015-worlds-course/",
+    "timeEstimatesMinutes": {
+      "2": 32,
+      "3": 26,
+      "4": 24
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/2015-uci-worlds-course-zwifthub.png"
   },
   {
     "route": "Libby Hill After Party",
@@ -1492,7 +2360,14 @@
     "totalElevation": 162,
     "climbRate": 4.9,
     "difficulty": "2 / 5",
-    "xp": 660
+    "xp": 660,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/libby-hill-after-party/",
+    "timeEstimatesMinutes": {
+      "2": 57,
+      "3": 48,
+      "4": 44
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/04/Libby-Hill-After-Party.webp"
   },
   {
     "route": "Richmond Rollercoaster",
@@ -1505,7 +2380,14 @@
     "totalElevation": 170,
     "climbRate": 3.9,
     "difficulty": "1 / 5",
-    "xp": 100
+    "xp": 100,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/richmond-rollercoaster/",
+    "timeEstimatesMinutes": {
+      "2": 39,
+      "3": 31,
+      "4": 27
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Richmond 2015 Worlds Reverse",
@@ -1518,7 +2400,14 @@
     "totalElevation": 158,
     "climbRate": 9.7,
     "difficulty": "3 / 5",
-    "xp": 325
+    "xp": 325,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/richmond-2015-worlds-reverse/",
+    "timeEstimatesMinutes": {
+      "2": 32,
+      "3": 26,
+      "4": 23
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Richmond Loop Around",
@@ -1531,12 +2420,19 @@
     "totalElevation": 556,
     "climbRate": 13.1,
     "difficulty": "3 / 5",
-    "xp": 850
+    "xp": 850,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/richmond-loop-around/",
+    "timeEstimatesMinutes": {
+      "2": 93,
+      "3": 74,
+      "4": 66
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/Richmond-Loop-Around.webp"
   },
   {
     "route": "Rolling Highlands",
     "map": "Scotland",
-    "length": 9.0,
+    "length": 9,
     "elevation": 77,
     "leadIn": 5.1,
     "leadInElevation": 28,
@@ -1544,7 +2440,15 @@
     "totalElevation": 106,
     "climbRate": 8.6,
     "difficulty": "2 / 5",
-    "xp": 180
+    "xp": 180,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/rolling-highlands/",
+    "timeEstimatesMinutes": {
+      "2": 27,
+      "3": 22,
+      "4": 20
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/02/rolling-highlands.png"
   },
   {
     "route": "City and the Sgurr",
@@ -1557,33 +2461,57 @@
     "totalElevation": 166,
     "climbRate": 17.3,
     "difficulty": "3 / 5",
-    "xp": 120
+    "xp": 120,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/city-and-the-sgurr/",
+    "timeEstimatesMinutes": {
+      "2": 23,
+      "3": 18,
+      "4": 15
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/02/city-and-the-sgurr.png"
   },
   {
     "route": "Glasgow Crit Circuit",
     "map": "Scotland",
-    "length": 3.0,
+    "length": 3,
     "elevation": 33,
     "leadIn": 0.2,
     "leadInElevation": 0,
     "totalDistance": 3.3,
     "totalElevation": 34,
-    "climbRate": 11.0,
+    "climbRate": 11,
     "difficulty": "3 / 5",
-    "xp": 60
+    "xp": 60,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/glasgow-crit-circuit/",
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/02/glasgow-crit-circuit.png",
+    "timeEstimatesMinutes": {
+      "2": 6.6,
+      "3": 5.3,
+      "4": 4.8
+    }
   },
   {
     "route": "Loch Loop",
     "map": "Scotland",
     "length": 8.1,
     "elevation": 71,
-    "leadIn": 0.0,
+    "leadIn": 0,
     "leadInElevation": 0,
     "totalDistance": 8.1,
     "totalElevation": 71,
     "climbRate": 8.8,
     "difficulty": "2 / 5",
-    "xp": 161
+    "xp": 161,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/loch-loop/",
+    "timeEstimatesMinutes": {
+      "2": 16,
+      "3": 13,
+      "4": 12
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/02/loch-loop.png"
   },
   {
     "route": "The Muckle Yin",
@@ -1594,9 +2522,17 @@
     "leadInElevation": 0,
     "totalDistance": 23.7,
     "totalElevation": 282,
-    "climbRate": 12.0,
+    "climbRate": 12,
     "difficulty": "4 / 5",
-    "xp": 470
+    "xp": 470,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-muckle-yin/",
+    "timeEstimatesMinutes": {
+      "2": 51,
+      "3": 40,
+      "4": 36
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/01/the-muckle-yin.webp"
   },
   {
     "route": "BRAEk-fast Crits and Grits",
@@ -1609,7 +2545,15 @@
     "totalElevation": 261,
     "climbRate": 10.9,
     "difficulty": "3 / 5",
-    "xp": 415
+    "xp": 415,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/braek-fast-crits-and-grits/",
+    "timeEstimatesMinutes": {
+      "2": 47,
+      "3": 38,
+      "4": 34
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/08/braek-fast-crits-and-grits-profile.webp"
   },
   {
     "route": "Outer Scotland",
@@ -1622,7 +2566,15 @@
     "totalElevation": 104,
     "climbRate": 9.4,
     "difficulty": "2 / 5",
-    "xp": 220
+    "xp": 220,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/outer-scotland/",
+    "timeEstimatesMinutes": {
+      "2": 23,
+      "3": 18,
+      "4": 17
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/Outer-Scotland.png"
   },
   {
     "route": "Scotland Smash",
@@ -1635,20 +2587,33 @@
     "totalElevation": 167,
     "climbRate": 9.3,
     "difficulty": "1 / 5",
-    "xp": 365
+    "xp": 365,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/scotland-smash/",
+    "timeEstimatesMinutes": {
+      "2": 36,
+      "3": 29,
+      "4": 27
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/Scotland-Smash.png"
   },
   {
     "route": "Dùn Dash",
     "map": "Scotland",
     "length": 12.4,
     "elevation": 138,
-    "leadIn": 0.0,
+    "leadIn": 0,
     "leadInElevation": 0,
     "totalDistance": 12.5,
     "totalElevation": 138,
     "climbRate": 11.1,
     "difficulty": "4 / 5",
-    "xp": 250
+    "xp": 250,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/dun-dash/",
+    "timeEstimatesMinutes": {
+      "2": 26,
+      "3": 21,
+      "4": 19
+    }
   },
   {
     "route": "Scotland After Party",
@@ -1661,7 +2626,13 @@
     "totalElevation": 196,
     "climbRate": 13.9,
     "difficulty": "4 / 5",
-    "xp": 275
+    "xp": 275,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/scotland-after-party/",
+    "timeEstimatesMinutes": {
+      "2": 32,
+      "3": 26,
+      "4": 23
+    }
   },
   {
     "route": "The Pretzel",
@@ -1670,11 +2641,19 @@
     "elevation": 1360,
     "leadIn": 0.5,
     "leadInElevation": 1,
-    "totalDistance": 73.0,
+    "totalDistance": 73,
     "totalElevation": 1361,
     "climbRate": 18.8,
     "difficulty": "5 / 5",
-    "xp": 1440
+    "xp": 1440,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-pretzel/",
+    "timeEstimatesMinutes": {
+      "2": 179,
+      "3": 139,
+      "4": 124
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/the-pretzel-zwifthub.png"
   },
   {
     "route": "Hilly Route",
@@ -1687,7 +2666,15 @@
     "totalElevation": 109,
     "climbRate": 11.8,
     "difficulty": "1.5 / 5",
-    "xp": 175
+    "xp": 175,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/hilly-route/",
+    "timeEstimatesMinutes": {
+      "2": 20,
+      "3": 16,
+      "4": 14
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/hilly-zwifthub.png"
   },
   {
     "route": "Mountain Route",
@@ -1698,9 +2685,17 @@
     "leadInElevation": 0,
     "totalDistance": 30.2,
     "totalElevation": 683,
-    "climbRate": 23.0,
+    "climbRate": 23,
     "difficulty": "4 / 5",
-    "xp": 580
+    "xp": 580,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/mountain-route/",
+    "timeEstimatesMinutes": {
+      "2": 79,
+      "3": 60,
+      "4": 53
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/mountain-route-zwifthub.png"
   },
   {
     "route": "Mountain 8",
@@ -1713,7 +2708,15 @@
     "totalElevation": 692,
     "climbRate": 21.4,
     "difficulty": "4 / 5",
-    "xp": 640
+    "xp": 640,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/mountain-8/",
+    "timeEstimatesMinutes": {
+      "2": 83,
+      "3": 64,
+      "4": 57
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/mountain-8-zwifthub.png"
   },
   {
     "route": "Figure 8",
@@ -1726,7 +2729,15 @@
     "totalElevation": 255,
     "climbRate": 8.6,
     "difficulty": "2.5 / 5",
-    "xp": 580
+    "xp": 580,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/figure-8/",
+    "timeEstimatesMinutes": {
+      "2": 59,
+      "3": 48,
+      "4": 43
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/04/figure-8-zwifthub-1.png"
   },
   {
     "route": "Figure 8 Reverse",
@@ -1739,7 +2750,15 @@
     "totalElevation": 254,
     "climbRate": 8.6,
     "difficulty": "2.5 / 5",
-    "xp": 580
+    "xp": 580,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/figure-8-reverse/",
+    "timeEstimatesMinutes": {
+      "2": 59,
+      "3": 48,
+      "4": 44
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/figure-8-reverse-zwifthub.png"
   },
   {
     "route": "Flat Route",
@@ -1750,9 +2769,17 @@
     "leadInElevation": 0,
     "totalDistance": 10.7,
     "totalElevation": 62,
-    "climbRate": 6.0,
+    "climbRate": 6,
     "difficulty": "1 / 5",
-    "xp": 200
+    "xp": 200,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/flat-route/",
+    "timeEstimatesMinutes": {
+      "2": 19,
+      "3": 16,
+      "4": 14
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/flat-route-zwifthub.png"
   },
   {
     "route": "Volcano Flat",
@@ -1763,9 +2790,17 @@
     "leadInElevation": 1,
     "totalDistance": 12.8,
     "totalElevation": 51,
-    "climbRate": 4.0,
+    "climbRate": 4,
     "difficulty": "1 / 5",
-    "xp": 240
+    "xp": 240,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/volcano-flat/",
+    "timeEstimatesMinutes": {
+      "2": 22,
+      "3": 18,
+      "4": 17
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/volcano-flat-zwifthub.png"
   },
   {
     "route": "Volcano Circuit",
@@ -1776,9 +2811,17 @@
     "leadInElevation": 20,
     "totalDistance": 6.9,
     "totalElevation": 40,
-    "climbRate": 5.0,
+    "climbRate": 5,
     "difficulty": "1 / 5",
-    "xp": 80
+    "xp": 80,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/volcano-circuit/",
+    "timeEstimatesMinutes": {
+      "2": 13,
+      "3": 11,
+      "4": 9.6
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/volcano-circuit-zwifthub.png"
   },
   {
     "route": "Volcano Circuit CCW",
@@ -1789,9 +2832,17 @@
     "leadInElevation": 30,
     "totalDistance": 8.9,
     "totalElevation": 50,
-    "climbRate": 5.0,
+    "climbRate": 5,
     "difficulty": "1 / 5",
-    "xp": 80
+    "xp": 80,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/volcano-circuit-ccw/",
+    "timeEstimatesMinutes": {
+      "2": 17,
+      "3": 14,
+      "4": 13
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/volcano-circuit-ccw-zwifthub.png"
   },
   {
     "route": "Volcano Climb",
@@ -1804,12 +2855,20 @@
     "totalElevation": 204,
     "climbRate": 8.9,
     "difficulty": "2 / 5",
-    "xp": 460
+    "xp": 460,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/volcano-climb/",
+    "timeEstimatesMinutes": {
+      "2": 46,
+      "3": 37,
+      "4": 34
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/volcano-climb-zwifthub.png"
   },
   {
     "route": "Three Sisters",
     "map": "Watopia",
-    "length": 48.0,
+    "length": 48,
     "elevation": 896,
     "leadIn": 0.5,
     "leadInElevation": 0,
@@ -1817,7 +2876,15 @@
     "totalElevation": 896,
     "climbRate": 18.7,
     "difficulty": "4.5 / 5",
-    "xp": 950
+    "xp": 950,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/three-sisters/",
+    "timeEstimatesMinutes": {
+      "2": 118,
+      "3": 92,
+      "4": 82
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/three-sisters-zwifthub.png"
   },
   {
     "route": "Big Loop",
@@ -1830,7 +2897,15 @@
     "totalElevation": 663,
     "climbRate": 15.5,
     "difficulty": "4 / 5",
-    "xp": 840
+    "xp": 840,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/big-loop/",
+    "timeEstimatesMinutes": {
+      "2": 98,
+      "3": 77,
+      "4": 69
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/big-loop-zwifthub.png"
   },
   {
     "route": "Road to Ruins",
@@ -1843,7 +2918,15 @@
     "totalElevation": 276,
     "climbRate": 9.3,
     "difficulty": "2.5 / 5",
-    "xp": 580
+    "xp": 580,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/road-to-ruins/",
+    "timeEstimatesMinutes": {
+      "2": 60,
+      "3": 48,
+      "4": 44
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/road-to-ruins-zwifthub.png"
   },
   {
     "route": "Jungle Circuit",
@@ -1856,7 +2939,15 @@
     "totalElevation": 92,
     "climbRate": 10.5,
     "difficulty": "1.5 / 5",
-    "xp": 260
+    "xp": 260,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/jungle-circuit/",
+    "timeEstimatesMinutes": {
+      "2": 23,
+      "3": 20,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/jungle-circuit-zwifthub.png"
   },
   {
     "route": "The Mega Pretzel",
@@ -1865,11 +2956,19 @@
     "elevation": 1638,
     "leadIn": 3.7,
     "leadInElevation": 21,
-    "totalDistance": 111.0,
+    "totalDistance": 111,
     "totalElevation": 1659,
     "climbRate": 15.3,
     "difficulty": "5 / 5",
-    "xp": 2140
+    "xp": 2140,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-mega-pretzel/",
+    "timeEstimatesMinutes": {
+      "2": 253,
+      "3": 200,
+      "4": 178
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/the-mega-pretzel-zwifthub.png"
   },
   {
     "route": "Tour of Fire and Ice",
@@ -1882,7 +2981,14 @@
     "totalElevation": 1184,
     "climbRate": 45.9,
     "difficulty": "4.5 / 5",
-    "xp": 500
+    "xp": 500,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/tour-of-fire-and-ice/",
+    "timeEstimatesMinutes": {
+      "2": 126,
+      "3": 89,
+      "4": 73
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/tour-of-fire-and-ice-zwifthub.png"
   },
   {
     "route": "Road to Sky",
@@ -1895,7 +3001,14 @@
     "totalElevation": 1044,
     "climbRate": 59.7,
     "difficulty": "4.5 / 5",
-    "xp": 380
+    "xp": 380,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/road-to-sky/",
+    "timeEstimatesMinutes": {
+      "2": 100,
+      "3": 69,
+      "4": 55
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/road-to-sky-zwifthub.png"
   },
   {
     "route": "Four Horsemen",
@@ -1908,7 +3021,15 @@
     "totalElevation": 2111,
     "climbRate": 23.5,
     "difficulty": "5 / 5",
-    "xp": 1780
+    "xp": 1780,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/four-horsemen/",
+    "timeEstimatesMinutes": {
+      "2": 240,
+      "3": 183,
+      "4": 162
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/four-horsemen-zwifthub.png"
   },
   {
     "route": "Whole Lotta Lava",
@@ -1921,7 +3042,15 @@
     "totalElevation": 190,
     "climbRate": 13.1,
     "difficulty": "2 / 5",
-    "xp": 240
+    "xp": 240,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/whole-lotta-lava/",
+    "timeEstimatesMinutes": {
+      "2": 37,
+      "3": 29,
+      "4": 26
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/whole-lotta-lava-zwifthub.png"
   },
   {
     "route": "The Uber Pretzel",
@@ -1934,7 +3063,14 @@
     "totalElevation": 2381,
     "climbRate": 18.5,
     "difficulty": "5 / 5",
-    "xp": 2560
+    "xp": 2560,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-uber-pretzel/",
+    "timeEstimatesMinutes": {
+      "2": 339,
+      "3": 260,
+      "4": 226
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/the-uber-pretzel-zwifthub.png"
   },
   {
     "route": "Tempus Fugit",
@@ -1947,7 +3083,15 @@
     "totalElevation": 32,
     "climbRate": 1.5,
     "difficulty": "1 / 5",
-    "xp": 380
+    "xp": 380,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/tempus-fugit/",
+    "timeEstimatesMinutes": {
+      "2": 32,
+      "3": 28,
+      "4": 25
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/tempus-fugit-zwifthub.png"
   },
   {
     "route": "Bigger Loop",
@@ -1958,9 +3102,17 @@
     "leadInElevation": 1,
     "totalDistance": 53.7,
     "totalElevation": 692,
-    "climbRate": 13.0,
+    "climbRate": 13,
     "difficulty": "4 / 5",
-    "xp": 1060
+    "xp": 1060,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/bigger-loop/",
+    "timeEstimatesMinutes": {
+      "2": 116,
+      "3": 93,
+      "4": 83
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/bigger-loop-zwifthub.png"
   },
   {
     "route": "Out And Back Again",
@@ -1973,7 +3125,15 @@
     "totalElevation": 334,
     "climbRate": 8.2,
     "difficulty": "3 / 5",
-    "xp": 840
+    "xp": 840,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/out-and-back-again/",
+    "timeEstimatesMinutes": {
+      "2": 83,
+      "3": 68,
+      "4": 61
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/out-and-back-again-zwifthub.png"
   },
   {
     "route": "Tick Tock",
@@ -1986,7 +3146,15 @@
     "totalElevation": 59,
     "climbRate": 3.1,
     "difficulty": "1 / 5",
-    "xp": 380
+    "xp": 380,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/tick-tock/",
+    "timeEstimatesMinutes": {
+      "2": 33,
+      "3": 28,
+      "4": 25
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/tick-tock-zwifthub.png"
   },
   {
     "route": "Watopia's Waistband",
@@ -1999,7 +3167,15 @@
     "totalElevation": 101,
     "climbRate": 3.7,
     "difficulty": "3 / 5",
-    "xp": 555
+    "xp": 555,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/watopias-waistband/",
+    "timeEstimatesMinutes": {
+      "2": 49,
+      "3": 41,
+      "4": 37
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/04/watopias-waistband.png"
   },
   {
     "route": "Sand And Sequoias",
@@ -2012,7 +3188,15 @@
     "totalElevation": 180,
     "climbRate": 8.7,
     "difficulty": "2 / 5",
-    "xp": 400
+    "xp": 400,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/sand-and-sequoias/",
+    "timeEstimatesMinutes": {
+      "2": 44,
+      "3": 36,
+      "4": 32
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/sand-and-sequoias-zwifthub.png"
   },
   {
     "route": "Muir And The Mountain",
@@ -2025,7 +3209,15 @@
     "totalElevation": 914,
     "climbRate": 23.2,
     "difficulty": "4 / 5",
-    "xp": 680
+    "xp": 680,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/muir-and-the-mountain/",
+    "timeEstimatesMinutes": {
+      "2": 108,
+      "3": 82,
+      "4": 72
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/muir-and-the-mountain-zwifthub.png"
   },
   {
     "route": "Dust In The Wind",
@@ -2038,7 +3230,14 @@
     "totalElevation": 583,
     "climbRate": 11.2,
     "difficulty": "3.5 / 5",
-    "xp": 1080
+    "xp": 1080,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/dust-in-the-wind/",
+    "timeEstimatesMinutes": {
+      "2": 110,
+      "3": 88,
+      "4": 80
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/04/dust_in_the_wind_update_km.png"
   },
   {
     "route": "Quatch Quest",
@@ -2051,7 +3250,14 @@
     "totalElevation": 1706,
     "climbRate": 36.7,
     "difficulty": "5 / 5",
-    "xp": 920
+    "xp": 920,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/quatch-quest/",
+    "timeEstimatesMinutes": {
+      "2": 180,
+      "3": 130,
+      "4": 109
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/quatch-quest-zwifthub.png"
   },
   {
     "route": "Big Foot Hills",
@@ -2064,7 +3270,15 @@
     "totalElevation": 714,
     "climbRate": 10.5,
     "difficulty": "4 / 5",
-    "xp": 1340
+    "xp": 1340,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/big-foot-hills/",
+    "timeEstimatesMinutes": {
+      "2": 144,
+      "3": 116,
+      "4": 104
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/big-foot-hills-zwifthub.png"
   },
   {
     "route": "The Magnificent 8",
@@ -2077,7 +3291,15 @@
     "totalElevation": 155,
     "climbRate": 5.4,
     "difficulty": "2 / 5",
-    "xp": 580
+    "xp": 580,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-magnificent-8/",
+    "timeEstimatesMinutes": {
+      "2": 53,
+      "3": 44,
+      "4": 40
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/Magnificent-8.png"
   },
   {
     "route": "Beach Island Loop",
@@ -2086,11 +3308,19 @@
     "elevation": 49,
     "leadIn": 0.2,
     "leadInElevation": 0,
-    "totalDistance": 13.0,
+    "totalDistance": 13,
     "totalElevation": 49,
     "climbRate": 3.8,
     "difficulty": "1 / 5",
-    "xp": 255
+    "xp": 255,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/beach-island-loop/",
+    "timeEstimatesMinutes": {
+      "2": 23,
+      "3": 19,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/12/Beach-Island-Loop.png"
   },
   {
     "route": "Ocean Lava Cliffside Loop",
@@ -2103,7 +3333,15 @@
     "totalElevation": 156,
     "climbRate": 8.2,
     "difficulty": "2 / 5",
-    "xp": 380
+    "xp": 380,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/ocean-lava-cliffside-loop/",
+    "timeEstimatesMinutes": {
+      "2": 38,
+      "3": 31,
+      "4": 28
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/12/Ocean-Lava-Cliffside-Loop.png"
   },
   {
     "route": "Serpentine 8",
@@ -2116,7 +3354,15 @@
     "totalElevation": 239,
     "climbRate": 10.7,
     "difficulty": "2 / 5",
-    "xp": 385
+    "xp": 385,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/serpentine-8/",
+    "timeEstimatesMinutes": {
+      "2": 51,
+      "3": 42,
+      "4": 39
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/12/Serpentine-8.png"
   },
   {
     "route": "Two Bridges Loop",
@@ -2129,7 +3375,15 @@
     "totalElevation": 81,
     "climbRate": 11.4,
     "difficulty": "1 / 5",
-    "xp": 140
+    "xp": 140,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/two-bridges-loop/",
+    "timeEstimatesMinutes": {
+      "2": 15,
+      "3": 12,
+      "4": 11
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/12/Two-Bridges-Loop.png"
   },
   {
     "route": "Climber's Gambit",
@@ -2138,11 +3392,18 @@
     "elevation": 670,
     "leadIn": 0.2,
     "leadInElevation": 0,
-    "totalDistance": 28.0,
+    "totalDistance": 28,
     "totalElevation": 671,
     "climbRate": 24.1,
     "difficulty": "4 / 5",
-    "xp": 600
+    "xp": 600,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/climbers-gambit/",
+    "timeEstimatesMinutes": {
+      "2": 85,
+      "3": 63,
+      "4": 54
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/08/climbers-gambit.png"
   },
   {
     "route": "Legends and Lava",
@@ -2155,7 +3416,14 @@
     "totalElevation": 352,
     "climbRate": 14.4,
     "difficulty": "3 / 5",
-    "xp": 490
+    "xp": 490,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/legends-and-lava/",
+    "timeEstimatesMinutes": {
+      "2": 58,
+      "3": 46,
+      "4": 40
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/08/legends-and-lava.png"
   },
   {
     "route": "Downtown Titans",
@@ -2168,7 +3436,15 @@
     "totalElevation": 295,
     "climbRate": 11.9,
     "difficulty": "3 / 5",
-    "xp": 490
+    "xp": 490,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/downtown-titans/",
+    "timeEstimatesMinutes": {
+      "2": 53,
+      "3": 42,
+      "4": 38
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/03/downtown-titans.png"
   },
   {
     "route": "Three Little Sisters",
@@ -2181,7 +3457,15 @@
     "totalElevation": 438,
     "climbRate": 11.5,
     "difficulty": "3 / 5",
-    "xp": 755
+    "xp": 755,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/three-little-sisters/",
+    "timeEstimatesMinutes": {
+      "2": 80,
+      "3": 64,
+      "4": 58
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/03/route121.png"
   },
   {
     "route": "Eastern Eight",
@@ -2190,16 +3474,24 @@
     "elevation": 406,
     "leadIn": 2.3,
     "leadInElevation": 6,
-    "totalDistance": 54.0,
+    "totalDistance": 54,
     "totalElevation": 412,
     "climbRate": 7.9,
     "difficulty": "3 / 5",
-    "xp": 1345
+    "xp": 1345,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/eastern-eight/",
+    "timeEstimatesMinutes": {
+      "2": 105,
+      "3": 86,
+      "4": 77
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/03/route119.png"
   },
   {
     "route": "Triple Flat Loops",
     "map": "Watopia",
-    "length": 34.0,
+    "length": 34,
     "elevation": 157,
     "leadIn": 2.3,
     "leadInElevation": 6,
@@ -2207,7 +3499,15 @@
     "totalElevation": 162,
     "climbRate": 4.6,
     "difficulty": "2.5 / 5",
-    "xp": 680
+    "xp": 680,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/triple-flat-loops/",
+    "timeEstimatesMinutes": {
+      "2": 64,
+      "3": 54,
+      "4": 49
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2022/03/route120.png"
   },
   {
     "route": "Coast Crusher",
@@ -2220,7 +3520,14 @@
     "totalElevation": 211,
     "climbRate": 5.1,
     "difficulty": "3 / 5",
-    "xp": 690
+    "xp": 690,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/coast-crusher/",
+    "timeEstimatesMinutes": {
+      "2": 75,
+      "3": 63,
+      "4": 58
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/10/coast-crusher.png"
   },
   {
     "route": "The Big Ring",
@@ -2233,7 +3540,15 @@
     "totalElevation": 274,
     "climbRate": 5.5,
     "difficulty": "3 / 5",
-    "xp": 977
+    "xp": 977,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-big-ring/",
+    "timeEstimatesMinutes": {
+      "2": 94,
+      "3": 78,
+      "4": 71
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/10/the-big-ring.png"
   },
   {
     "route": "Accelerate to Elevate",
@@ -2246,7 +3561,14 @@
     "totalElevation": 1158,
     "climbRate": 27.9,
     "difficulty": "3 / 5",
-    "xp": 825
+    "xp": 825,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/accelerate-to-elevate/",
+    "timeEstimatesMinutes": {
+      "2": 148,
+      "3": 109,
+      "4": 91
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/10/accelerate-to-elevate.png"
   },
   {
     "route": "Shorelines and Summits",
@@ -2259,7 +3581,15 @@
     "totalElevation": 792,
     "climbRate": 16.7,
     "difficulty": "3 / 5",
-    "xp": 925
+    "xp": 925,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/shorelines-and-summits/",
+    "timeEstimatesMinutes": {
+      "2": 117,
+      "3": 92,
+      "4": 82
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/10/shorelines-and-summits.png"
   },
   {
     "route": "Sugar Cookie",
@@ -2272,7 +3602,15 @@
     "totalElevation": 260,
     "climbRate": 7.5,
     "difficulty": "2 / 5",
-    "xp": 660
+    "xp": 660,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/sugar-cookie/",
+    "timeEstimatesMinutes": {
+      "2": 72,
+      "3": 60,
+      "4": 54
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/10/sugar-cookie.png"
   },
   {
     "route": "Going Coastal",
@@ -2285,7 +3623,14 @@
     "totalElevation": 69,
     "climbRate": 3.8,
     "difficulty": "1 / 5",
-    "xp": 308
+    "xp": 308,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/going-coastal/",
+    "timeEstimatesMinutes": {
+      "2": 33,
+      "3": 28,
+      "4": 25
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/10/going-coastal.png"
   },
   {
     "route": "Temple Trek",
@@ -2298,7 +3643,14 @@
     "totalElevation": 44,
     "climbRate": 3.8,
     "difficulty": "1 / 5",
-    "xp": 128
+    "xp": 128,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/temple-trek/",
+    "timeEstimatesMinutes": {
+      "2": 17,
+      "3": 14,
+      "4": 14
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/10/temple-trek.png"
   },
   {
     "route": "Canopies and Coastlines",
@@ -2311,7 +3663,14 @@
     "totalElevation": 246,
     "climbRate": 5.5,
     "difficulty": "2 / 5",
-    "xp": 444
+    "xp": 444,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/canopies-and-coastlines/",
+    "timeEstimatesMinutes": {
+      "2": 55,
+      "3": 45,
+      "4": 41
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2023/10/canopies-and-coastlines.png"
   },
   {
     "route": "Big Flat 8",
@@ -2324,7 +3683,15 @@
     "totalElevation": 109,
     "climbRate": 3.5,
     "difficulty": "2 / 5",
-    "xp": 580
+    "xp": 580,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/big-flat-8/",
+    "timeEstimatesMinutes": {
+      "2": 55,
+      "3": 46,
+      "4": 42
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/03/big-flat-8.png"
   },
   {
     "route": "Spiral into the Volcano",
@@ -2337,7 +3704,14 @@
     "totalElevation": 355,
     "climbRate": 6.4,
     "difficulty": "3 / 5",
-    "xp": 1030
+    "xp": 1030,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/spiral-into-the-volcano/",
+    "timeEstimatesMinutes": {
+      "2": 107,
+      "3": 88,
+      "4": 79
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/03/spiral-into-the-volcano.png"
   },
   {
     "route": "Loop de Loop",
@@ -2350,7 +3724,15 @@
     "totalElevation": 145,
     "climbRate": 11.6,
     "difficulty": "2 / 5",
-    "xp": 250
+    "xp": 250,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/loop-de-loop/",
+    "timeEstimatesMinutes": {
+      "2": 27,
+      "3": 21,
+      "4": 19
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/03/loop-de-loop.png"
   },
   {
     "route": "Mountain Mash",
@@ -2359,11 +3741,18 @@
     "elevation": 335,
     "leadIn": 0.2,
     "leadInElevation": 0,
-    "totalDistance": 6.0,
+    "totalDistance": 6,
     "totalElevation": 335,
     "climbRate": 57.8,
     "difficulty": "3 / 5",
-    "xp": 116
+    "xp": 116,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/mountain-mash/",
+    "timeEstimatesMinutes": {
+      "2": 32,
+      "3": 22,
+      "4": 18
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/03/mountain-mash.png"
   },
   {
     "route": "Zwift Games 2024 Epic",
@@ -2376,7 +3765,15 @@
     "totalElevation": 878,
     "climbRate": 10.3,
     "difficulty": "4 / 5",
-    "xp": 1590
+    "xp": 1590,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/zwift-games-2024-epic/",
+    "timeEstimatesMinutes": {
+      "2": 171,
+      "3": 138,
+      "4": 124
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/03/zwift-games-2024-epic.png"
   },
   {
     "route": "Jurassic Coast",
@@ -2387,9 +3784,16 @@
     "leadInElevation": 0,
     "totalDistance": 19.5,
     "totalElevation": 212,
-    "climbRate": 11.0,
+    "climbRate": 11,
     "difficulty": "2 / 5",
-    "xp": 386
+    "xp": 386,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/jurassic-coast/",
+    "timeEstimatesMinutes": {
+      "2": 41,
+      "3": 33,
+      "4": 30
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/03/jurassic-coast.png"
   },
   {
     "route": "Elevation Evaluation",
@@ -2402,7 +3806,15 @@
     "totalElevation": 410,
     "climbRate": 16.1,
     "difficulty": "5 / 5",
-    "xp": 490
+    "xp": 490,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/elevation-evaluation/",
+    "timeEstimatesMinutes": {
+      "2": 63,
+      "3": 50,
+      "4": 45
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/elevation-evaluation-profile.png"
   },
   {
     "route": "Mayan San Remo",
@@ -2415,7 +3827,14 @@
     "totalElevation": 219,
     "climbRate": 10.3,
     "difficulty": "2 / 5",
-    "xp": 420
+    "xp": 420,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/mayan-san-remo/",
+    "timeEstimatesMinutes": {
+      "2": 42,
+      "3": 34,
+      "4": 31
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/mayan-san-remo-profile.png"
   },
   {
     "route": "Tides and Temples",
@@ -2428,7 +3847,15 @@
     "totalElevation": 470,
     "climbRate": 12.6,
     "difficulty": "3 / 5",
-    "xp": 730
+    "xp": 730,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/tides-and-temples/",
+    "timeEstimatesMinutes": {
+      "2": 84,
+      "3": 67,
+      "4": 60
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/tides-and-temples-profile.png"
   },
   {
     "route": "Glyph Heights",
@@ -2437,11 +3864,19 @@
     "elevation": 537,
     "leadIn": 8.6,
     "leadInElevation": 80,
-    "totalDistance": 34.0,
+    "totalDistance": 34,
     "totalElevation": 618,
     "climbRate": 21.2,
     "difficulty": "3 / 5",
-    "xp": 510
+    "xp": 510,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/glyph-heights/",
+    "timeEstimatesMinutes": {
+      "2": 85,
+      "3": 65,
+      "4": 58
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/glyph-heights-profile.png"
   },
   {
     "route": "Itza Climb Finish",
@@ -2450,11 +3885,18 @@
     "elevation": 290,
     "leadIn": 0.9,
     "leadInElevation": 3,
-    "totalDistance": 31.0,
+    "totalDistance": 31,
     "totalElevation": 293,
     "climbRate": 9.6,
     "difficulty": "3 / 5",
-    "xp": 600
+    "xp": 600,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/itza-climb-finish/",
+    "timeEstimatesMinutes": {
+      "2": 65,
+      "3": 52,
+      "4": 46
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/itza-climb-finish-profile.png"
   },
   {
     "route": "Coastal Crown Loop",
@@ -2467,12 +3909,20 @@
     "totalElevation": 265,
     "climbRate": 12.3,
     "difficulty": "2 / 5",
-    "xp": 300
+    "xp": 300,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/coastal-crown-loop/",
+    "timeEstimatesMinutes": {
+      "2": 52,
+      "3": 41,
+      "4": 37
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/coastal-crown-loop-profile.png"
   },
   {
     "route": "Snowman",
     "map": "Watopia",
-    "length": 44.0,
+    "length": 44,
     "elevation": 578,
     "leadIn": 0.2,
     "leadInElevation": 0,
@@ -2480,7 +3930,15 @@
     "totalElevation": 579,
     "climbRate": 13.1,
     "difficulty": "4 / 5",
-    "xp": 880
+    "xp": 880,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/snowman/",
+    "timeEstimatesMinutes": {
+      "2": 97,
+      "3": 77,
+      "4": 69
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/snowman-profile.png"
   },
   {
     "route": "Oh Hill No",
@@ -2493,7 +3951,15 @@
     "totalElevation": 306,
     "climbRate": 38.8,
     "difficulty": "5 / 5",
-    "xp": 160
+    "xp": 160,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/oh-hill-no/",
+    "timeEstimatesMinutes": {
+      "2": 27,
+      "3": 20,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/oh-hill-no-profile.png"
   },
   {
     "route": "Peak Performance",
@@ -2506,7 +3972,15 @@
     "totalElevation": 729,
     "climbRate": 15.8,
     "difficulty": "5 / 5",
-    "xp": 920
+    "xp": 920,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/peak-performance/",
+    "timeEstimatesMinutes": {
+      "2": 108,
+      "3": 85,
+      "4": 76
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/peak-performance-profile.png"
   },
   {
     "route": "Itza Party",
@@ -2519,7 +3993,14 @@
     "totalElevation": 507,
     "climbRate": 11.1,
     "difficulty": "2 / 5",
-    "xp": 915
+    "xp": 915,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/itza-party/",
+    "timeEstimatesMinutes": {
+      "2": 100,
+      "3": 80,
+      "4": 71
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/itza-party-profile.png"
   },
   {
     "route": "Mayan Mash",
@@ -2532,7 +4013,15 @@
     "totalElevation": 763,
     "climbRate": 21.8,
     "difficulty": "4 / 5",
-    "xp": 700
+    "xp": 700,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/mayan-mash/",
+    "timeEstimatesMinutes": {
+      "2": 96,
+      "3": 74,
+      "4": 66
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/mayan-mash-profile.png"
   },
   {
     "route": "Radio Rendezvous",
@@ -2545,7 +4034,14 @@
     "totalElevation": 744,
     "climbRate": 35.9,
     "difficulty": "5 / 5",
-    "xp": 410
+    "xp": 410,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/radio-rendezvous/",
+    "timeEstimatesMinutes": {
+      "2": 84,
+      "3": 61,
+      "4": 52
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/08/Radio-Rendezvous.webp"
   },
   {
     "route": "Power to the Tower",
@@ -2558,7 +4054,14 @@
     "totalElevation": 1496,
     "climbRate": 33.4,
     "difficulty": "5 / 5",
-    "xp": 900
+    "xp": 900,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/power-to-the-tower/",
+    "timeEstimatesMinutes": {
+      "2": 154,
+      "3": 113,
+      "4": 96
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/Power-to-the-Tower-profile.webp"
   },
   {
     "route": "Navig8",
@@ -2571,7 +4074,15 @@
     "totalElevation": 423,
     "climbRate": 6.5,
     "difficulty": "1 / 5",
-    "xp": 1280
+    "xp": 1280,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/navig8/",
+    "timeEstimatesMinutes": {
+      "2": 125,
+      "3": 103,
+      "4": 93
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/08/navig8.webp"
   },
   {
     "route": "Mayan 8",
@@ -2584,7 +4095,15 @@
     "totalElevation": 249,
     "climbRate": 10.4,
     "difficulty": "2 / 5",
-    "xp": 460
+    "xp": 460,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/mayan-8/",
+    "timeEstimatesMinutes": {
+      "2": 53,
+      "3": 43,
+      "4": 39
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/08/Mayan-8.webp"
   },
   {
     "route": "Deca Dash",
@@ -2595,9 +4114,17 @@
     "leadInElevation": 16,
     "totalDistance": 52.6,
     "totalElevation": 500,
-    "climbRate": 10.0,
+    "climbRate": 10,
     "difficulty": "3 / 5",
-    "xp": 1000
+    "xp": 1000,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/deca-dash/",
+    "timeEstimatesMinutes": {
+      "2": 106,
+      "3": 86,
+      "4": 77
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/11/deca-dash.png"
   },
   {
     "route": "Waisted 8",
@@ -2610,7 +4137,15 @@
     "totalElevation": 144,
     "climbRate": 4.7,
     "difficulty": "2 / 5",
-    "xp": 615
+    "xp": 615,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/waisted-8/",
+    "timeEstimatesMinutes": {
+      "2": 56,
+      "3": 46,
+      "4": 42
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/11/waisted-8.png"
   },
   {
     "route": "Loopin Lava",
@@ -2623,7 +4158,15 @@
     "totalElevation": 212,
     "climbRate": 13.8,
     "difficulty": "3 / 5",
-    "xp": 285
+    "xp": 285,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/loopin-lava/",
+    "timeEstimatesMinutes": {
+      "2": 39,
+      "3": 32,
+      "4": 28
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/11/loopin-lava.png"
   },
   {
     "route": "The Classic",
@@ -2632,11 +4175,19 @@
     "elevation": 48,
     "leadIn": 4.2,
     "leadInElevation": 16,
-    "totalDistance": 9.0,
+    "totalDistance": 9,
     "totalElevation": 65,
-    "climbRate": 10.0,
+    "climbRate": 10,
     "difficulty": "2 / 5",
-    "xp": 100
+    "xp": 100,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/the-classic/",
+    "timeEstimatesMinutes": {
+      "2": 17,
+      "3": 14,
+      "4": 13
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/11/the-classic.png"
   },
   {
     "route": "Coast to Coast",
@@ -2649,7 +4200,14 @@
     "totalElevation": 164,
     "climbRate": 6.4,
     "difficulty": "2 / 5",
-    "xp": 480
+    "xp": 480,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/coast-to-coast/",
+    "timeEstimatesMinutes": {
+      "2": 50,
+      "3": 41,
+      "4": 37
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/11/coast-to-coast.png"
   },
   {
     "route": "Triple Twist",
@@ -2662,7 +4220,15 @@
     "totalElevation": 201,
     "climbRate": 9.1,
     "difficulty": "3 / 5",
-    "xp": 400
+    "xp": 400,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/triple-twist/",
+    "timeEstimatesMinutes": {
+      "2": 48,
+      "3": 39,
+      "4": 35
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/11/triple-twist.png"
   },
   {
     "route": "Tair Dringfa Fechan",
@@ -2673,9 +4239,16 @@
     "leadInElevation": 3,
     "totalDistance": 32.1,
     "totalElevation": 375,
-    "climbRate": 12.0,
+    "climbRate": 12,
     "difficulty": "3 / 5",
-    "xp": 620
+    "xp": 620,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/tair-dringfa-fechan/",
+    "timeEstimatesMinutes": {
+      "2": 67,
+      "3": 54,
+      "4": 48
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/Tair-Dringfa-Fechan.png"
   },
   {
     "route": "Downtown Eruption",
@@ -2688,7 +4261,14 @@
     "totalElevation": 275,
     "climbRate": 14.1,
     "difficulty": "2 / 5",
-    "xp": 400
+    "xp": 400,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/downtown-eruption/",
+    "timeEstimatesMinutes": {
+      "2": 44,
+      "3": 35,
+      "4": 32
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/Downtown-Eruption.png"
   },
   {
     "route": "ZG25 Queen",
@@ -2699,9 +4279,16 @@
     "leadInElevation": 0,
     "totalDistance": 44.8,
     "totalElevation": 894,
-    "climbRate": 20.0,
+    "climbRate": 20,
     "difficulty": "3 / 5",
-    "xp": 895
+    "xp": 895,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/zg25-queen/",
+    "timeEstimatesMinutes": {
+      "2": 113,
+      "3": 87,
+      "4": 78
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/ZG25-Queen.png"
   },
   {
     "route": "Danger Noodle",
@@ -2714,7 +4301,15 @@
     "totalElevation": 414,
     "climbRate": 12.9,
     "difficulty": "2 / 5",
-    "xp": 645
+    "xp": 645,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/danger-noodle/",
+    "timeEstimatesMinutes": {
+      "2": 70,
+      "3": 56,
+      "4": 50
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/Danger-Noodle.png"
   },
   {
     "route": "Hilltop Hustle",
@@ -2727,7 +4322,14 @@
     "totalElevation": 346,
     "climbRate": 24.6,
     "difficulty": "4 / 5",
-    "xp": 275
+    "xp": 275,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/hilltop-hustle/",
+    "timeEstimatesMinutes": {
+      "2": 42,
+      "3": 32,
+      "4": 29
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2025/04/hilltop_hustle.png"
   },
   {
     "route": "Power Punches",
@@ -2740,7 +4342,13 @@
     "totalElevation": 205,
     "climbRate": 8.7,
     "difficulty": "3 / 5",
-    "xp": 470
+    "xp": 470,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/power-punches/",
+    "timeEstimatesMinutes": {
+      "2": 47,
+      "3": 38,
+      "4": 35
+    }
   },
   {
     "route": "Climb Control",
@@ -2749,11 +4357,17 @@
     "elevation": 191,
     "leadIn": 0.3,
     "leadInElevation": 0,
-    "totalDistance": 24.0,
+    "totalDistance": 24,
     "totalElevation": 191,
-    "climbRate": 8.0,
+    "climbRate": 8,
     "difficulty": "2 / 5",
-    "xp": 475
+    "xp": 475,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/climb-control/",
+    "timeEstimatesMinutes": {
+      "2": 47,
+      "3": 38,
+      "4": 35
+    }
   },
   {
     "route": "Flat Out Fast",
@@ -2766,12 +4380,18 @@
     "totalElevation": 49,
     "climbRate": 2.1,
     "difficulty": "1 / 5",
-    "xp": 430
+    "xp": 430,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/flat-out-fast/",
+    "timeEstimatesMinutes": {
+      "2": 37,
+      "3": 32,
+      "4": 29
+    }
   },
   {
     "route": "Watts of the Wild",
     "map": "Watopia",
-    "length": 42.0,
+    "length": 42,
     "elevation": 309,
     "leadIn": 0.2,
     "leadInElevation": 0,
@@ -2779,7 +4399,14 @@
     "totalElevation": 309,
     "climbRate": 7.3,
     "difficulty": "4 / 5",
-    "xp": 840
+    "xp": 840,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/watts-of-the-wild/",
+    "timeEstimatesMinutes": {
+      "2": 81,
+      "3": 67,
+      "4": 60
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Jarvis Seaside Sprint",
@@ -2792,7 +4419,14 @@
     "totalElevation": 131,
     "climbRate": 7.6,
     "difficulty": "2 / 5",
-    "xp": 250
+    "xp": 250,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/jarvis-seaside-sprint/",
+    "timeEstimatesMinutes": {
+      "2": 31,
+      "3": 25,
+      "4": 23
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "Southern Coast Cruise",
@@ -2805,7 +4439,14 @@
     "totalElevation": 147,
     "climbRate": 5.8,
     "difficulty": "1 / 5",
-    "xp": 475
+    "xp": 475,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/southern-coast-cruise/",
+    "timeEstimatesMinutes": {
+      "2": 48,
+      "3": 40,
+      "4": 36
+    },
+    "timeEstimatesScope": "lead-in + first lap"
   },
   {
     "route": "2019 Worlds Harrogate Circuit",
@@ -2818,12 +4459,20 @@
     "totalElevation": 246,
     "climbRate": 17.7,
     "difficulty": "2.5 / 5",
-    "xp": 270
+    "xp": 270,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/2019-worlds-harrogate-circuit/",
+    "timeEstimatesMinutes": {
+      "2": 34,
+      "3": 26,
+      "4": 23
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/2019-uci-worlds-harrogate-circuit-zwifthub.png"
   },
   {
     "route": "Duchy Estate",
     "map": "Yorkshire",
-    "length": 3.0,
+    "length": 3,
     "elevation": 41,
     "leadIn": 1.7,
     "leadInElevation": 29,
@@ -2831,12 +4480,20 @@
     "totalElevation": 70,
     "climbRate": 13.5,
     "difficulty": "1 / 5",
-    "xp": 60
+    "xp": 60,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/duchy-estate/",
+    "timeEstimatesMinutes": {
+      "2": 11,
+      "3": 8.9,
+      "4": 7.8
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/duchy-estate-zwifthub.png"
   },
   {
     "route": "Queen's Highway",
     "map": "Yorkshire",
-    "length": 3.0,
+    "length": 3,
     "elevation": 41,
     "leadIn": 2.7,
     "leadInElevation": 42,
@@ -2844,33 +4501,57 @@
     "totalElevation": 82,
     "climbRate": 13.5,
     "difficulty": "1 / 5",
-    "xp": 60
+    "xp": 60,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/queens-highway/",
+    "timeEstimatesMinutes": {
+      "2": 14,
+      "3": 11,
+      "4": 9.3
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/queens-highway-zwifthub.png"
   },
   {
     "route": "Tour Of Tewit Well",
     "map": "Yorkshire",
     "length": 10.9,
     "elevation": 204,
-    "leadIn": 0.0,
+    "leadIn": 0,
     "leadInElevation": 0,
     "totalDistance": 10.9,
     "totalElevation": 204,
     "climbRate": 18.8,
     "difficulty": "2 / 5",
-    "xp": 210
+    "xp": 210,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/tour-of-tewit-well/",
+    "timeEstimatesMinutes": {
+      "2": 27,
+      "3": 21,
+      "4": 18
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/tour-of-tewit-well-zwifthub.png"
   },
   {
     "route": "Royal Pump Room 8",
     "map": "Yorkshire",
     "length": 27.7,
     "elevation": 490,
-    "leadIn": 0.0,
+    "leadIn": 0,
     "leadInElevation": 0,
     "totalDistance": 27.7,
     "totalElevation": 490,
     "climbRate": 17.7,
     "difficulty": "3.5 / 5",
-    "xp": 550
+    "xp": 550,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/royal-pump-room-8/",
+    "timeEstimatesMinutes": {
+      "2": 66,
+      "3": 52,
+      "4": 46
+    },
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/05/royal-pump-room-8-zwifthub.png"
   },
   {
     "route": "Queen's Highway After Party",
@@ -2883,19 +4564,33 @@
     "totalElevation": 301,
     "climbRate": 15.1,
     "difficulty": "2 / 5",
-    "xp": 340
+    "xp": 340,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/queens-highway-after-party/",
+    "timeEstimatesMinutes": {
+      "2": 46,
+      "3": 36,
+      "4": 32
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/04/Queens-Highway-After-Party.webp"
   },
   {
     "route": "Yorkshire Double Loop",
     "map": "Yorkshire",
     "length": 29.6,
     "elevation": 547,
-    "leadIn": 0.0,
+    "leadIn": 0,
     "leadInElevation": 0,
     "totalDistance": 29.7,
     "totalElevation": 547,
     "climbRate": 18.5,
     "difficulty": "3 / 5",
-    "xp": 580
+    "xp": 580,
+    "zwiftInsiderUrl": "https://zwiftinsider.com/route/yorkshire-double-loop/",
+    "timeEstimatesMinutes": {
+      "2": 73,
+      "3": 57,
+      "4": 51
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2024/07/Yorkshire-Double-Loops.webp"
   }
 ]

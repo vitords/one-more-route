@@ -61,7 +61,10 @@ See `VERCEL_DEPLOY.md` for detailed deployment instructions.
 ├── edit.html           # Edit page (authenticated editing)
 ├── app.js              # Application logic
 ├── styles.css          # Styling
-├── routes.json         # Route data
+├── routes.json         # Route data (includes Zwift Insider fields when scraped)
+├── scripts/            # Maintainer tooling
+│   ├── fetch-zwift-insider.mjs   # Scrape ZI for time estimates + profile images
+│   └── route-name-overrides.json # App route name → ZI URL when names differ
 ├── api/
 │   └── strava-token.js # Serverless function for Strava OAuth
 └── package.json        # Node.js config for Vercel
@@ -70,6 +73,16 @@ See `VERCEL_DEPLOY.md` for detailed deployment instructions.
 ## How It Works
 
 - **Route Data**: Loaded from `routes.json`
+
+### Refreshing Zwift Insider data (time estimates + elevation profiles)
+
+Time estimates and profile image URLs are **scraped offline** from [Zwift Insider](https://zwiftinsider.com/routes/) (ZIMetrics; profile art credited to **ZwiftHub** on their pages). This avoids browser CORS and keeps the site fast.
+
+1. `npm install` (installs the `cheerio` dev dependency)
+2. `npm run scrape:zwift-insider` (takes several minutes; be respectful of their servers)
+3. Commit the updated `routes.json` (and adjust `scripts/route-name-overrides.json` if a route fails to match)
+
+If a route name in this app does not match Zwift Insider’s master list, add an entry to `scripts/route-name-overrides.json` mapping the exact `route` string from `routes.json` to a full ZI route URL or slug.
 - **Progress Storage**: GitHub Gist (public, synced across devices)
 - **Authentication**: GitHub Personal Access Token for editing
 - **Strava**: OAuth via serverless function proxy (keeps Client Secret secure)

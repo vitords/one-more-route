@@ -1,0 +1,23 @@
+{
+  "_comment": "Optional fixes after scrape (exact route title as in routes.json). URL string forces that image; null forces no profile. The scraper prefers ZwiftHub uploads (zwifthub, routeNNN.png, slug-matched PNG/WebP/JPG) and ignores /wp-content/routes/*.svg. Use this file only for ZI typos (e.g. knights chart filename), pages with no trustworthy chart, or special cases.",
+
+  "Knights of the Roundabout": "https://zwiftinsider.com/wp-content/uploads/2025/04/kights_of_the_roundtable.png",
+  "2018 UCI Worlds Course Short Lap": "https://zwiftinsider.com/wp-content/uploads/2020/05/2018-uci-worlds-course-short-lap-zwifthub.png",
+  "Chasing the Sun": "https://zwiftinsider.com/wp-content/uploads/2022/02/route117.png",
+  "Kappa Quest Reverse": "https://zwiftinsider.com/wp-content/uploads/2021/08/route101.png",
+  "Suki's Playground": "https://zwiftinsider.com/wp-content/uploads/2021/08/route100.png",
+  "Spirit Forest": "https://zwiftinsider.com/wp-content/uploads/2021/10/spirit-forest.jpg",
+  "Electric Loop": "https://zwiftinsider.com/wp-content/uploads/2022/02/route118.png",
+
+  "Farmland Loop": null,
+
+  "Innsbruck KOM After Party": null,
+  "London Calling": null,
+  "Tropic Rush": null,
+  "Castle to Castle": null,
+  "Electric Break": null,
+  "Red Zone Repeats": null,
+  "Twilight Harbor": null,
+  "Fuhgeddaboudit": null,
+  "Double Parked": null
+}

@@ -9,6 +9,7 @@ const CONFIG = {
     STRAVA_TOKEN_EXPIRES_KEY: 'zwift_tracker_strava_token_expires',
     STRAVA_ACTIVITIES_CACHE_KEY: 'zwift_tracker_strava_activities_cache',
     SORT_KEY: 'zwift_tracker_sort',
+    PLANNING_WKG_KEY: 'zwift_tracker_planning_wkg',
     // Strava OAuth
     STRAVA_CLIENT_ID: '194117',
     STRAVA_REDIRECT_URI: window.location.origin + window.location.pathname,
@@ -31,6 +32,111 @@ let isStravaAuthenticated = false;
 let gistId = null;
 let syncTimeout = null;
 let isSyncing = false;
+
+/** Sort keys where missing ZI estimates sort last (asc or desc). */
+const ESTIMATED_TIME_SORT_KEYS = new Set([
+    'estimatedTime2Wkg',
+    'estimatedTime3Wkg',
+    'estimatedTime4Wkg',
+]);
+
+function getPlanningWkg() {
+    try {
+        const v = localStorage.getItem(CONFIG.PLANNING_WKG_KEY);
+        if (v === '3' || v === '4') return v;
+        return '2';
+    } catch {
+        return '2';
+    }
+}
+
+function setPlanningWkg(w) {
+    try {
+        localStorage.setItem(CONFIG.PLANNING_WKG_KEY, w);
+    } catch (e) {
+        console.warn('Could not persist planning W/kg:', e);
+    }
+}
+
+/** @param {number} totalMinutes */
+function formatMinutesAsDuration(totalMinutes) {
+    if (!Number.isFinite(totalMinutes) || totalMinutes <= 0) return '—';
+    const m = Math.round(totalMinutes);
+    const h = Math.floor(m / 60);
+    const min = m % 60;
+    if (h <= 0) return `${min}m`;
+    return `${h}h ${min.toString().padStart(2, '0')}m`;
+}
+
+/** All hours rolled into one count (e.g. 127h 05m), not split by days. */
+function formatDurationTotalHoursMinutes(totalSeconds) {
+    if (totalSeconds == null || !Number.isFinite(totalSeconds) || totalSeconds <= 0) return '—';
+    const s = Math.max(0, Math.floor(totalSeconds));
+    const totalH = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return `${totalH}h ${m.toString().padStart(2, '0')}m`;
+}
+
+/** Calendar-style: days, hours, minutes within each day. */
+function formatDurationDaysHoursMinutes(totalSeconds) {
+    if (totalSeconds == null || !Number.isFinite(totalSeconds) || totalSeconds <= 0) return '—';
+    const s = Math.max(0, Math.floor(totalSeconds));
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return `${d}d ${h}h ${m.toString().padStart(2, '0')}m`;
+}
+
+function setStatDualDurationFromMinutes(hmEl, dhmEl, totalMinutes, isEmpty) {
+    if (!hmEl) return;
+    if (isEmpty || !Number.isFinite(totalMinutes) || totalMinutes <= 0) {
+        hmEl.textContent = '—';
+        if (dhmEl) dhmEl.textContent = '';
+        return;
+    }
+    const sec = Math.round(totalMinutes * 60);
+    hmEl.textContent = formatDurationTotalHoursMinutes(sec);
+    if (dhmEl) dhmEl.textContent = formatDurationDaysHoursMinutes(sec);
+}
+
+function setStatDualDurationFromSeconds(hmEl, dhmEl, totalSeconds, isEmpty) {
+    if (!hmEl) return;
+    if (isEmpty || !Number.isFinite(totalSeconds) || totalSeconds <= 0) {
+        hmEl.textContent = '—';
+        if (dhmEl) dhmEl.textContent = '';
+        return;
+    }
+    const sec = Math.floor(totalSeconds);
+    hmEl.textContent = formatDurationTotalHoursMinutes(sec);
+    if (dhmEl) dhmEl.textContent = formatDurationDaysHoursMinutes(sec);
+}
+
+/** Dual-line duration block for activity modal (seconds). */
+function htmlDualDurationFromSeconds(seconds) {
+    if (seconds == null || !Number.isFinite(seconds) || seconds <= 0) {
+        return '<div class="activity-duration-dual"><div>—</div></div>';
+    }
+    const sec = Math.floor(seconds);
+    return `<div class="activity-duration-dual"><div>${formatDurationTotalHoursMinutes(sec)}</div><div class="activity-duration-dual-sub">${formatDurationDaysHoursMinutes(sec)}</div></div>`;
+}
+
+/** @param {{ timeEstimatesMinutes?: Record<string, number> }} route */
+function getZiEstimateMinutes(route, wkg) {
+    const t = route.timeEstimatesMinutes;
+    if (!t || t[wkg] == null) return null;
+    const n = Number(t[wkg]);
+    return Number.isFinite(n) ? n : null;
+}
+
+/** Format ZI minute estimate for cards (supports fractional minutes from ZIMetrics). */
+function formatZiMinutesForCard(minutes) {
+    if (minutes == null || !Number.isFinite(minutes)) return '';
+    const x = Math.round(minutes * 10) / 10;
+    if (Number.isInteger(x) || Math.abs(x - Math.round(x)) < 1e-9) {
+        return String(Math.round(x));
+    }
+    return x.toFixed(1);
+}
 
 const STRAVA_CHART_WINDOW_DAYS = 30;
 const STRAVA_CHART_SWIPE_DRAG_THRESHOLD_PX = 4;
@@ -1017,6 +1123,12 @@ function getRouteSortValue(route, completionOrderMap) {
             if (order != null) return order;
             return currentSort.dir === 'asc' ? Infinity : -1;
         }
+        case 'estimatedTime2Wkg':
+            return getZiEstimateMinutes(route, '2');
+        case 'estimatedTime3Wkg':
+            return getZiEstimateMinutes(route, '3');
+        case 'estimatedTime4Wkg':
+            return getZiEstimateMinutes(route, '4');
         default:
             return route.length || 0;
     }
@@ -1026,6 +1138,15 @@ function getRouteSortValue(route, completionOrderMap) {
 function compareRoutes(a, b, completionOrderMap) {
     const valA = getRouteSortValue(a, completionOrderMap);
     const valB = getRouteSortValue(b, completionOrderMap);
+
+    if (ESTIMATED_TIME_SORT_KEYS.has(currentSort.by)) {
+        const missA = valA == null;
+        const missB = valB == null;
+        if (missA && missB) return a.route.localeCompare(b.route);
+        if (missA) return 1;
+        if (missB) return -1;
+    }
+
     let cmp = valA - valB;
     if (currentSort.by === 'completionOrder' && currentSort.dir === 'desc') {
         cmp = -cmp;
@@ -1146,6 +1267,51 @@ function renderRoutes() {
     });
 }
 
+/** Extra section on route card: Zwift Insider estimates + profile image. */
+function buildZwiftInsiderSection(route) {
+    const url = route.zwiftInsiderUrl;
+    const img = route.elevationProfileUrl;
+    const m2 = getZiEstimateMinutes(route, '2');
+    const m3 = getZiEstimateMinutes(route, '3');
+    const m4 = getZiEstimateMinutes(route, '4');
+    const anyTime = m2 != null || m3 != null || m4 != null;
+    if (!url && !anyTime && !img) return '';
+
+    const titleInner = url
+        ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="zi-title-link">Zwift Insider</a>`
+        : 'Zwift Insider';
+
+    let bits = '';
+    // if (route.timeEstimatesScope) {
+    //     bits += `<div class="zi-scope-caption">${escapeHtml(route.timeEstimatesScope)}</div>`;
+    // }
+    if (anyTime) {
+        const cell = (label, m) =>
+            `<div class="zi-time-cell">
+                <div class="route-detail-label">${label}</div>
+                <div class="route-detail-value">${m != null ? `${formatZiMinutesForCard(m)} min` : '—'}</div>
+            </div>`;
+        bits += `<div class="zi-times-row">${cell('2 W/kg', m2)}${cell('3 W/kg', m3)}${cell('4 W/kg', m4)}</div>`;
+    } else if (url || img) {
+        bits +=
+            '<div class="route-detail zi-no-estimate"><div class="route-detail-value">No ZI time estimate</div></div>';
+    }
+    if (img) {
+        const safeSrc = escapeHtml(img);
+        const wrap = url
+            ? `<a class="zi-profile-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">`
+            : '';
+        const wend = url ? '</a>' : '';
+        bits += `<div class="zi-profile-wrap">${wrap}<img class="zi-elevation-img" src="${safeSrc}" alt="Elevation profile by ZwiftHub (via Zwift Insider)" loading="lazy">${wend}</div>`;
+    }
+
+    return `
+            <div class="route-details-section route-details-section-zi">
+                <div class="route-details-section-title">${titleInner}</div>
+                ${bits}
+            </div>`;
+}
+
 // Create a route card element
 function createRouteCard(route, completionOrderMap = {}) {
     const card = document.createElement('div');
@@ -1230,6 +1396,7 @@ function createRouteCard(route, completionOrderMap = {}) {
                     <div class="route-detail-value">${formatDifficulty(route.difficulty)}</div>
                 </div>
             </div>
+            ${buildZwiftInsiderSection(route)}
         </div>
         ${hasActivity ? `
             <div class="route-activity-section">
@@ -1423,16 +1590,6 @@ function createRouteCard(route, completionOrderMap = {}) {
 
 // Render activity details HTML
 function renderActivityDetails(activity) {
-    const formatTime = (seconds) => {
-        const hours = Math.floor(seconds / 3600);
-        const mins = Math.floor((seconds % 3600) / 60);
-        const secs = seconds % 60;
-        if (hours > 0) {
-            return `${hours}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        }
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    };
-    
     const formatDistance = (meters) => {
         return (meters / 1000).toFixed(2) + ' km';
     };
@@ -1462,11 +1619,11 @@ function renderActivityDetails(activity) {
                 </div>
                 <div class="activity-stat">
                     <div class="activity-stat-label">Moving Time</div>
-                    <div class="activity-stat-value">${formatTime(activity.movingTime)}</div>
+                    <div class="activity-stat-value">${htmlDualDurationFromSeconds(activity.movingTime)}</div>
                 </div>
                 <div class="activity-stat">
                     <div class="activity-stat-label">Elapsed Time</div>
-                    <div class="activity-stat-value">${formatTime(activity.elapsedTime)}</div>
+                    <div class="activity-stat-value">${htmlDualDurationFromSeconds(activity.elapsedTime)}</div>
                 </div>
                 ${activity.totalElevationGain ? `
                 <div class="activity-stat">
@@ -1805,8 +1962,12 @@ function updateStats() {
         totalDistanceEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of all routes");
     }
     if (completedDistanceEl) {
-        completedDistanceEl.textContent = `${formatDistance(completedDistance)} (${distanceCompletionPercent}%)`;
+        completedDistanceEl.textContent = formatDistance(completedDistance);
         completedDistanceEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of completed routes");
+    }
+    const completedDistancePctEl = document.getElementById('completed-distance-pct');
+    if (completedDistancePctEl) {
+        completedDistancePctEl.textContent = `(${distanceCompletionPercent}%)`;
     }
     if (remainingDistanceEl) {
         remainingDistanceEl.textContent = formatDistance(remainingDistance);
@@ -1838,8 +1999,12 @@ function updateStats() {
         totalElevationEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of all routes");
     }
     if (completedElevationEl) {
-        completedElevationEl.textContent = `${formatElevation(completedElevation)} (${elevationCompletionPercent}%)`;
+        completedElevationEl.textContent = formatElevation(completedElevation);
         completedElevationEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of completed routes");
+    }
+    const completedElevationPctEl = document.getElementById('completed-elevation-pct');
+    if (completedElevationPctEl) {
+        completedElevationPctEl.textContent = `(${elevationCompletionPercent}%)`;
     }
     if (remainingElevationEl) {
         remainingElevationEl.textContent = formatElevation(remainingElevation);
@@ -1875,8 +2040,12 @@ function updateStats() {
         totalDistanceLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of all routes including lead-in");
     }
     if (completedDistanceLeadInEl) {
-        completedDistanceLeadInEl.textContent = `${formatDistance(completedDistanceLeadIn)} (${distanceCompletionPercentLeadIn}%)`;
+        completedDistanceLeadInEl.textContent = formatDistance(completedDistanceLeadIn);
         completedDistanceLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance of completed routes including lead-in");
+    }
+    const completedDistanceLeadInPctEl = document.getElementById('completed-distance-leadin-pct');
+    if (completedDistanceLeadInPctEl) {
+        completedDistanceLeadInPctEl.textContent = `(${distanceCompletionPercentLeadIn}%)`;
     }
     if (remainingDistanceLeadInEl) {
         remainingDistanceLeadInEl.textContent = formatDistance(remainingDistanceLeadIn);
@@ -1908,8 +2077,12 @@ function updateStats() {
         totalElevationLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of all routes including lead-in");
     }
     if (completedElevationLeadInEl) {
-        completedElevationLeadInEl.textContent = `${formatElevation(completedElevationLeadIn)} (${elevationCompletionPercentLeadIn}%)`;
+        completedElevationLeadInEl.textContent = formatElevation(completedElevationLeadIn);
         completedElevationLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain of completed routes including lead-in");
+    }
+    const completedElevationLeadInPctEl = document.getElementById('completed-elevation-leadin-pct');
+    if (completedElevationLeadInPctEl) {
+        completedElevationLeadInPctEl.textContent = `(${elevationCompletionPercentLeadIn}%)`;
     }
     if (remainingElevationLeadInEl) {
         remainingElevationLeadInEl.textContent = formatElevation(remainingElevationLeadIn);
@@ -1926,6 +2099,58 @@ function updateStats() {
     if (avgElevationRemainingLeadInEl) {
         avgElevationRemainingLeadInEl.textContent = formatElevation(avgElevationRemainingLeadIn);
         avgElevationRemainingLeadInEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Average elevation gain per route including lead-in (remaining routes)");
+    }
+
+    // Zwift Insider estimated ride time sums (at selected W/kg; model-based, not your Strava times)
+    const planningWkg = getPlanningWkg();
+    let ziSumAll = 0;
+    let ziSumCompleted = 0;
+    let ziSumRemaining = 0;
+    let ziCountWithData = 0;
+    let ziCountCompletedWithData = 0;
+    let ziCountRemainingWithData = 0;
+    for (const route of routes) {
+        const m = getZiEstimateMinutes(route, planningWkg);
+        if (m == null) continue;
+        ziCountWithData++;
+        ziSumAll += m;
+        if (completedRoutes.has(route.route)) {
+            ziCountCompletedWithData++;
+            ziSumCompleted += m;
+        } else {
+            ziCountRemainingWithData++;
+            ziSumRemaining += m;
+        }
+    }
+    const ziTotalHm = document.getElementById('zi-estimated-total-hm');
+    const ziTotalDhm = document.getElementById('zi-estimated-total-dhm');
+    const ziCompletedHm = document.getElementById('zi-estimated-completed-hm');
+    const ziCompletedDhm = document.getElementById('zi-estimated-completed-dhm');
+    const ziRemainingHm = document.getElementById('zi-estimated-remaining-hm');
+    const ziRemainingDhm = document.getElementById('zi-estimated-remaining-dhm');
+    const ziMetaEl = document.getElementById('zi-estimated-meta');
+    const ziFoot = `Zwift Insider model, ${planningWkg} W/kg. Sums include only routes that have an estimate (${ziCountWithData} of ${total}).`;
+    setStatDualDurationFromMinutes(ziTotalHm, ziTotalDhm, ziSumAll, ziCountWithData === 0);
+    ziTotalHm?.closest('.stat-card-compact')?.setAttribute('data-tooltip', ziFoot);
+    setStatDualDurationFromMinutes(
+        ziCompletedHm,
+        ziCompletedDhm,
+        ziSumCompleted,
+        ziCountCompletedWithData === 0
+    );
+    ziCompletedHm?.closest('.stat-card-compact')?.setAttribute('data-tooltip', ziFoot);
+    setStatDualDurationFromMinutes(
+        ziRemainingHm,
+        ziRemainingDhm,
+        ziSumRemaining,
+        ziCountRemainingWithData === 0
+    );
+    ziRemainingHm?.closest('.stat-card-compact')?.setAttribute('data-tooltip', ziFoot);
+    if (ziMetaEl) {
+        ziMetaEl.textContent =
+            ziCountWithData > 0
+                ? `${ziCountWithData} of ${total} routes have a ${planningWkg} W/kg estimate`
+                : 'No ZI time data in catalog';
     }
     
     // Update Strava activity stats
@@ -3396,24 +3621,6 @@ async function fetchStravaActivityStreams(activityId) {
     return downsamplePairs(times, watts, 900);
 }
 
-// Format time in seconds to readable format
-function formatTime(seconds) {
-    if (!seconds || seconds === 0) return '0:00';
-    
-    const days = Math.floor(seconds / 86400);
-    const hours = Math.floor((seconds % 86400) / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
-    
-    if (days > 0) {
-        return `${days}d ${hours}h ${mins}m`;
-    } else if (hours > 0) {
-        return `${hours}h ${mins}m`;
-    } else {
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-    }
-}
-
 // Update Strava activity-based statistics
 function updateStravaStats() {
     const activities = Object.values(routeActivities);
@@ -3436,10 +3643,13 @@ function updateStravaStats() {
     // Update Strava stat elements with tooltips
     const stravaDistanceEl = document.getElementById('strava-total-distance');
     const stravaElevationEl = document.getElementById('strava-total-elevation');
-    const stravaMovingTimeEl = document.getElementById('strava-total-moving-time');
-    const stravaElapsedTimeEl = document.getElementById('strava-total-elapsed-time');
+    const stravaMovingHm = document.getElementById('strava-total-moving-time-hm');
+    const stravaMovingDhm = document.getElementById('strava-total-moving-time-dhm');
+    const stravaElapsedHm = document.getElementById('strava-total-elapsed-time-hm');
+    const stravaElapsedDhm = document.getElementById('strava-total-elapsed-time-dhm');
     const stravaCaloriesEl = document.getElementById('strava-total-calories');
-    
+    const noActs = activities.length === 0;
+
     if (stravaDistanceEl) {
         stravaDistanceEl.textContent = formatDistance(totalDistance / 1000); // Convert meters to km
         stravaDistanceEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total distance from all linked Strava activities");
@@ -3448,14 +3658,10 @@ function updateStravaStats() {
         stravaElevationEl.textContent = formatElevation(totalElevation);
         stravaElevationEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elevation gain from all linked Strava activities");
     }
-    if (stravaMovingTimeEl) {
-        stravaMovingTimeEl.textContent = formatTime(totalMovingTime);
-        stravaMovingTimeEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total moving time from all linked Strava activities");
-    }
-    if (stravaElapsedTimeEl) {
-        stravaElapsedTimeEl.textContent = formatTime(totalElapsedTime);
-        stravaElapsedTimeEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elapsed time from all linked Strava activities");
-    }
+    setStatDualDurationFromSeconds(stravaMovingHm, stravaMovingDhm, totalMovingTime, noActs);
+    stravaMovingHm?.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total moving time from all linked Strava activities");
+    setStatDualDurationFromSeconds(stravaElapsedHm, stravaElapsedDhm, totalElapsedTime, noActs);
+    stravaElapsedHm?.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total elapsed time from all linked Strava activities");
     if (stravaCaloriesEl) {
         stravaCaloriesEl.textContent = totalCalories.toLocaleString();
         stravaCaloriesEl.closest('.stat-card-compact')?.setAttribute('data-tooltip', "Total calories burned from all linked Strava activities");
@@ -3602,6 +3808,16 @@ function setupSortSelect() {
     }
 }
 
+function setupPlanningWkgSelect() {
+    const sel = document.getElementById('planning-wkg-select');
+    if (!sel) return;
+    sel.value = getPlanningWkg();
+    sel.addEventListener('change', () => {
+        setPlanningWkg(sel.value);
+        updateStats();
+    });
+}
+
 // Setup event listeners
 function setupEventListeners() {
     // Auth button
@@ -3690,6 +3906,7 @@ function setupEventListeners() {
     
     // Sort dropdown
     setupSortSelect();
+    setupPlanningWkgSelect();
     
     // Search input
     searchInput.addEventListener('input', (e) => {
@@ -4018,6 +4235,7 @@ function setupShowcaseEventListeners() {
     
     // Sort dropdown
     setupSortSelect();
+    setupPlanningWkgSelect();
     
     // Search input
     if (searchInput) {

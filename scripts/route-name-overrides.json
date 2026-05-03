@@ -1,0 +1,7 @@
+{
+  "_comment": "Map app route name (exact string as in routes.json) to Zwift Insider route URL or path slug. Use when auto-matching fails.",
+  "R.G.V.": "https://zwiftinsider.com/route/rgv/",
+  "2018 UCI Worlds Course Short Lap": "https://zwiftinsider.com/route/2018-worlds-short-lap/",
+  "Richmond UCI Worlds": "https://zwiftinsider.com/route/2015-worlds-course/",
+  "The Uber Pretzel": "https://zwiftinsider.com/route/the-uber-pretzel/"
+}

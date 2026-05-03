@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "Zwift route tracker with Strava integration",
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "vercel dev",
+    "scrape:zwift-insider": "node scripts/fetch-zwift-insider.mjs"
+  },
+  "devDependencies": {
+    "cheerio": "^1.0.0"
   },
   "engines": {
     "node": "24.x"
