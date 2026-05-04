@@ -273,33 +273,58 @@
                         <span class="stat-value-inline" id="strava-avg-weighted-power">—</span>
                     </div>
                 </div>
-                <div id="strava-charts-nav" class="strava-charts-nav" hidden>
-                    <button type="button" class="btn btn-secondary btn-small strava-charts-nav-btn" id="strava-charts-nav-prev" aria-label="Show earlier 30 days">← Earlier</button>
-                    <span id="strava-charts-nav-label" class="strava-charts-nav-label"></span>
-                    <button type="button" class="btn btn-secondary btn-small strava-charts-nav-btn" id="strava-charts-nav-next" aria-label="Show later 30 days">Later →</button>
-                </div>
-                <div id="strava-charts-row" class="strava-charts-row">
-                    <div id="strava-power-chart-wrap" class="strava-power-chart-wrap strava-power-chart-wrap--empty">
-                        <div class="strava-chart-panel-title">Power</div>
-                        <div class="strava-power-chart-legend">
-                            <span class="strava-power-legend-item strava-power-legend-avg"><span class="strava-power-legend-swatch"></span>Avg power</span>
-                            <span class="strava-power-legend-item strava-power-legend-weighted"><span class="strava-power-legend-swatch"></span>Weighted avg</span>
-                        </div>
-                        <div class="strava-power-chart-inner">
-                            <svg id="strava-power-chart" class="strava-power-chart" role="img" aria-label="Daily average and weighted average power from linked Strava activities by calendar day"></svg>
-                        </div>
-                        <p id="strava-power-chart-empty" class="strava-power-chart-empty">Link Strava activities with power data to see this chart.</p>
+                <div class="strava-linked-charts">
+                    <div id="strava-charts-nav" class="strava-charts-nav" hidden>
+                        <button type="button" class="btn btn-secondary btn-small strava-charts-nav-btn" id="strava-charts-nav-prev" aria-label="Show earlier 30 days">← Earlier</button>
+                        <span id="strava-charts-nav-label" class="strava-charts-nav-label"></span>
+                        <button type="button" class="btn btn-secondary btn-small strava-charts-nav-btn" id="strava-charts-nav-next" aria-label="Show later 30 days">Later →</button>
                     </div>
-                    <div id="strava-hr-chart-wrap" class="strava-hr-chart-wrap strava-hr-chart-wrap--empty">
-                        <div class="strava-chart-panel-title">Heart rate</div>
-                        <div class="strava-hr-chart-legend">
-                            <span class="strava-hr-legend-item strava-hr-legend-avg"><span class="strava-hr-legend-swatch"></span>Avg HR</span>
-                            <span class="strava-hr-legend-item strava-hr-legend-max"><span class="strava-hr-legend-swatch"></span>Max HR</span>
+                    <div id="strava-charts-row" class="strava-charts-row">
+                        <div id="strava-power-chart-wrap" class="strava-power-chart-wrap strava-power-chart-wrap--empty">
+                            <div class="strava-chart-panel-title">Power</div>
+                            <div class="strava-power-chart-legend">
+                                <span class="strava-power-legend-item strava-power-legend-avg"><span class="strava-power-legend-swatch"></span>Avg power</span>
+                                <span class="strava-power-legend-item strava-power-legend-weighted"><span class="strava-power-legend-swatch"></span>Weighted avg</span>
+                            </div>
+                            <div class="strava-power-chart-inner">
+                                <svg id="strava-power-chart" class="strava-power-chart" role="img" aria-label="Daily average and weighted average power from linked Strava activities by calendar day"></svg>
+                            </div>
+                            <p id="strava-power-chart-empty" class="strava-power-chart-empty">Link Strava activities with power data to see this chart.</p>
                         </div>
-                        <div class="strava-hr-chart-inner">
-                            <svg id="strava-hr-chart" class="strava-hr-chart" role="img" aria-label="Daily average and maximum heart rate from linked Strava activities by calendar day"></svg>
+                        <div id="strava-hr-chart-wrap" class="strava-hr-chart-wrap strava-hr-chart-wrap--empty">
+                            <div class="strava-chart-panel-title">Heart rate</div>
+                            <div class="strava-hr-chart-legend">
+                                <span class="strava-hr-legend-item strava-hr-legend-avg"><span class="strava-hr-legend-swatch"></span>Avg HR</span>
+                                <span class="strava-hr-legend-item strava-hr-legend-max"><span class="strava-hr-legend-swatch"></span>Max HR</span>
+                            </div>
+                            <div class="strava-hr-chart-inner">
+                                <svg id="strava-hr-chart" class="strava-hr-chart" role="img" aria-label="Daily average and maximum heart rate from linked Strava activities by calendar day"></svg>
+                            </div>
+                            <p id="strava-hr-chart-empty" class="strava-hr-chart-empty">Link Strava activities with heart rate data to see this chart.</p>
                         </div>
-                        <p id="strava-hr-chart-empty" class="strava-hr-chart-empty">Link Strava activities with heart rate data to see this chart.</p>
+                    </div>
+                    <div id="strava-timing-row" class="strava-timing-row">
+                        <div id="strava-timing-weekday-wrap" class="strava-timing-panel strava-timing-panel--empty">
+                            <div class="strava-chart-panel-title">By weekday</div>
+                            <div class="strava-timing-legend" aria-hidden="true">
+                                <span class="strava-timing-legend-item"><span class="strava-timing-legend-swatch strava-timing-legend-swatch--count"></span>Rides</span>
+                                <span class="strava-timing-legend-item"><span class="strava-timing-legend-swatch strava-timing-legend-swatch--moving"></span>Moving time</span>
+                            </div>
+                            <div class="strava-timing-chart-inner">
+                                <svg id="strava-timing-weekday-chart" class="strava-timing-chart" role="img" aria-label="Ride count and moving time by weekday"></svg>
+                            </div>
+                            <p id="strava-timing-weekday-empty" class="strava-timing-chart-empty">Link activities with start times to see weekday stats.</p>
+                        </div>
+                        <div id="strava-timing-hour-wrap" class="strava-timing-panel strava-timing-panel--empty">
+                            <div class="strava-chart-panel-title">Start hour</div>
+                            <div class="strava-timing-legend" aria-hidden="true">
+                                <span class="strava-timing-legend-item"><span class="strava-timing-legend-swatch strava-timing-legend-swatch--hour"></span>Rides by hour</span>
+                            </div>
+                            <div class="strava-timing-chart-inner">
+                                <svg id="strava-timing-hour-chart" class="strava-timing-chart" role="img" aria-label="Number of rides by start hour of day"></svg>
+                            </div>
+                            <p id="strava-timing-hour-empty" class="strava-timing-chart-empty">Link activities with start times to see start-hour stats.</p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -24,6 +24,13 @@
     /* Power trend chart: orange vs blue for clear distinction */
     --power-chart-avg: #ea580c;
     --power-chart-weighted: #2563eb;
+    /* Ride timing bar charts: reuse Power palette */
+    --timing-chart-count-from: var(--power-chart-avg);
+    --timing-chart-count-to: var(--primary-hover);
+    --timing-chart-moving-from: color-mix(in srgb, var(--power-chart-weighted) 38%, transparent);
+    --timing-chart-moving-to: color-mix(in srgb, var(--power-chart-weighted) 12%, transparent);
+    --timing-chart-hour-from: var(--power-chart-weighted);
+    --timing-chart-hour-to: color-mix(in srgb, var(--power-chart-weighted) 58%, var(--primary-color));
     /* Heart rate chart: magenta vs teal */
     --hr-chart-avg: #a21caf;
     --hr-chart-max: #0d9488;
@@ -1158,14 +1165,20 @@ a.btn-strava:visited {
     filter: brightness(0) invert(1);
 }
 
+.strava-linked-charts {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
 .strava-charts-nav {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px 20px;
     flex-wrap: wrap;
-    margin-top: 14px;
-    margin-bottom: 4px;
+    margin-top: 0;
+    margin-bottom: 8px;
 }
 
 .strava-charts-nav[hidden] {
@@ -1201,9 +1214,9 @@ a.btn-strava:visited {
     display: flex;
     flex-direction: column;
     gap: 24px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
     touch-action: none;
     cursor: grab;
     user-select: none;
@@ -1230,6 +1243,229 @@ a.btn-strava:visited {
     .strava-charts-row > .strava-hr-chart-wrap {
         padding-left: 28px;
         border-left: 1px solid var(--border);
+    }
+}
+
+.strava-timing-row {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+}
+
+.strava-timing-row > .strava-timing-panel {
+    flex: 1;
+    min-width: 0;
+}
+
+.strava-timing-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    min-height: calc(0.85rem * 1.45 + 3px);
+    align-items: center;
+}
+
+.strava-timing-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.strava-timing-legend-swatch {
+    width: 14px;
+    height: 3px;
+    border-radius: 1px;
+    flex-shrink: 0;
+}
+
+.strava-timing-legend-swatch--count {
+    background: var(--power-chart-avg);
+}
+
+.strava-timing-legend-swatch--moving {
+    background: color-mix(in srgb, var(--power-chart-weighted) 34%, var(--background));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--power-chart-weighted) 38%, transparent);
+}
+
+.strava-timing-legend-swatch--hour {
+    background: var(--power-chart-weighted);
+}
+
+.strava-timing-panel--empty .strava-timing-legend {
+    display: none;
+}
+
+.strava-timing-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
+
+.strava-timing-chart-inner {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    touch-action: none;
+}
+
+.strava-timing-chart-empty {
+    display: none;
+    margin: 0;
+    padding: 10px 0 4px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.strava-timing-panel--empty .strava-timing-chart-inner {
+    display: none;
+}
+
+.strava-timing-panel--empty .strava-timing-chart-empty {
+    display: block;
+}
+
+.strava-timing-bar-count {
+    stroke: color-mix(in srgb, var(--power-chart-avg) 55%, transparent);
+    stroke-width: 0.5;
+    vector-effect: non-scaling-stroke;
+}
+
+.strava-timing-bar-time {
+    stroke: color-mix(in srgb, var(--power-chart-weighted) 45%, transparent);
+    stroke-width: 0.5;
+    vector-effect: non-scaling-stroke;
+}
+
+.strava-timing-bar-hour {
+    stroke: color-mix(in srgb, var(--power-chart-weighted) 45%, transparent);
+    stroke-width: 0.5;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.92;
+}
+
+.strava-timing-axis {
+    fill: var(--text-secondary);
+    font-size: 10px;
+}
+
+.strava-timing-grid {
+    stroke: var(--border);
+    stroke-width: 1;
+}
+
+.strava-timing-grid-line {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+    pointer-events: none;
+}
+
+.strava-timing-y-tick {
+    fill: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.strava-timing-x-tick {
+    fill: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+}
+
+.strava-timing-x-tick-hour {
+    fill: var(--text-secondary);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    pointer-events: none;
+}
+
+.strava-timing-axis-baseline {
+    stroke: color-mix(in srgb, var(--text-secondary) 55%, var(--border));
+    stroke-width: 1;
+    pointer-events: none;
+}
+
+.strava-timing-axis-tick-major {
+    stroke: color-mix(in srgb, var(--text-secondary) 45%, var(--border));
+    stroke-width: 1;
+    pointer-events: none;
+}
+
+.strava-timing-bar-label {
+    pointer-events: none;
+}
+
+.strava-timing-bar-label--floating {
+    fill: color-mix(in srgb, var(--text-primary) 88%, var(--text-secondary));
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.strava-timing-hour-count-zero {
+    fill: var(--text-secondary);
+    font-size: 8px;
+    font-weight: 500;
+    opacity: 0.72;
+}
+
+.strava-timing-bar-label--on-bar {
+    fill: #fffcef;
+    font-size: 11px;
+    font-weight: 700;
+    paint-order: stroke fill;
+    stroke: rgba(124, 45, 18, 0.35);
+    stroke-width: 2px;
+}
+
+.strava-timing-bar-label--duration.strava-timing-bar-label--floating {
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.strava-timing-bar-label--duration.strava-timing-bar-label--on-bar {
+    fill: #431407;
+    font-size: 9px;
+    font-weight: 700;
+    stroke: rgba(255, 255, 255, 0.45);
+}
+
+.strava-timing-subtitle {
+    fill: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+@media (min-width: 900px) {
+    .strava-timing-row {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 28px;
+    }
+
+    .strava-timing-row > .strava-timing-panel:last-child {
+        padding-left: 28px;
+        border-left: 1px solid var(--border);
+    }
+}
+
+@media (max-width: 520px) {
+    .strava-timing-bar-label--floating {
+        font-size: 9px;
     }
 }
 
@@ -1837,16 +2073,6 @@ a.btn-strava:visited {
     font-size: 0.82em;
     color: var(--text-secondary);
     font-weight: 500;
-}
-
-.activity-duration-dual {
-    text-align: right;
-}
-
-.activity-duration-dual-sub {
-    font-size: 0.85em;
-    color: var(--text-secondary);
-    margin-top: 2px;
 }
 
 .route-details-section-zi {
