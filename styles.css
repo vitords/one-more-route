@@ -560,45 +560,50 @@ h1 {
     opacity: 0.7;
 }
 
-/* Custom tooltip for route cards with activities */
-.route-card[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: 8px;
-    padding: 8px 12px;
-    background: var(--text-primary);
-    color: var(--background);
-    border-radius: 6px;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    z-index: 1000;
-    pointer-events: none;
-    opacity: 0;
-    animation: tooltipFadeIn 0.15s ease-out forwards;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
+/* Custom tooltip for route cards with activities.
+   Gated to devices that actually support hover. On touch devices the first tap
+   on an element with hover-revealed content is consumed to show that hover state
+   (iOS Safari), which swallowed the first tap on in-card buttons like unlink. */
+@media (hover: hover) {
+    .route-card[title]:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-bottom: 8px;
+        padding: 8px 12px;
+        background: var(--text-primary);
+        color: var(--background);
+        border-radius: 6px;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        z-index: 1000;
+        pointer-events: none;
+        opacity: 0;
+        animation: tooltipFadeIn 0.15s ease-out forwards;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
 
-.route-card[title]:hover::before {
-    content: '';
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-bottom: 2px;
-    border: 6px solid transparent;
-    border-top-color: var(--text-primary);
-    z-index: 1001;
-    pointer-events: none;
-    opacity: 0;
-    animation: tooltipFadeIn 0.15s ease-out forwards;
-}
+    .route-card[title]:hover::before {
+        content: '';
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin-bottom: 2px;
+        border: 6px solid transparent;
+        border-top-color: var(--text-primary);
+        z-index: 1001;
+        pointer-events: none;
+        opacity: 0;
+        animation: tooltipFadeIn 0.15s ease-out forwards;
+    }
 
-/* Hide native tooltip when custom one is shown */
-.route-card[title]:hover {
-    pointer-events: auto;
+    /* Hide native tooltip when custom one is shown */
+    .route-card[title]:hover {
+        pointer-events: auto;
+    }
 }
 
 .route-header {
@@ -1983,6 +1988,17 @@ a.btn-strava:visited {
     
     .activity-stats-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Larger, easier-to-hit unlink target on touch screens */
+    .btn-unlink-activity {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 8px 12px;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .auth-section {

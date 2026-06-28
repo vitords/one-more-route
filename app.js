@@ -377,19 +377,32 @@ async function loadCompletedRoutes() {
             const data = JSON.parse(file.content);
             const gistRoutes = new Set(data.completedRoutes || []);
             const gistActivities = data.activities || {};
-            
-            // Merge with local storage (local takes precedence for conflicts)
+            const gistUpdated = data.lastUpdated || 0;
+
+            // Resolve conflicts with last-write-wins (using lastUpdated timestamps).
+            // A union/spread merge can only add keys, so it resurrects deletions
+            // (e.g. an unlinked activity or an unchecked route). LWW respects deletions
+            // while still adopting changes made on another device.
             const localSaved = localStorage.getItem(CONFIG.LOCAL_STORAGE_KEY);
+            let gistWasNewer = false;
             if (localSaved) {
                 const localData = JSON.parse(localSaved);
-                const localRoutes = new Set(localData.completedRoutes || []);
-                // Merge: union of both sets (if local has it, keep it; if gist has it, add it)
-                completedRoutes = new Set([...localRoutes, ...gistRoutes]);
-                // Merge activities (local takes precedence)
-                routeActivities = { ...gistActivities, ...(localData.activities || {}) };
+                const localUpdated = localData.lastUpdated || 0;
+
+                if (gistUpdated > localUpdated) {
+                    // Gist has the most recent change (likely from another device) - adopt it.
+                    completedRoutes = gistRoutes;
+                    routeActivities = gistActivities;
+                    gistWasNewer = true;
+                } else {
+                    // Local is newer-or-equal - it is authoritative, including deletions.
+                    completedRoutes = new Set(localData.completedRoutes || []);
+                    routeActivities = localData.activities || {};
+                }
             } else {
                 completedRoutes = gistRoutes;
                 routeActivities = gistActivities;
+                gistWasNewer = true;
             }
             
             // Save merged data back to localStorage
@@ -399,8 +412,9 @@ async function loadCompletedRoutes() {
             updateStats();
             updateSyncStatus('synced');
 
-            // Sync merged state to Gist when authenticated (pushes any local-only changes from other sessions/devices)
-            if (isAuthenticated) {
+            // Only re-push when the Gist was the newer source. Re-pushing a stale local
+            // state here would otherwise clobber a just-made local deletion.
+            if (isAuthenticated && gistWasNewer) {
                 saveCompletedRoutes();
             }
         }
@@ -424,10 +438,13 @@ function saveCompletedRoutesToLocal() {
     }
 }
 
-// Save completed routes to GitHub Gist (background sync with debouncing)
-async function saveCompletedRoutes() {
+// Save completed routes to GitHub Gist (background sync with debouncing).
+// Pass { immediate: true } for destructive actions (unlink/uncheck) so the change
+// reaches the Gist right away instead of after the 1s debounce, which a quick reload
+// could otherwise lose.
+async function saveCompletedRoutes({ immediate = false } = {}) {
     const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] saveCompletedRoutes: Starting save process`);
+    console.log(`[${timestamp}] saveCompletedRoutes: Starting save process${immediate ? ' (immediate)' : ''}`);
     
     // Save to localStorage immediately for instant feedback
     saveCompletedRoutesToLocal();
@@ -447,7 +464,14 @@ async function saveCompletedRoutes() {
     // Clear existing timeout
     if (syncTimeout) {
         clearTimeout(syncTimeout);
+        syncTimeout = null;
         console.log(`[${timestamp}] saveCompletedRoutes: Cleared previous sync timeout`);
+    }
+
+    if (immediate) {
+        console.log(`[${timestamp}] saveCompletedRoutes: Syncing to Gist immediately`);
+        await syncToGist(token);
+        return;
     }
     
     // Debounce: wait 1 second before syncing to Gist (batch multiple changes)
@@ -473,7 +497,8 @@ async function syncToGist(token) {
     
     const data = {
         completedRoutes: Array.from(completedRoutes),
-        activities: routeActivities
+        activities: routeActivities,
+        lastUpdated: Date.now()
     };
     
     try {
@@ -1078,7 +1103,8 @@ async function linkActivityToRoute(routeName, activityIdOrUrl) {
 function unlinkActivityFromRoute(routeName) {
     delete routeActivities[routeName];
     saveCompletedRoutesToLocal();
-    saveCompletedRoutes();
+    // Flush immediately so the deletion reaches the Gist before any reload.
+    saveCompletedRoutes({ immediate: true });
     renderRoutes();
     updateStats();
 }
@@ -1538,8 +1564,10 @@ function createRouteCard(route, completionOrderMap = {}) {
             }, 0);
         }
         
-        // Sync to Gist in background (don't await - let it happen in background)
-        saveCompletedRoutes();
+        // Sync to Gist in background (don't await - let it happen in background).
+        // Unchecking is a deletion, so flush immediately to avoid it being resurrected
+        // by a background merge if the page reloads before the debounce fires.
+        saveCompletedRoutes({ immediate: !wasChecked });
         });
     }
     
