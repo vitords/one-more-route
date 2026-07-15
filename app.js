@@ -2794,56 +2794,6 @@ function aggregateTimingByStartHour(points) {
     return counts;
 }
 
-/** Rounded-up axis maximum for ride counts (e.g. 46 → 50). */
-function niceTimingCountAxisMax(rawMax) {
-    if (!Number.isFinite(rawMax) || rawMax <= 0) return 1;
-    const exp = Math.floor(Math.log10(rawMax));
-    const fraction = rawMax / 10 ** exp;
-    const nf = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 5 ? 5 : 10;
-    let nice = nf * 10 ** exp;
-    if (nice < rawMax) nice += nf * 10 ** exp;
-    return Math.max(nice, 1);
-}
-
-/** Ceiling for moving-time axis (prefer whole hours; slightly above data max). */
-function niceTimingDurationAxisMaxSec(sec) {
-    if (!Number.isFinite(sec) || sec <= 0) return 3600;
-    const padded = Math.max(sec * 1.04, sec + 300);
-    const hr = 3600;
-    const half = 1800;
-    const ceilHr = Math.ceil(padded / hr) * hr;
-    const ceilHalf = Math.ceil(padded / half) * half;
-    return Math.abs(ceilHr - padded) <= Math.abs(ceilHalf - padded) + 900 ? ceilHr : ceilHalf;
-}
-
-function appendStravaTimingGradientDefs(ns, frag, chartKind) {
-    const defs = document.createElementNS(ns, 'defs');
-    const mkGrad = (id, c0, c1) => {
-        const lg = document.createElementNS(ns, 'linearGradient');
-        lg.setAttribute('id', id);
-        lg.setAttribute('x1', '0');
-        lg.setAttribute('y1', '1');
-        lg.setAttribute('x2', '0');
-        lg.setAttribute('y2', '0');
-        const s0 = document.createElementNS(ns, 'stop');
-        s0.setAttribute('offset', '0%');
-        s0.setAttribute('stop-color', c0);
-        const s1 = document.createElementNS(ns, 'stop');
-        s1.setAttribute('offset', '100%');
-        s1.setAttribute('stop-color', c1);
-        lg.appendChild(s0);
-        lg.appendChild(s1);
-        defs.appendChild(lg);
-    };
-    if (chartKind === 'weekday') {
-        mkGrad('strava-timing-wd-count', 'var(--timing-chart-count-from)', 'var(--timing-chart-count-to)');
-        mkGrad('strava-timing-wd-time', 'var(--timing-chart-moving-from)', 'var(--timing-chart-moving-to)');
-    } else {
-        mkGrad('strava-timing-hr-bar', 'var(--timing-chart-hour-from)', 'var(--timing-chart-hour-to)');
-    }
-    frag.appendChild(defs);
-}
-
 /** Short label for timing bar charts (e.g. 45m, 2h, 2h 5m / 90s when under 1 min). */
 function formatMovingDurationForTimingBar(totalSeconds) {
     if (totalSeconds == null || !Number.isFinite(totalSeconds) || totalSeconds <= 0) return '—';
@@ -2860,297 +2810,119 @@ function renderStravaTimingCharts() {
     const points = buildTimingSeriesFromRouteActivities();
     const weekdayWrap = document.getElementById('strava-timing-weekday-wrap');
     const hourWrap = document.getElementById('strava-timing-hour-wrap');
-    const weekdaySvg = document.getElementById('strava-timing-weekday-chart');
-    const hourSvg = document.getElementById('strava-timing-hour-chart');
-    if (!weekdayWrap || !hourWrap || !weekdaySvg || !hourSvg) return;
+    const weekdayEl = document.getElementById('strava-timing-weekday-chart');
+    const hourEl = document.getElementById('strava-timing-hour-chart');
+    if (!weekdayWrap || !hourWrap || !weekdayEl || !hourEl) return;
 
     if (points.length === 0) {
         weekdayWrap.classList.add('strava-timing-panel--empty');
         hourWrap.classList.add('strava-timing-panel--empty');
-        weekdaySvg.replaceChildren();
-        hourSvg.replaceChildren();
+        weekdayEl.replaceChildren();
+        hourEl.replaceChildren();
         return;
     }
 
     weekdayWrap.classList.remove('strava-timing-panel--empty');
     hourWrap.classList.remove('strava-timing-panel--empty');
 
+    renderTimingWeekdayBars(weekdayEl, points);
+    renderTimingHourHistogram(hourEl, points);
+}
+
+/** Horizontal bar list: rides per weekday, with total moving time shown at right. */
+function renderTimingWeekdayBars(container, points) {
     const { counts, movingTotals } = aggregateTimingByWeekday(points);
     const maxCount = Math.max(...counts, 1);
-    const maxMoving = Math.max(...movingTotals, 1);
-    const maxCountAxis = niceTimingCountAxisMax(maxCount);
-    const maxMovingAxis = niceTimingDurationAxisMaxSec(maxMoving);
 
-    const ns = 'http://www.w3.org/2000/svg';
-    const W = 640;
-    const H = 248;
-    const pl = 48;
-    const pr = 14;
-    const plotW = W - pl - pr;
-    const band1Top = 30;
-    const band1H = 74;
-    const band2Top = 128;
-    const band2H = 74;
-    const insideLblMinH = 22;
-    const insideDurMinH = 26;
+    const list = document.createElement('div');
+    list.className = 'timing-wd-list';
 
-    weekdaySvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    weekdaySvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    weekdaySvg.replaceChildren();
-    const wfrag = document.createDocumentFragment();
-    appendStravaTimingGradientDefs(ns, wfrag, 'weekday');
+    for (let i = 0; i < 7; i++) {
+        const isPeak = counts[i] > 0 && counts[i] === maxCount;
+        const row = document.createElement('div');
+        row.className = 'timing-wd-row' + (isPeak ? ' timing-wd-row--peak' : '');
+        row.title =
+            `${STRAVA_TIMING_WEEKDAY_LABELS[i]}: ${counts[i]} ride(s)` +
+            (movingTotals[i] > 0 ? `, ${formatDurationTotalHoursMinutes(movingTotals[i])} moving` : '');
 
-    const sub1 = document.createElementNS(ns, 'text');
-    sub1.setAttribute('x', pl);
-    sub1.setAttribute('y', '17');
-    sub1.setAttribute('class', 'strava-timing-subtitle');
-    sub1.textContent = 'Rides (count)';
-    wfrag.appendChild(sub1);
+        const day = document.createElement('span');
+        day.className = 'timing-wd-day';
+        day.textContent = STRAVA_TIMING_WEEKDAY_LABELS[i];
 
-    const sub2 = document.createElementNS(ns, 'text');
-    sub2.setAttribute('x', pl);
-    sub2.setAttribute('y', String(band2Top - 10));
-    sub2.setAttribute('class', 'strava-timing-subtitle');
-    sub2.textContent = 'Moving time (total)';
-    wfrag.appendChild(sub2);
-
-    const yAxisX = 4;
-    const tickValsCount = [maxCountAxis, Math.round(maxCountAxis / 2), 0];
-    tickValsCount.forEach((v, ti) => {
-        const ty = band1Top + (ti / 2) * band1H;
-        const line = document.createElementNS(ns, 'line');
-        line.setAttribute('x1', String(pl));
-        line.setAttribute('x2', String(pl + plotW));
-        line.setAttribute('y1', String(ty));
-        line.setAttribute('y2', String(ty));
-        line.setAttribute('class', 'strava-timing-grid-line');
-        wfrag.appendChild(line);
-        const yt = document.createElementNS(ns, 'text');
-        yt.setAttribute('x', String(yAxisX));
-        yt.setAttribute('y', String(ty + 4));
-        yt.setAttribute('class', 'strava-timing-y-tick');
-        yt.textContent = String(v);
-        wfrag.appendChild(yt);
-    });
-
-    const midMovingSec = maxMovingAxis / 2;
-    const tickValsMoving = [
-        { label: formatMovingDurationForTimingBar(maxMovingAxis) },
-        { label: formatMovingDurationForTimingBar(midMovingSec) },
-        { label: '0' }
-    ];
-    tickValsMoving.forEach((tv, ti) => {
-        const ty = band2Top + (ti / 2) * band2H;
-        const line = document.createElementNS(ns, 'line');
-        line.setAttribute('x1', String(pl));
-        line.setAttribute('x2', String(pl + plotW));
-        line.setAttribute('y1', String(ty));
-        line.setAttribute('y2', String(ty));
-        line.setAttribute('class', 'strava-timing-grid-line');
-        wfrag.appendChild(line);
-        const yt = document.createElementNS(ns, 'text');
-        yt.setAttribute('x', String(yAxisX));
-        yt.setAttribute('y', String(ty + 4));
-        yt.setAttribute('class', 'strava-timing-y-tick');
-        yt.textContent = ti === 2 ? '0' : tv.label;
-        wfrag.appendChild(yt);
-    });
-
-    const n = 7;
-    const barGap = 10;
-    const barW = (plotW - barGap * (n - 1)) / n;
-    const barRx = 5;
-
-    for (let i = 0; i < n; i++) {
-        const x = pl + i * (barW + barGap);
-        const h1 = (counts[i] / maxCountAxis) * band1H;
-        const rect1 = document.createElementNS(ns, 'rect');
-        rect1.setAttribute('x', String(x));
-        rect1.setAttribute('y', String(band1Top + band1H - h1));
-        rect1.setAttribute('width', String(barW));
-        rect1.setAttribute('height', String(Math.max(h1, counts[i] > 0 ? 2 : 0)));
-        rect1.setAttribute('class', 'strava-timing-bar-count');
-        rect1.setAttribute('rx', String(barRx));
-        rect1.setAttribute('fill', 'url(#strava-timing-wd-count)');
-        const t1 = document.createElementNS(ns, 'title');
-        t1.textContent = `${STRAVA_TIMING_WEEKDAY_LABELS[i]}: ${counts[i]} ride(s)`;
-        rect1.appendChild(t1);
-        wfrag.appendChild(rect1);
-
-        const barTop1 = band1Top + band1H - h1;
+        const track = document.createElement('div');
+        track.className = 'timing-wd-track';
+        const fill = document.createElement('div');
+        fill.className = 'timing-wd-fill';
         if (counts[i] > 0) {
-            const lbl1 = document.createElementNS(ns, 'text');
-            lbl1.setAttribute('x', String(x + barW / 2));
-            lbl1.setAttribute('text-anchor', 'middle');
-            const countInside = h1 >= insideLblMinH;
-            if (countInside) {
-                lbl1.setAttribute('y', String(band1Top + band1H - 8));
-                lbl1.setAttribute('class', 'strava-timing-bar-label strava-timing-bar-label--on-bar');
-            } else {
-                lbl1.setAttribute('y', String(Math.max(band1Top + 12, barTop1 - 5)));
-                lbl1.setAttribute('class', 'strava-timing-bar-label strava-timing-bar-label--floating');
-            }
-            lbl1.textContent = String(counts[i]);
-            wfrag.appendChild(lbl1);
+            fill.style.width = `${Math.max((counts[i] / maxCount) * 100, 4)}%`;
+        } else {
+            fill.style.width = '0%';
+            fill.classList.add('timing-wd-fill--empty');
         }
+        track.appendChild(fill);
 
-        const h2 = (movingTotals[i] / maxMovingAxis) * band2H;
-        const rect2 = document.createElementNS(ns, 'rect');
-        rect2.setAttribute('x', String(x));
-        rect2.setAttribute('y', String(band2Top + band2H - h2));
-        rect2.setAttribute('width', String(barW));
-        rect2.setAttribute('height', String(Math.max(h2, movingTotals[i] > 0 ? 2 : 0)));
-        rect2.setAttribute('class', 'strava-timing-bar-time');
-        rect2.setAttribute('rx', String(barRx));
-        rect2.setAttribute('fill', 'url(#strava-timing-wd-time)');
-        const t2 = document.createElementNS(ns, 'title');
-        t2.textContent = `${STRAVA_TIMING_WEEKDAY_LABELS[i]}: ${formatDurationTotalHoursMinutes(movingTotals[i])} moving`;
-        rect2.appendChild(t2);
-        wfrag.appendChild(rect2);
+        const count = document.createElement('span');
+        count.className = 'timing-wd-count' + (counts[i] === 0 ? ' timing-wd-count--zero' : '');
+        count.textContent = String(counts[i]);
 
-        const barTop2 = band2Top + band2H - h2;
-        if (movingTotals[i] > 0) {
-            const movStr = formatMovingDurationForTimingBar(movingTotals[i]);
-            const lbl2 = document.createElementNS(ns, 'text');
-            lbl2.setAttribute('x', String(x + barW / 2));
-            lbl2.setAttribute('text-anchor', 'middle');
-            if (h2 >= insideDurMinH) {
-                lbl2.setAttribute('y', String(band2Top + band2H - 7));
-                lbl2.setAttribute(
-                    'class',
-                    'strava-timing-bar-label strava-timing-bar-label--duration strava-timing-bar-label--on-bar'
-                );
-            } else {
-                lbl2.setAttribute('y', String(Math.max(band2Top + 11, barTop2 - 4)));
-                lbl2.setAttribute(
-                    'class',
-                    'strava-timing-bar-label strava-timing-bar-label--duration strava-timing-bar-label--floating'
-                );
-            }
-            lbl2.textContent = movStr;
-            wfrag.appendChild(lbl2);
-        }
+        const time = document.createElement('span');
+        time.className = 'timing-wd-time';
+        time.textContent = movingTotals[i] > 0 ? formatMovingDurationForTimingBar(movingTotals[i]) : '—';
 
-        const lab = document.createElementNS(ns, 'text');
-        lab.setAttribute('x', String(x + barW / 2));
-        lab.setAttribute('y', String(H - 10));
-        lab.setAttribute('text-anchor', 'middle');
-        lab.setAttribute('class', 'strava-timing-x-tick');
-        lab.textContent = STRAVA_TIMING_WEEKDAY_LABELS[i];
-        wfrag.appendChild(lab);
+        row.append(day, track, count, time);
+        list.appendChild(row);
     }
 
-    weekdaySvg.appendChild(wfrag);
+    container.replaceChildren(list);
+}
 
+/** Compact 24-hour histogram of ride start times (local); peak hour highlighted. */
+function renderTimingHourHistogram(container, points) {
     const hourCounts = aggregateTimingByStartHour(points);
     const maxHour = Math.max(...hourCounts, 1);
-    const maxHourAxis = niceTimingCountAxisMax(maxHour);
 
-    const Wh = 640;
-    const Hh = 208;
-    const plh = 42;
-    const prh = 12;
-    const pth = 26;
-    const pbh = 40;
-    const plotWh = Wh - plh - prh;
-    const plotHh = Hh - pth - pbh;
-    const n24 = 24;
-    const hgap = 4;
-    const barWh = (plotWh - hgap * (n24 - 1)) / n24;
-    const yTickX = 4;
-    const baselineY = pth + plotHh;
+    const wrap = document.createElement('div');
+    wrap.className = 'timing-hours';
 
-    hourSvg.setAttribute('viewBox', `0 0 ${Wh} ${Hh}`);
-    hourSvg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-    hourSvg.replaceChildren();
-    const hfrag = document.createDocumentFragment();
-    appendStravaTimingGradientDefs(ns, hfrag, 'hour');
-
-    const hourSub = document.createElementNS(ns, 'text');
-    hourSub.setAttribute('x', plh + plotWh / 2);
-    hourSub.setAttribute('y', '16');
-    hourSub.setAttribute('text-anchor', 'middle');
-    hourSub.setAttribute('class', 'strava-timing-subtitle');
-    hourSub.textContent = 'Rides starting each hour (local)';
-    hfrag.appendChild(hourSub);
-
-    const yTicks = [maxHourAxis, Math.round(maxHourAxis / 2), 0];
-    yTicks.forEach((v, ti) => {
-        const gy = baselineY - (v / maxHourAxis) * plotHh;
-        const line = document.createElementNS(ns, 'line');
-        line.setAttribute('x1', String(plh));
-        line.setAttribute('x2', String(plh + plotWh));
-        line.setAttribute('y1', String(gy));
-        line.setAttribute('y2', String(gy));
-        line.setAttribute('class', 'strava-timing-grid-line');
-        hfrag.appendChild(line);
-        const yt = document.createElementNS(ns, 'text');
-        yt.setAttribute('x', String(yTickX));
-        yt.setAttribute('y', String(gy + 4));
-        yt.setAttribute('class', 'strava-timing-y-tick');
-        yt.textContent = String(v);
-        hfrag.appendChild(yt);
-    });
-
-    const xAxisY = Hh - 7;
-    const tickLenX = 4;
-    const axisLine = document.createElementNS(ns, 'line');
-    axisLine.setAttribute('x1', String(plh));
-    axisLine.setAttribute('x2', String(plh + plotWh));
-    axisLine.setAttribute('y1', String(baselineY));
-    axisLine.setAttribute('y2', String(baselineY));
-    axisLine.setAttribute('class', 'strava-timing-axis-baseline');
-    hfrag.appendChild(axisLine);
+    const plot = document.createElement('div');
+    plot.className = 'timing-hours-plot';
 
     for (let hour = 0; hour < 24; hour++) {
-        const x = plh + hour * (barWh + hgap);
-        const bh = (hourCounts[hour] / maxHourAxis) * plotHh;
-        const rect = document.createElementNS(ns, 'rect');
-        rect.setAttribute('x', String(x));
-        rect.setAttribute('y', String(pth + plotHh - bh));
-        rect.setAttribute('width', String(barWh));
-        rect.setAttribute('height', String(Math.max(bh, hourCounts[hour] > 0 ? 2 : 0)));
-        rect.setAttribute('class', 'strava-timing-bar-hour');
-        rect.setAttribute('rx', '3');
-        rect.setAttribute('fill', 'url(#strava-timing-hr-bar)');
-        const ht = document.createElementNS(ns, 'title');
-        ht.textContent = `${hour}:00–${hour}:59 — ${hourCounts[hour]} ride(s)`;
-        rect.appendChild(ht);
-        hfrag.appendChild(rect);
+        const n = hourCounts[hour];
+        const isPeak = n > 0 && n === maxHour;
+        const hh = String(hour).padStart(2, '0');
 
-        const tick = document.createElementNS(ns, 'line');
-        tick.setAttribute('x1', String(x + barWh / 2));
-        tick.setAttribute('x2', String(x + barWh / 2));
-        tick.setAttribute('y1', String(baselineY));
-        tick.setAttribute('y2', String(baselineY + tickLenX));
-        tick.setAttribute('class', 'strava-timing-axis-tick-major');
-        hfrag.appendChild(tick);
+        const col = document.createElement('div');
+        col.className =
+            'timing-hour-col' +
+            (n === 0 ? ' timing-hour-col--empty' : '') +
+            (isPeak ? ' timing-hour-col--peak' : '');
+        col.title = `${hh}:00–${hh}:59 — ${n} ride(s)`;
 
-        const hx = document.createElementNS(ns, 'text');
-        hx.setAttribute('x', String(x + barWh / 2));
-        hx.setAttribute('y', String(xAxisY));
-        hx.setAttribute('text-anchor', 'middle');
-        hx.setAttribute('class', 'strava-timing-x-tick-hour');
-        hx.textContent = String(hour);
-        hfrag.appendChild(hx);
+        const val = document.createElement('span');
+        val.className = 'timing-hour-val';
+        val.textContent = String(n);
+        col.appendChild(val);
 
-        const nRides = hourCounts[hour];
-        const cnt = document.createElementNS(ns, 'text');
-        cnt.setAttribute('x', String(x + barWh / 2));
-        cnt.setAttribute('text-anchor', 'middle');
-        if (nRides > 0) {
-            const topY = pth + plotHh - bh;
-            cnt.setAttribute('y', String(Math.max(pth + 11, topY - 3)));
-            cnt.setAttribute('class', 'strava-timing-bar-label strava-timing-bar-label--floating');
-        } else {
-            cnt.setAttribute('y', String(baselineY - 5));
-            cnt.setAttribute('class', 'strava-timing-bar-label strava-timing-hour-count-zero');
-        }
-        cnt.textContent = String(nRides);
-        hfrag.appendChild(cnt);
+        const bar = document.createElement('div');
+        bar.className = 'timing-hour-bar';
+        if (n > 0) bar.style.height = `${Math.max((n / maxHour) * 100, 4)}%`;
+        col.appendChild(bar);
+
+        plot.appendChild(col);
     }
 
-    hourSvg.appendChild(hfrag);
+    const axis = document.createElement('div');
+    axis.className = 'timing-hours-axis';
+    for (let hour = 0; hour < 24; hour++) {
+        const tick = document.createElement('span');
+        tick.className = 'timing-hour-tick';
+        tick.textContent = hour % 3 === 0 ? String(hour) : '';
+        axis.appendChild(tick);
+    }
+
+    wrap.append(plot, axis);
+    container.replaceChildren(wrap);
 }
 
 function localDateKeyFromDate(d) {
