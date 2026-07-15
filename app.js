@@ -1212,6 +1212,47 @@ function getCompletionOrderMap() {
     return orderMap;
 }
 
+/**
+ * Compute per-map time stats:
+ * - estTotalMin: total estimated minutes (2 W/kg) across all routes in the map
+ * - estCompletedMin: estimated minutes (2 W/kg) for completed routes in the map
+ * - actualSeconds: total actual moving time (seconds) from linked Strava activities
+ * @param {string} mapName
+ */
+function computeMapTimeStats(mapName) {
+    const routesInMap = routes.filter(r => r.map === mapName);
+    let estTotalMin = 0;
+    let estCompletedMin = 0;
+    let actualSeconds = 0;
+    for (const route of routesInMap) {
+        const m = getZiEstimateMinutes(route, '2');
+        if (m != null) {
+            estTotalMin += m;
+            if (completedRoutes.has(route.route)) estCompletedMin += m;
+        }
+        const activity = routeActivities[route.route];
+        if (activity && Number.isFinite(activity.movingTime)) {
+            actualSeconds += activity.movingTime;
+        }
+    }
+    return { estTotalMin, estCompletedMin, actualSeconds };
+}
+
+/** Build the map header time-stats markup (estimated + actual times). */
+function buildMapTimeStatsHtml(mapName) {
+    const { estTotalMin, estCompletedMin, actualSeconds } = computeMapTimeStats(mapName);
+    const stat = (label, value) =>
+        `<div class="map-time-stat">
+            <span class="map-time-label">${label}</span>
+            <span class="map-time-value">${value}</span>
+        </div>`;
+    return (
+        stat('Est. (2 W/kg)', formatMinutesAsDuration(estTotalMin)) +
+        stat('Est. done', formatMinutesAsDuration(estCompletedMin)) +
+        stat('Actual', formatDurationTotalHoursMinutes(actualSeconds))
+    );
+}
+
 // Render routes grouped by map
 function renderRoutes() {
     // Filter routes based on current filter and search
@@ -1259,11 +1300,14 @@ function renderRoutes() {
         const header = document.createElement('div');
         header.className = 'map-header';
         header.innerHTML = `
-            <div>
+            <div class="map-header-left">
                 <div class="map-title">${map}</div>
                 <div class="map-stats">${completedInMap} / ${totalRoutesInMap} completed</div>
             </div>
-            <span class="collapse-icon">▼</span>
+            <div class="map-header-right">
+                <div class="map-time-stats">${buildMapTimeStatsHtml(map)}</div>
+                <span class="collapse-icon">▼</span>
+            </div>
         `;
         
         const content = document.createElement('div');
@@ -4161,8 +4205,13 @@ function updateMapStats() {
         const mapName = mapTitle.textContent;
         const routesInMap = routes.filter(r => r.map === mapName);
         const completedInMap = routesInMap.filter(r => completedRoutes.has(r.route)).length;
-        
+
         header.textContent = `${completedInMap} / ${routesInMap.length} completed`;
+
+        const timeStats = mapGroup.querySelector('.map-time-stats');
+        if (timeStats) {
+            timeStats.innerHTML = buildMapTimeStatsHtml(mapName);
+        }
     });
 }
 
