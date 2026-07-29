@@ -246,9 +246,8 @@ async function initEdit() {
         updateAuthUI();
     }
     
-    // Check Strava authentication
-    const stravaToken = sessionStorage.getItem(CONFIG.STRAVA_TOKEN_KEY);
-    if (stravaToken) {
+    // Check Strava authentication - a stored refresh token is enough to restore the session
+    if (readStravaToken(CONFIG.STRAVA_TOKEN_KEY) || readStravaToken(CONFIG.STRAVA_REFRESH_TOKEN_KEY)) {
         isStravaAuthenticated = true;
         updateStravaAuthUI();
     }
@@ -692,6 +691,63 @@ function updateSyncStatus(status) {
     }
 }
 
+// ==================== Strava Token Storage ====================
+
+// Strava tokens live in localStorage so that a mobile browser discarding the tab
+// doesn't force a re-login. Refresh tokens stay valid until revoked, so a stored
+// refresh token is enough to keep the connection alive across visits.
+const STRAVA_TOKEN_KEYS = [
+    CONFIG.STRAVA_TOKEN_KEY,
+    CONFIG.STRAVA_REFRESH_TOKEN_KEY,
+    CONFIG.STRAVA_TOKEN_EXPIRES_KEY
+];
+
+// Reads a token, migrating it from sessionStorage (legacy) on first access
+function readStravaToken(key) {
+    let value = localStorage.getItem(key);
+    if (value === null) {
+        const legacy = sessionStorage.getItem(key);
+        if (legacy !== null) {
+            localStorage.setItem(key, legacy);
+            sessionStorage.removeItem(key);
+            value = legacy;
+        }
+    }
+    return value;
+}
+
+function storeStravaTokens(data) {
+    if (data.access_token) {
+        localStorage.setItem(CONFIG.STRAVA_TOKEN_KEY, data.access_token);
+    }
+    if (data.refresh_token) {
+        localStorage.setItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY, data.refresh_token);
+    }
+    if (data.expires_at) {
+        localStorage.setItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY, data.expires_at.toString());
+    }
+}
+
+function clearStravaTokens() {
+    STRAVA_TOKEN_KEYS.forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+    });
+}
+
+// A 401 only means this access token is dead. Keep the refresh token so the next
+// call can silently mint a new one instead of asking the user to reconnect.
+function handleStravaUnauthorized() {
+    [CONFIG.STRAVA_TOKEN_KEY, CONFIG.STRAVA_TOKEN_EXPIRES_KEY].forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+    });
+    if (!readStravaToken(CONFIG.STRAVA_REFRESH_TOKEN_KEY)) {
+        isStravaAuthenticated = false;
+        updateStravaAuthUI();
+    }
+}
+
 // ==================== Strava OAuth Functions ====================
 
 // Handle Strava OAuth callback
@@ -766,13 +822,7 @@ async function exchangeStravaToken(code) {
         }
         
         const data = await response.json();
-        sessionStorage.setItem(CONFIG.STRAVA_TOKEN_KEY, data.access_token);
-        if (data.refresh_token) {
-            sessionStorage.setItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY, data.refresh_token);
-        }
-        if (data.expires_at) {
-            sessionStorage.setItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY, data.expires_at.toString());
-        }
+        storeStravaTokens(data);
         
         isStravaAuthenticated = true;
         updateStravaAuthUI();
@@ -783,9 +833,21 @@ async function exchangeStravaToken(code) {
     }
 }
 
+let stravaRefreshPromise = null;
+
 // Refresh Strava access token using refresh token
 async function refreshStravaToken() {
-    const refreshToken = sessionStorage.getItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY);
+    // Strava rotates refresh tokens, so parallel refreshes would invalidate each other
+    if (!stravaRefreshPromise) {
+        stravaRefreshPromise = performStravaTokenRefresh().finally(() => {
+            stravaRefreshPromise = null;
+        });
+    }
+    return stravaRefreshPromise;
+}
+
+async function performStravaTokenRefresh() {
+    const refreshToken = readStravaToken(CONFIG.STRAVA_REFRESH_TOKEN_KEY);
     if (!refreshToken) {
         return null;
     }
@@ -815,22 +877,14 @@ async function refreshStravaToken() {
         }
         
         const data = await response.json();
-        sessionStorage.setItem(CONFIG.STRAVA_TOKEN_KEY, data.access_token);
-        if (data.refresh_token) {
-            sessionStorage.setItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY, data.refresh_token);
-        }
-        if (data.expires_at) {
-            sessionStorage.setItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY, data.expires_at.toString());
-        }
+        storeStravaTokens(data);
         
         console.log('Strava token refreshed successfully');
         return data.access_token;
     } catch (error) {
         console.error('Error refreshing Strava token:', error);
         // If refresh fails, clear tokens and require re-authentication
-        sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
-        sessionStorage.removeItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY);
-        sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY);
+        clearStravaTokens();
         isStravaAuthenticated = false;
         updateStravaAuthUI();
         return null;
@@ -839,13 +893,14 @@ async function refreshStravaToken() {
 
 // Get Strava access token (with refresh if needed)
 async function getStravaToken() {
-    let token = sessionStorage.getItem(CONFIG.STRAVA_TOKEN_KEY);
+    let token = readStravaToken(CONFIG.STRAVA_TOKEN_KEY);
     if (!token) {
-        return null;
+        // No access token, but a stored refresh token can mint a new one
+        return readStravaToken(CONFIG.STRAVA_REFRESH_TOKEN_KEY) ? await refreshStravaToken() : null;
     }
     
     // Check if token is expired or will expire within 1 hour (3600 seconds)
-    const expiresAt = sessionStorage.getItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY);
+    const expiresAt = readStravaToken(CONFIG.STRAVA_TOKEN_EXPIRES_KEY);
     if (expiresAt) {
         const expiresTimestamp = parseInt(expiresAt, 10);
         const now = Math.floor(Date.now() / 1000);
@@ -890,11 +945,8 @@ async function fetchStravaActivity(activityId) {
         
         if (!response.ok) {
             if (response.status === 401) {
-                // Token expired, need to re-authenticate
-                sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
-                isStravaAuthenticated = false;
-                updateStravaAuthUI();
-                throw new Error('Strava authentication expired. Please reconnect.');
+                handleStravaUnauthorized();
+                throw new Error('Strava authentication expired. Please try again.');
             }
             throw new Error(`Failed to fetch activity: ${response.statusText}`);
         }
@@ -977,11 +1029,8 @@ async function updateStravaActivityDescription(activityId, activityData = null, 
         
         if (!response.ok) {
             if (response.status === 401) {
-                // Token expired, need to re-authenticate
-                sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
-                isStravaAuthenticated = false;
-                updateStravaAuthUI();
-                throw new Error('Strava authentication expired. Please reconnect.');
+                handleStravaUnauthorized();
+                throw new Error('Strava authentication expired. Please try again.');
             }
             throw new Error(`Failed to update activity description: ${response.statusText}`);
         }
@@ -1013,10 +1062,8 @@ async function fetchRecentStravaActivities(perPage = 30) {
         
         if (!response.ok) {
             if (response.status === 401) {
-                sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
-                isStravaAuthenticated = false;
-                updateStravaAuthUI();
-                throw new Error('Strava authentication expired. Please reconnect.');
+                handleStravaUnauthorized();
+                throw new Error('Strava authentication expired. Please try again.');
             }
             throw new Error(`Failed to fetch activities: ${response.statusText}`);
         }
@@ -3513,10 +3560,8 @@ async function fetchStravaActivityStreams(activityId) {
 
     if (!response.ok) {
         if (response.status === 401) {
-            sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
-            isStravaAuthenticated = false;
-            updateStravaAuthUI();
-            throw new Error('Strava authentication expired. Please reconnect.');
+            handleStravaUnauthorized();
+            throw new Error('Strava authentication expired. Please try again.');
         }
         throw new Error('Could not load activity streams from Strava.');
     }
@@ -3853,9 +3898,7 @@ function setupEventListeners() {
         stravaBtn.addEventListener('click', () => {
             if (isStravaAuthenticated) {
                 if (confirm('Disconnect Strava?')) {
-                    sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_KEY);
-                    sessionStorage.removeItem(CONFIG.STRAVA_REFRESH_TOKEN_KEY);
-                    sessionStorage.removeItem(CONFIG.STRAVA_TOKEN_EXPIRES_KEY);
+                    clearStravaTokens();
                     isStravaAuthenticated = false;
                     updateStravaAuthUI();
                 }
