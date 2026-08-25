@@ -966,6 +966,55 @@ async function fetchStravaActivity(activityId) {
     }
 }
 
+function formatCount(n) {
+    return Math.round(n).toLocaleString('en-US');
+}
+
+/** Description snippet appended when linking a ride on Strava. */
+function buildStravaProgressMessage(toolUrl) {
+    const totalRoutes = routes.length;
+    const completed = completedRoutes.size;
+    const percentage = totalRoutes > 0 ? ((completed / totalRoutes) * 100).toFixed(1) : '0.0';
+
+    const activities = Object.values(routeActivities);
+    const totalDistanceM = activities.reduce((sum, a) => sum + (a.distance || 0), 0);
+    const totalElevation = activities.reduce((sum, a) => sum + (a.totalElevationGain || 0), 0);
+    const totalCalories = activities.reduce((sum, a) => sum + (a.calories || 0), 0);
+    const distanceKm = (totalDistanceM / 1000).toLocaleString('en-US', {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+    });
+
+    const lines = [
+        `I'm riding every Zwift route in 2026! So far:`,
+        `${percentage}% complete (${completed}/${totalRoutes}).`,
+        `Distance: ${distanceKm} km`,
+        `Elevation: ${formatElevation(totalElevation)}`
+    ];
+    if (totalCalories > 0) {
+        lines.push(`${formatCount(totalCalories)} kcal`);
+    }
+    lines.push('', `Full stats: ${toolUrl}`);
+    return lines.join('\n');
+}
+
+const STRAVA_PROGRESS_MESSAGE_INTRO = "I'm riding every Zwift route in 2026";
+
+/**
+ * Drop a progress block appended by any previous version of this tool so it can be
+ * rewritten with current stats. The block is always appended last, so everything from
+ * its first line onwards is replaceable.
+ */
+function stripStravaProgressMessage(description, toolUrl) {
+    if (!description) return '';
+    const lines = description.split('\n');
+    const start = lines.findIndex(
+        line => line.includes(toolUrl) || line.trimStart().startsWith(STRAVA_PROGRESS_MESSAGE_INTRO)
+    );
+    if (start === -1) return description.trimEnd();
+    return lines.slice(0, start).join('\n').trimEnd();
+}
+
 // Update Strava activity description
 async function updateStravaActivityDescription(activityId, activityData = null, tokenToUse = null) {
     // Use provided token or get fresh token
@@ -987,24 +1036,17 @@ async function updateStravaActivityDescription(activityId, activityData = null, 
             token = await getStravaToken();
         }
         
-        // Check if description already contains the URL to avoid duplicates
         const toolUrl = 'https://vitords.github.io/one-more-route/';
-        if (activity.description && activity.description.includes(toolUrl)) {
-            console.log(`Activity ${activityId} already has tool link in description, skipping update`);
+        const message = buildStravaProgressMessage(toolUrl);
+        
+        // Replace any previous progress block rather than appending a second one, so
+        // relinking a ride refreshes stale stats and older message wording.
+        const userText = stripStravaProgressMessage(activity.description, toolUrl);
+        const newDescription = userText ? `${userText}\n\n${message}` : message;
+        
+        if (newDescription === (activity.description || '')) {
+            console.log(`Activity ${activityId} description already up to date, skipping update`);
             return;
-        }
-        
-        // Format the message to append
-        const message = `${toolUrl}\nI'm riding every Zwift route in 2026 and made a tool to keep track of the progress! Check it out to see how I'm doing.`;
-        
-        // Format the new description
-        let newDescription;
-        if (!activity.description || activity.description.trim() === '') {
-            // If description is empty, append message directly (no newline separator)
-            newDescription = message;
-        } else {
-            // If description exists, append newline separator + message
-            newDescription = `${activity.description}\n${message}`;
         }
         
         // Ensure we have a valid token
