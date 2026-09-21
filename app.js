@@ -4,6 +4,7 @@ const CONFIG = {
     TOKEN_KEY: 'zwift_tracker_token',
     GIST_FILENAME: 'zwift_routes.json',
     LOCAL_STORAGE_KEY: 'zwift_tracker_completed_routes',
+    PENDING_SYNC_KEY: 'zwift_tracker_pending_sync',
     STRAVA_TOKEN_KEY: 'zwift_tracker_strava_token',
     STRAVA_REFRESH_TOKEN_KEY: 'zwift_tracker_strava_refresh_token',
     STRAVA_TOKEN_EXPIRES_KEY: 'zwift_tracker_strava_token_expires',
@@ -411,10 +412,18 @@ async function loadCompletedRoutes() {
             updateStats();
             updateSyncStatus('synced');
 
-            // Only re-push when the Gist was the newer source. Re-pushing a stale local
-            // state here would otherwise clobber a just-made local deletion.
-            if (isAuthenticated && gistWasNewer) {
-                saveCompletedRoutes();
+            if (isAuthenticated) {
+                if (gistWasNewer) {
+                    // Gist was the newer source - re-push in case our local state had
+                    // already diverged from it (e.g. edits made before this load finished).
+                    saveCompletedRoutes();
+                } else if (hasPendingSync()) {
+                    // Local is authoritative AND a previous sync never confirmed as
+                    // written (debounce timer killed by a backgrounded tab, or a
+                    // sync call that failed silently). Retry now rather than
+                    // assuming a newer local timestamp means the Gist is up to date.
+                    saveCompletedRoutes({ immediate: true });
+                }
             }
         }
     } catch (error) {
@@ -435,6 +444,43 @@ function saveCompletedRoutesToLocal() {
     } catch (error) {
         console.error('Error saving to localStorage:', error);
     }
+}
+
+// Tracks whether local changes have been confirmed as written to the Gist.
+// Set right before every sync attempt and cleared only once syncToGist actually
+// succeeds, so it survives a debounce timer that never fires (tab backgrounded
+// or closed on mobile) or a sync call that fails silently (e.g. a stale token).
+// On the next load - or the next retry trigger - we know to push again instead
+// of assuming local is authoritative just because its timestamp is newer.
+function markPendingSync() {
+    try {
+        localStorage.setItem(CONFIG.PENDING_SYNC_KEY, '1');
+    } catch (error) {
+        console.error('Error marking pending sync:', error);
+    }
+}
+
+function clearPendingSync() {
+    try {
+        localStorage.removeItem(CONFIG.PENDING_SYNC_KEY);
+    } catch (error) {
+        console.error('Error clearing pending sync:', error);
+    }
+}
+
+function hasPendingSync() {
+    return localStorage.getItem(CONFIG.PENDING_SYNC_KEY) === '1';
+}
+
+// Retry a sync that never reached the Gist. Safe to call opportunistically
+// (tab becoming visible again, connectivity restored, page load) - it's a
+// no-op unless there's actually a pending change and valid auth to push it.
+async function retryPendingSync() {
+    if (!isAuthenticated || isSyncing || !hasPendingSync()) return;
+    const token = localStorage.getItem(CONFIG.TOKEN_KEY);
+    if (!token) return;
+    console.log('retryPendingSync: Found unsynced local changes, retrying Gist sync');
+    await syncToGist(token);
 }
 
 // Save completed routes to GitHub Gist (background sync with debouncing).
@@ -460,6 +506,11 @@ async function saveCompletedRoutes({ immediate = false } = {}) {
         return; // Save locally only
     }
     
+    // Mark as pending before we even attempt the sync, so a debounce timer that
+    // never fires (tab backgrounded/closed) or a sync that fails silently still
+    // leaves a trail we can retry from on the next load. Only cleared on success.
+    markPendingSync();
+
     // Clear existing timeout
     if (syncTimeout) {
         clearTimeout(syncTimeout);
@@ -631,6 +682,7 @@ async function syncToGist(token) {
         
         const endTimestamp = new Date().toISOString();
         console.log(`[${endTimestamp}] syncToGist: ✓ Sync completed successfully`);
+        clearPendingSync();
         updateSyncStatus('synced');
     } catch (error) {
         const errorTimestamp = new Date().toISOString();
@@ -640,6 +692,8 @@ async function syncToGist(token) {
             stack: error.stack,
             name: error.name
         });
+        // Leave the pending-sync flag set (it was already marked before this attempt)
+        // so the next load, tab-focus, or reconnect retries the push automatically.
         updateSyncStatus('error');
         // Don't show alert - just log error, local storage already saved
     } finally {
@@ -1163,10 +1217,13 @@ async function linkActivityToRoute(routeName, activityIdOrUrl) {
             fetchedAt: new Date().toISOString()
         };
         
-        // Save immediately
+        // Save immediately - flush straight to the Gist rather than debouncing,
+        // since on mobile the tab is often backgrounded right after this (e.g.
+        // switching back to Strava), which can kill a pending debounce timer
+        // before it fires and strand the change in localStorage only.
         saveCompletedRoutesToLocal();
-        await saveCompletedRoutes();
-        
+        await saveCompletedRoutes({ immediate: true });
+
         // Update activity description (don't fail linking if this fails)
         // Pass the already-fetched activity data and token to avoid redundant API call
         // Get token that was just successfully used in fetchStravaActivity
@@ -3840,6 +3897,14 @@ function setupPlanningWkgSelect() {
 
 // Setup event listeners
 function setupEventListeners() {
+    // Retry any sync that never reached the Gist as soon as we get a plausible
+    // chance to succeed - tab regaining focus (mobile browsers suspend timers
+    // in background tabs) or connectivity coming back.
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) retryPendingSync();
+    });
+    window.addEventListener('online', retryPendingSync);
+
     // Auth button
     authBtn.addEventListener('click', () => {
         if (isAuthenticated) {
@@ -3887,9 +3952,13 @@ function setupEventListeners() {
             isAuthenticated = true;
             updateAuthUI();
             tokenInput.value = '';
-            
+
             // Close modal - Gist ID is always set to SHOWCASE_GIST_ID in edit mode
             authModal.style.display = 'none';
+
+            // If a previous sync never reached the Gist (e.g. the old token had
+            // gone stale), this fresh, verified token is our chance to push it.
+            retryPendingSync();
         } catch (error) {
             alert('Invalid token. Please check your GitHub Personal Access Token.');
         }
