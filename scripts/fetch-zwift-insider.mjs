@@ -157,7 +157,7 @@ function stripWpSizeSuffix(stem) {
 
 /**
  * True if this looks like a ZwiftHub / ZI elevation chart in uploads, not a
- * screenshot or another route's graphic (e.g. Flatland on Farmland page).
+ * screenshot or another route's graphic.
  */
 function uploadLooksLikeElevationChart(slug, absUrl, altRaw = "") {
   let u;

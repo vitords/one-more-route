@@ -805,7 +805,8 @@
       "3": 49,
       "4": 45
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/london_london-calling_km.png"
   },
   {
     "route": "Sea to Tree",
@@ -1053,7 +1054,8 @@
       "3": 13,
       "4": 12
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2021/08/flatland-loop.png"
   },
   {
     "route": "Railways and Rooftops",
@@ -1593,7 +1595,8 @@
       "2": 35,
       "3": 29,
       "4": 27
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/makuri-islands_red-zone-repeats_km.png"
   },
   {
     "route": "Tropic Rush",
@@ -1613,7 +1616,8 @@
       "3": 68,
       "4": 62
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/makuri-islands_tropic-rush_km.png"
   },
   {
     "route": "Electric Break",
@@ -1632,7 +1636,8 @@
       "2": 40,
       "3": 33,
       "4": 29
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/makuri-islands_electric-break_km.png"
   },
   {
     "route": "Lady Liberty",
@@ -1944,7 +1949,8 @@
       "3": 49,
       "4": 44
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_watts-the-limit_km.png"
   },
   {
     "route": "Times Square Circuit",
@@ -1964,7 +1970,8 @@
       "2": 7.7,
       "3": 6.4,
       "4": 5.9
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_times-square-circuit_km.png"
   },
   {
     "route": "Double Span Spin",
@@ -1984,7 +1991,8 @@
       "3": 21,
       "4": 19
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_double-span-spin_km.png"
   },
   {
     "route": "Prospect Park Loop",
@@ -2004,7 +2012,8 @@
       "3": 8.6,
       "4": 7.8
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_prospect-park-loop_km.png"
   },
   {
     "route": "Green to Screen",
@@ -2024,7 +2033,8 @@
       "3": 45,
       "4": 41
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_green-to-screen_km.png"
   },
   {
     "route": "No Sleep Till Brooklyn",
@@ -2043,7 +2053,8 @@
       "2": 62,
       "3": 51,
       "4": 46
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_no-sleep-till-brooklyn_km.png"
   },
   {
     "route": "Double Parked",
@@ -2063,7 +2074,8 @@
       "3": 67,
       "4": 61
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_double-parked_km.png"
   },
   {
     "route": "Stay Puft Pursuit",
@@ -2083,7 +2095,8 @@
       "3": 56,
       "4": 50
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_stay-puft-pursuit_km.png"
   },
   {
     "route": "Fuhgeddaboudit",
@@ -2103,7 +2116,8 @@
       "3": 132,
       "4": 119
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_fuhgeddaboudit_km.png"
   },
   {
     "route": "Spinfinity",
@@ -2123,7 +2137,8 @@
       "3": 32,
       "4": 29
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_spinfinity_km.png"
   },
   {
     "route": "The Double Borough",
@@ -2142,7 +2157,8 @@
       "2": 35,
       "3": 29,
       "4": 26
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_the-double-borough_km.png"
   },
   {
     "route": "Spinfinity Ultra",
@@ -2162,7 +2178,8 @@
       "3": 57,
       "4": 52
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_spinfinity-ultra_km.png"
   },
   {
     "route": "The Greenway",
@@ -2182,7 +2199,8 @@
       "3": 59,
       "4": 53
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_the-greenway_km.png"
   },
   {
     "route": "Toefield Tornado",
@@ -2202,7 +2220,8 @@
       "3": 16,
       "4": 14
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_toefield-tornado_km.png"
   },
   {
     "route": "Avon Flyer",
@@ -2222,7 +2241,8 @@
       "2": 9.6,
       "3": 7.9,
       "4": 7.1
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_avon-flyer_km.png"
   },
   {
     "route": "Issendorf Express",
@@ -2242,7 +2262,8 @@
       "3": 12,
       "4": 10
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/new-york_issendorf-express_km.png"
   },
   {
     "route": "Lutece Express",
@@ -2407,7 +2428,8 @@
       "3": 26,
       "4": 23
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2020/04/richmond-uci-reverse.png"
   },
   {
     "route": "Richmond Loop Around",
@@ -2613,7 +2635,8 @@
       "2": 26,
       "3": 21,
       "4": 19
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/scotland_dun-dash_km.png"
   },
   {
     "route": "Scotland After Party",
@@ -2632,7 +2655,8 @@
       "2": 32,
       "3": 26,
       "4": 23
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/scotland_scotland-after-party_km.png"
   },
   {
     "route": "The Pretzel",
@@ -4348,7 +4372,8 @@
       "2": 47,
       "3": 38,
       "4": 35
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/watopia_power-punches_km.png"
   },
   {
     "route": "Climb Control",
@@ -4367,7 +4392,8 @@
       "2": 47,
       "3": 38,
       "4": 35
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/watopia_climb-control_km.png"
   },
   {
     "route": "Flat Out Fast",
@@ -4386,7 +4412,8 @@
       "2": 37,
       "3": 32,
       "4": 29
-    }
+    },
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/watopia_flat-out-fast_km.png"
   },
   {
     "route": "Watts of the Wild",
@@ -4406,7 +4433,8 @@
       "3": 67,
       "4": 60
     },
-    "timeEstimatesScope": "lead-in + first lap"
+    "timeEstimatesScope": "lead-in + first lap",
+    "elevationProfileUrl": "https://zwiftinsider.com/wp-content/uploads/2026/08/watopia_watts-of-the-wild_km.png"
   },
   {
     "route": "Jarvis Seaside Sprint",
