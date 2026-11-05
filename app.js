@@ -11,6 +11,7 @@ const CONFIG = {
     STRAVA_ACTIVITIES_CACHE_KEY: 'zwift_tracker_strava_activities_cache',
     SORT_KEY: 'zwift_tracker_sort',
     PLANNING_WKG_KEY: 'zwift_tracker_planning_wkg',
+    THEME_KEY: 'zwift_tracker_theme', // also read by the inline script in the HTML <head>
     // Strava OAuth
     STRAVA_CLIENT_ID: '194117',
     STRAVA_REDIRECT_URI: window.location.origin + window.location.pathname,
@@ -33,6 +34,7 @@ let isStravaAuthenticated = false;
 let gistId = null;
 let syncTimeout = null;
 let isSyncing = false;
+const collapsedMaps = new Set(); // survives re-renders, so filtering doesn't re-open collapsed maps
 
 /** Sort keys where missing ZI estimates sort last (asc or desc). */
 const ESTIMATED_TIME_SORT_KEYS = new Set([
@@ -140,6 +142,7 @@ let stravaChartsSwipeDocMove = null;
 let stravaChartsSwipeDocEnd = null;
 let stravaChartsSwipeDocTouchMove = null;
 let stravaChartsSwipeDocTouchEnd = null;
+let stravaChartsSwipeTouchTarget = null;
 let stravaChartsInteractionListenersBound = false;
 let stravaTrendArmedHit = null;
 let stravaTrendOutsideDismissInstalled = false;
@@ -168,6 +171,8 @@ const filterBtns = document.querySelectorAll('.filter-btn');
 
 // Initialize based on mode
 async function init() {
+    setupPageEnhancements();
+
     // Restore sort preference from localStorage
     try {
         const saved = localStorage.getItem(CONFIG.SORT_KEY);
@@ -724,7 +729,7 @@ function updateSyncStatus(status) {
     const statusColor = {
         'syncing': 'var(--text-secondary)',
         'synced': 'var(--completed)',
-        'error': '#f85149'
+        'error': 'var(--danger)'
     };
     
     if (status === 'synced') {
@@ -1428,18 +1433,26 @@ function renderRoutes() {
     
     // Render
     routesContainer.innerHTML = '';
-    
+    updateRoutesSummary();
+    updateMapNav(grouped);
+
     if (filteredRoutes.length === 0) {
-        routesContainer.innerHTML = '<div class="loading">No routes match your filters.</div>';
+        routesContainer.innerHTML = `
+            <div class="empty-state">
+                <p class="empty-state-title">No routes match your filters.</p>
+                <button type="button" class="btn btn-secondary" id="empty-state-reset">Show all routes</button>
+            </div>`;
         return;
     }
-    
+
     const completionOrderMap = getCompletionOrderMap();
 
     Object.keys(grouped).sort().forEach(map => {
+        const isCollapsed = collapsedMaps.has(map);
         const mapGroup = document.createElement('div');
-        mapGroup.className = 'map-group';
-        
+        mapGroup.className = `map-group${isCollapsed ? ' is-collapsed' : ''}`;
+        mapGroup.dataset.map = map;
+
         // Sort routes within each map by current sort option
         const routesInMap = grouped[map].sort((a, b) => compareRoutes(a, b, completionOrderMap));
         const allRoutesInThisMap = routes.filter(r => r.map === map);
@@ -1448,38 +1461,180 @@ function renderRoutes() {
 
         const header = document.createElement('div');
         header.className = 'map-header';
+        header.setAttribute('role', 'button');
+        header.setAttribute('tabindex', '0');
+        header.setAttribute('aria-expanded', String(!isCollapsed));
+        const mapPct = totalRoutesInMap > 0 ? (completedInMap / totalRoutesInMap) * 100 : 0;
         header.innerHTML = `
             <div class="map-header-left">
                 <div class="map-title">${map}</div>
                 <div class="map-stats">${completedInMap} / ${totalRoutesInMap} completed</div>
+                <div class="map-progress" aria-hidden="true"><span class="map-progress-fill" style="--meter: ${mapPct}%"></span></div>
             </div>
             <div class="map-header-right">
                 <div class="map-time-stats">${buildMapTimeStatsHtml(map)}</div>
-                <span class="collapse-icon">▼</span>
+                <span class="collapse-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                </span>
             </div>
         `;
-        
+
         const content = document.createElement('div');
-        content.className = 'map-content';
-        
+        content.className = `map-content${isCollapsed ? ' collapsed' : ''}`;
+
         routesInMap.forEach(route => {
             const card = createRouteCard(route, completionOrderMap);
             content.appendChild(card);
         });
-        
-        header.addEventListener('click', () => {
-            content.classList.toggle('collapsed');
-            const icon = header.querySelector('.collapse-icon');
-            icon.textContent = content.classList.contains('collapsed') ? '▶' : '▼';
+
+        const toggleCollapsed = () => {
+            const collapsed = content.classList.toggle('collapsed');
+            mapGroup.classList.toggle('is-collapsed', collapsed);
+            header.setAttribute('aria-expanded', String(!collapsed));
+            if (collapsed) {
+                collapsedMaps.add(map);
+            } else {
+                collapsedMaps.delete(map);
+            }
+        };
+        header.addEventListener('click', toggleCollapsed);
+        header.addEventListener('keydown', e => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            e.preventDefault();
+            toggleCollapsed();
         });
-        
+
         mapGroup.appendChild(header);
         mapGroup.appendChild(content);
         routesContainer.appendChild(mapGroup);
     });
+
+    observeMapGroups();
 }
 
-/** Extra section on route card: Zwift Insider estimates + profile image. */
+/** Result count above the list and the count badges on the filter buttons. */
+function updateRoutesSummary() {
+    const total = routes.length;
+    const completed = completedRoutes.size;
+    const counts = { all: total, completed, remaining: total - completed };
+    document.querySelectorAll('.filter-count').forEach(el => {
+        el.textContent = counts[el.dataset.count];
+    });
+    const countEl = document.getElementById('routes-count');
+    if (countEl) {
+        const shown = filteredRoutes.length;
+        countEl.textContent = shown === total ? `${total} routes` : `Showing ${shown} of ${total} routes`;
+    }
+}
+
+/**
+ * Jump links for each map: scrolling chips on phones, a progress rail on wide screens.
+ * Built once then updated in place, so the chip row keeps its scroll position.
+ * @param {Record<string, object[]>} visibleByMap routes that pass the current filters, by map
+ */
+function updateMapNav(visibleByMap) {
+    const nav = document.getElementById('map-nav');
+    if (!nav) return;
+    if (!nav.childElementCount) {
+        const maps = [...new Set(routes.map(r => r.map))].sort();
+        nav.innerHTML =
+            '<div class="map-nav-title">Maps</div>' +
+            maps
+                .map(
+                    map => `
+                <button type="button" class="map-nav-item" data-map="${escapeHtml(map)}">
+                    <span class="map-nav-name">${escapeHtml(map)}</span>
+                    <span class="map-nav-count"></span>
+                    <span class="map-nav-bar" aria-hidden="true"><i></i></span>
+                </button>`
+                )
+                .join('');
+        nav.addEventListener('click', e => {
+            const item = e.target.closest('.map-nav-item');
+            if (item) jumpToMap(item.dataset.map);
+        });
+    }
+    nav.querySelectorAll('.map-nav-item').forEach(item => {
+        const inMap = routes.filter(r => r.map === item.dataset.map);
+        const done = inMap.filter(r => completedRoutes.has(r.route)).length;
+        item.querySelector('.map-nav-count').textContent = `${done}/${inMap.length}`;
+        item.querySelector('.map-nav-bar i').style.setProperty('--meter', `${(done / inMap.length) * 100}%`);
+        if (visibleByMap) item.disabled = !visibleByMap[item.dataset.map];
+    });
+}
+
+function findMapGroup(mapName) {
+    return [...document.querySelectorAll('.map-group')].find(g => g.dataset.map === mapName) || null;
+}
+
+function jumpToMap(mapName) {
+    const group = findMapGroup(mapName);
+    if (!group) return;
+    if (group.classList.contains('is-collapsed')) {
+        group.querySelector('.map-header')?.click();
+    }
+    group.scrollIntoView({ block: 'start' });
+}
+
+let mapGroupObserver = null;
+
+/** Highlights the map under the reader in the rail. */
+function observeMapGroups() {
+    if (!('IntersectionObserver' in window)) return;
+    mapGroupObserver?.disconnect();
+    mapGroupObserver = new IntersectionObserver(
+        entries => {
+            const current = entries.find(entry => entry.isIntersecting);
+            if (!current) return;
+            document.querySelectorAll('.map-nav-item').forEach(item => {
+                if (item.dataset.map === current.target.dataset.map) {
+                    item.setAttribute('aria-current', 'true');
+                } else {
+                    item.removeAttribute('aria-current');
+                }
+            });
+        },
+        { rootMargin: '-20% 0px -75% 0px' }
+    );
+    document.querySelectorAll('.map-group').forEach(group => mapGroupObserver.observe(group));
+}
+
+/** If a filter change happens deep in the list, go back to the top of the results. */
+function keepRouteListInView() {
+    const section = document.getElementById('routes-section');
+    if (section && section.getBoundingClientRect().top < 0) {
+        section.scrollIntoView({ block: 'start', behavior: 'instant' });
+    }
+}
+
+// Art already shown once skips the fade, so re-renders (every search keystroke) don't flash.
+const loadedProfileImages = new Set();
+
+/** Profile art at the top of a card, or a deliberate placeholder when there is none. */
+function buildRouteMedia(route) {
+    const img = route.elevationProfileUrl;
+    if (!img) return buildRouteMediaPlaceholder();
+
+    const url = route.zwiftInsiderUrl;
+    const loadedClass = loadedProfileImages.has(img) ? ' is-loaded' : '';
+    const image = `<img class="zi-elevation-img${loadedClass}" src="${escapeHtml(img)}" alt="Elevation profile of ${escapeHtml(route.route)} by ZwiftHub (via Zwift Insider)" width="960" height="540" loading="lazy" decoding="async">`;
+    return `<div class="route-media">${
+        url
+            ? `<a class="zi-profile-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${image}</a>`
+            : image
+    }</div>`;
+}
+
+function buildRouteMediaPlaceholder() {
+    return `
+        <div class="route-media route-media--empty">
+            <svg class="route-media-icon" viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21 12 7l7 9 5-6 14 11"/></svg>
+            <span class="route-media-title">No profile yet</span>
+            <span class="route-media-sub">Elevation art isn't available for this route</span>
+        </div>`;
+}
+
+/** Extra section on route card: Zwift Insider time estimates. */
 function buildZwiftInsiderSection(route) {
     const url = route.zwiftInsiderUrl;
     const img = route.elevationProfileUrl;
@@ -1490,8 +1645,8 @@ function buildZwiftInsiderSection(route) {
     if (!url && !anyTime && !img) return '';
 
     const titleInner = url
-        ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="zi-title-link">Zwift Insider</a>`
-        : 'Zwift Insider';
+        ? `Estimated time · <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="zi-title-link">Zwift Insider ↗</a>`
+        : 'Estimated time · Zwift Insider';
 
     let bits = '';
     // if (route.timeEstimatesScope) {
@@ -1508,14 +1663,6 @@ function buildZwiftInsiderSection(route) {
         bits +=
             '<div class="route-detail zi-no-estimate"><div class="route-detail-value">No ZI time estimate</div></div>';
     }
-    if (img) {
-        const safeSrc = escapeHtml(img);
-        const wrap = url
-            ? `<a class="zi-profile-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">`
-            : '';
-        const wend = url ? '</a>' : '';
-        bits += `<div class="zi-profile-wrap">${wrap}<img class="zi-elevation-img" src="${safeSrc}" alt="Elevation profile by ZwiftHub (via Zwift Insider)" loading="lazy">${wend}</div>`;
-    }
 
     return `
             <div class="route-details-section route-details-section-zi">
@@ -1524,113 +1671,132 @@ function buildZwiftInsiderSection(route) {
             </div>`;
 }
 
+// Inner markup of a card's activity section (view/unlink when linked, link prompt otherwise)
+function buildActivitySectionInner(routeName, activity) {
+    if (activity) {
+        const completedDate = activity.startDate ? formatCompletedDate(activity.startDate) : '';
+        return `
+            <div class="activity-header">
+                <button class="btn-view-activity" data-route="${routeName}">
+                    <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
+                    <span>View activity</span>
+                </button>
+                ${isEditMode ? `<button class="btn-unlink-activity" data-route="${routeName}" title="Unlink activity" aria-label="Unlink activity">✕</button>` : ''}
+            </div>
+            ${completedDate ? `<div class="activity-completed-on">Completed on ${completedDate}</div>` : ''}
+        `;
+    }
+    return `
+        <div class="activity-link-section">
+            <button class="btn-link-activity" data-route="${routeName}">
+                ${isStravaAuthenticated ? '🔗 Link Strava Activity' : '🔗 Connect Strava to Link Activity'}
+            </button>
+        </div>
+    `;
+}
+
 // Create a route card element
 function createRouteCard(route, completionOrderMap = {}) {
     const card = document.createElement('div');
     card.className = `route-card ${completedRoutes.has(route.route) ? 'completed' : ''}`;
-    
+
     const isCompleted = completedRoutes.has(route.route);
     const activity = routeActivities[route.route];
     const hasActivity = !!activity;
-    
+
     // Get completion order number if route is completed and has activity
     const completionNumber = (isCompleted && hasActivity) ? completionOrderMap[route.route] : null;
-    const routeNameDisplay = completionNumber ? `#${completionNumber} ${route.route}` : route.route;
-    
-    // Add tooltip for completed routes with activities
-    if (hasActivity && activity.startDate) {
-        const completedDate = formatCompletedDate(activity.startDate);
-        if (completedDate) {
-            card.setAttribute('title', `Completed on ${completedDate}`);
-        }
-    }
-    
-    // Show checkbox only in edit mode
-    const checkboxHTML = isEditMode ? `
-        <input 
-            type="checkbox" 
-            class="route-checkbox" 
-            ${isCompleted ? 'checked' : ''}
-            ${!isAuthenticated ? 'disabled' : ''}
-            data-route="${route.route}"
-        >
-    ` : '';
-    
-    card.innerHTML = `
-        <div class="route-header">
-            <div class="route-name">${routeNameDisplay}</div>
-            <div class="route-header-actions">
-                ${checkboxHTML}
-            </div>
-        </div>
-        <div class="route-details">
-            <div class="route-details-section">
-                <div class="route-details-section-title">Route</div>
-                <div class="route-detail">
-                    <div class="route-detail-label">Distance</div>
-                    <div class="route-detail-value">${route.length} km</div>
-                </div>
-                <div class="route-detail">
-                    <div class="route-detail-label">Elevation</div>
-                    <div class="route-detail-value">${route.elevation} m</div>
-                </div>
-            </div>
-            <div class="route-details-section">
-                <div class="route-details-section-title">Lead-In</div>
-                <div class="route-detail">
-                    <div class="route-detail-label">Distance</div>
-                    <div class="route-detail-value">${route.leadIn} km</div>
-                </div>
-                <div class="route-detail">
-                    <div class="route-detail-label">Elevation</div>
-                    <div class="route-detail-value">${route.leadInElevation || 0} m</div>
-                </div>
-            </div>
-            <div class="route-details-section">
-                <div class="route-details-section-title">Total</div>
-                <div class="route-detail">
-                    <div class="route-detail-label">Distance</div>
-                    <div class="route-detail-value">${route.totalDistance || (route.length + route.leadIn).toFixed(1)} km</div>
-                </div>
-                <div class="route-detail">
-                    <div class="route-detail-label">Elevation</div>
-                    <div class="route-detail-value">${route.totalElevation || (route.elevation + (route.leadInElevation || 0))} m</div>
-                </div>
-            </div>
-            <div class="route-details-section">
-                <div class="route-details-section-title">Stats</div>
-                <div class="route-detail">
-                    <div class="route-detail-label">Climb Rate</div>
-                    <div class="route-detail-value">${route.climbRate || 0} m/km</div>
-                </div>
-                <div class="route-detail">
-                    <div class="route-detail-label">Difficulty</div>
-                    <div class="route-detail-value">${formatDifficulty(route.difficulty)}</div>
-                </div>
-            </div>
-            ${buildZwiftInsiderSection(route)}
-        </div>
-        ${hasActivity ? `
-            <div class="route-activity-section">
-                <div class="activity-header">
-                    <button class="btn-view-activity" data-route="${route.route}">
-                        <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
-                        <span>View activity</span>
-                    </button>
-                    ${isEditMode ? `<button class="btn-unlink-activity" data-route="${route.route}" title="Unlink activity">✕</button>` : ''}
-                </div>
-            </div>
-        ` : isCompleted && isEditMode ? `
-            <div class="route-activity-section">
-                <div class="activity-link-section">
-                    <button class="btn-link-activity" data-route="${route.route}">
-                        ${isStravaAuthenticated ? '🔗 Link Strava Activity' : '🔗 Connect Strava to Link Activity'}
-                    </button>
-                </div>
-            </div>
-        ` : ''}
+    const routeNameDisplay = completionNumber
+        ? `<span class="route-number">#${completionNumber}</span> ${route.route}`
+        : route.route;
+
+    // Show checkbox only in edit mode; the showcase gets a read-only badge instead
+    const headerActionHTML = isEditMode ? `
+        <label class="route-check">
+            <input
+                type="checkbox"
+                class="route-checkbox"
+                ${isCompleted ? 'checked' : ''}
+                ${!isAuthenticated ? 'disabled' : ''}
+                data-route="${route.route}"
+                aria-label="Mark ${route.route} as completed"
+            >
+            <span class="route-check-mark" aria-hidden="true"></span>
+        </label>
+    ` : `
+        <span class="route-done-badge">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>
+            Done
+        </span>
     `;
-    
+
+    card.innerHTML = `
+        ${buildRouteMedia(route)}
+        <div class="route-body">
+            <div class="route-header">
+                <div class="route-heading">
+                    <div class="route-name">${routeNameDisplay}</div>
+                    <div class="route-meta">
+                        ${formatDifficulty(route.difficulty)}
+                        <span>${route.climbRate || 0} m/km climb rate</span>
+                    </div>
+                </div>
+                <div class="route-header-actions">
+                    ${headerActionHTML}
+                </div>
+            </div>
+            <div class="route-details">
+                <table class="route-stats">
+                    <thead>
+                        <tr><td></td><th scope="col">Route</th><th scope="col">Lead-in</th><th scope="col">Total</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Distance</th>
+                            <td>${route.length} km</td>
+                            <td>${route.leadIn} km</td>
+                            <td>${route.totalDistance || (route.length + route.leadIn).toFixed(1)} km</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Elevation</th>
+                            <td>${route.elevation} m</td>
+                            <td>${route.leadInElevation || 0} m</td>
+                            <td>${route.totalElevation || (route.elevation + (route.leadInElevation || 0))} m</td>
+                        </tr>
+                    </tbody>
+                </table>
+                ${buildZwiftInsiderSection(route)}
+            </div>
+            ${hasActivity || (isCompleted && isEditMode) ? `
+                <div class="route-activity-section">
+                    ${buildActivitySectionInner(route.route, activity)}
+                </div>
+            ` : ''}
+        </div>
+    `;
+
+    // Profile art comes from a third party: fade it in when it arrives, and swap in the
+    // no-profile state rather than showing a broken image if it fails.
+    const profileImg = card.querySelector('.zi-elevation-img');
+    if (profileImg) {
+        profileImg.addEventListener(
+            'load',
+            () => {
+                profileImg.classList.add('is-loaded');
+                loadedProfileImages.add(route.elevationProfileUrl);
+            },
+            { once: true }
+        );
+        profileImg.addEventListener(
+            'error',
+            () => {
+                profileImg.closest('.route-media')?.insertAdjacentHTML('afterend', buildRouteMediaPlaceholder());
+                profileImg.closest('.route-media')?.remove();
+            },
+            { once: true }
+        );
+    }
+
     // Only attach checkbox event listener in edit mode
     const checkbox = card.querySelector('.route-checkbox');
     if (checkbox && isEditMode) {
@@ -1648,41 +1814,14 @@ function createRouteCard(route, completionOrderMap = {}) {
         // Update the current card's visual state immediately
         if (wasChecked) {
             card.classList.add('completed');
-            const routeNameEl = card.querySelector('.route-name');
-            if (routeNameEl) {
-                routeNameEl.style.textDecoration = 'line-through';
-                routeNameEl.style.opacity = '0.7';
-            }
-            
+
             // Immediately show activity link section if it doesn't exist
             let activitySection = card.querySelector('.route-activity-section');
             if (!activitySection) {
                 activitySection = document.createElement('div');
                 activitySection.className = 'route-activity-section';
-                
-                const activity = routeActivities[routeName];
-                const hasActivity = !!activity;
-                
-                if (hasActivity) {
-                    activitySection.innerHTML = `
-                        <div class="activity-header">
-                            <button class="btn-view-activity" data-route="${routeName}">
-                                <img src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-orange-b3599d0edada6b7203f021e9c1e34a63.svg" alt="Strava" class="strava-logo-inline">
-                                <span>View activity</span>
-                            </button>
-                            ${isEditMode ? `<button class="btn-unlink-activity" data-route="${routeName}" title="Unlink activity">✕</button>` : ''}
-                        </div>
-                    `;
-                } else {
-                    activitySection.innerHTML = `
-                        <div class="activity-link-section">
-                            <button class="btn-link-activity" data-route="${routeName}">
-                                ${isStravaAuthenticated ? '🔗 Link Strava Activity' : '🔗 Connect Strava to Link Activity'}
-                            </button>
-                        </div>
-                    `;
-                }
-                
+                activitySection.innerHTML = buildActivitySectionInner(routeName, routeActivities[routeName]);
+
                 // Insert after route-details
                 const routeDetails = card.querySelector('.route-details');
                 if (routeDetails) {
@@ -1726,12 +1865,7 @@ function createRouteCard(route, completionOrderMap = {}) {
             }
         } else {
             card.classList.remove('completed');
-            const routeNameEl = card.querySelector('.route-name');
-            if (routeNameEl) {
-                routeNameEl.style.textDecoration = 'none';
-                routeNameEl.style.opacity = '1';
-            }
-            
+
             // Remove activity section if route is unchecked
             const activitySection = card.querySelector('.route-activity-section');
             if (activitySection) {
@@ -1952,8 +2086,8 @@ function showActivityDetailsModal(activity, routeName) {
             loadCurveBtn.disabled = true;
             try {
                 const { times, watts } = await fetchStravaActivityStreams(activity.activityId);
-                renderActivityPowerStreamSvg(streamSvg, times, watts);
                 streamChartInner.hidden = false;
+                renderActivityPowerStreamSvg(streamSvg, times, watts);
                 streamMsg.textContent = '';
             } catch (err) {
                 console.error('Power stream:', err);
@@ -2047,13 +2181,13 @@ function formatDifficulty(difficulty) {
     const level = parseFloat(match[1]);
     const filled = Math.round(level); // Round to nearest integer for filled circles
     
-    let circlesHTML = '<div class="difficulty-circles">';
+    let circlesHTML = `<div class="difficulty-circles" role="img" aria-label="Difficulty ${level} of 5">`;
     for (let i = 1; i <= 5; i++) {
         const isFilled = i <= filled;
         circlesHTML += `<span class="difficulty-circle ${isFilled ? 'filled' : ''}"></span>`;
     }
-    circlesHTML += '</div>';
-    
+    circlesHTML += `<span class="difficulty-text" aria-hidden="true">${level}/5</span></div>`;
+
     return circlesHTML;
 }
 
@@ -2367,8 +2501,129 @@ function updateStats() {
                 : 'No ZI time data in catalog';
     }
     
+    // Progress meters on the stat panels
+    const share = (part, whole) => (whole > 0 ? (part / whole) * 100 : 0);
+    setMeter('distance-meter', share(completedDistance, totalDistance));
+    setMeter('distance-leadin-meter', share(completedDistanceLeadIn, totalDistanceLeadIn));
+    setMeter('elevation-meter', share(completedElevation, totalElevation));
+    setMeter('elevation-leadin-meter', share(completedElevationLeadIn, totalElevationLeadIn));
+    setMeter('zi-meter', share(ziSumCompleted, ziSumAll));
+
+    renderRouteRidge();
+    updateRoutesSummary();
+    document.documentElement.classList.add('is-ready');
+
     // Update Strava activity stats
     updateStravaStats();
+}
+
+function setMeter(id, percent) {
+    const meter = document.getElementById(id);
+    if (!meter) return;
+    meter.setAttribute('aria-valuenow', String(Math.round(percent)));
+    meter.style.setProperty('--meter', `${percent}%`);
+}
+
+// ==================== Route ridge (hero) ====================
+
+const RIDGE_MAP_GAP_PX = 6;
+const RIDGE_LABEL_HEIGHT_PX = 18;
+let ridgeBars = [];
+
+/** Routes in a map, ordered so bar heights rise to a peak and fall away again. */
+function arrangeRoutesAsPeak(routesInMap) {
+    const ascending = [...routesInMap].sort((a, b) => (a.elevation || 0) - (b.elevation || 0));
+    const left = [];
+    const right = [];
+    ascending.forEach((route, i) => (i % 2 === 0 ? left : right).push(route));
+    return [...left, ...right.reverse()];
+}
+
+/**
+ * Every route as one bar, grouped into a peak per map; bar height is sqrt-scaled climbing,
+ * and a bar lights up once the route is done. Drawn at true pixel size so that bars and
+ * labels stay crisp, and only labels a map has room for.
+ */
+function renderRouteRidge() {
+    const svg = document.getElementById('route-ridge');
+    if (!svg || routes.length === 0) return;
+
+    const W = Math.round(svg.getBoundingClientRect().width);
+    const H = Math.round(svg.getBoundingClientRect().height);
+    if (W === 0 || H === 0) return;
+
+    const maps = [...new Set(routes.map(r => r.map))].sort();
+    const gap = W < 560 ? RIDGE_MAP_GAP_PX / 2 : RIDGE_MAP_GAP_PX;
+    const step = (W - gap * (maps.length - 1)) / routes.length;
+    // Bars under ~2px can't hold a gap without shimmering, so they merge into a silhouette.
+    const barW = step > 3 ? step - 1 : step > 2 ? step - 0.6 : step;
+    const plotH = H - RIDGE_LABEL_HEIGHT_PX;
+    const maxElevation = Math.max(...routes.map(r => r.elevation || 0), 1);
+
+    let x = 0;
+    let bars = '';
+    let labels = '';
+    ridgeBars = [];
+    maps.forEach(map => {
+        const inMap = arrangeRoutesAsPeak(routes.filter(r => r.map === map));
+        const startX = x;
+        inMap.forEach(route => {
+            const h = Math.max(Math.sqrt((route.elevation || 0) / maxElevation) * plotH, 3);
+            const done = completedRoutes.has(route.route);
+            bars += `<rect class="ridge-bar${done ? ' ridge-bar--done' : ''}" x="${x.toFixed(2)}" y="${(plotH - h).toFixed(2)}" width="${barW.toFixed(2)}" height="${h.toFixed(2)}"/>`;
+            ridgeBars.push({ route, x0: x, x1: x + step });
+            x += step;
+        });
+        const groupW = x - startX;
+        if (groupW >= map.length * 6.6 + 4) {
+            labels += `<text class="ridge-map-label" x="${startX.toFixed(2)}" y="${H - 4}">${escapeHtml(map)}</text>`;
+        }
+        x += gap;
+    });
+
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = bars + labels;
+    setRidgeReadout(null);
+}
+
+function setRidgeReadout(route) {
+    const el = document.getElementById('route-ridge-readout');
+    if (!el) return;
+    if (!route) {
+        el.textContent = 'Every route on Zwift, one bar each, grouped by map. Taller bars climb more; lit bars are done.';
+        return;
+    }
+    const status = completedRoutes.has(route.route) ? 'Done' : 'Still to ride';
+    el.innerHTML = `<strong>${escapeHtml(route.route)}</strong><span>${escapeHtml(route.map)} · ${route.length} km · ${route.elevation} m · ${status}</span>`;
+}
+
+function setupRouteRidgeListeners() {
+    const plot = document.getElementById('route-ridge-plot');
+    const svg = document.getElementById('route-ridge');
+    if (!plot || !svg) return;
+
+    let activeIndex = -1;
+    const clearActive = () => {
+        svg.querySelectorAll('.ridge-bar--active').forEach(bar => bar.classList.remove('ridge-bar--active'));
+        activeIndex = -1;
+    };
+    const show = e => {
+        const x = e.clientX - svg.getBoundingClientRect().left;
+        // Nearest bar, so the small gaps between maps don't blank the readout
+        let index = ridgeBars.findIndex(bar => x < bar.x1);
+        if (index === -1) index = ridgeBars.length - 1;
+        if (index === activeIndex || !ridgeBars[index]) return;
+        clearActive();
+        activeIndex = index;
+        svg.querySelectorAll('.ridge-bar')[index]?.classList.add('ridge-bar--active');
+        setRidgeReadout(ridgeBars[index].route);
+    };
+    plot.addEventListener('pointermove', show);
+    plot.addEventListener('pointerdown', show);
+    plot.addEventListener('pointerleave', () => {
+        clearActive();
+        setRidgeReadout(null);
+    });
 }
 
 // ==================== Strava power visualizations ====================
@@ -2527,6 +2782,12 @@ function removeStravaChartsSwipeDocumentListeners() {
         });
         window.removeEventListener('touchend', stravaChartsSwipeDocTouchEnd, { capture: true });
         window.removeEventListener('touchcancel', stravaChartsSwipeDocTouchEnd, { capture: true });
+        if (stravaChartsSwipeTouchTarget) {
+            stravaChartsSwipeTouchTarget.removeEventListener('touchmove', stravaChartsSwipeDocTouchMove);
+            stravaChartsSwipeTouchTarget.removeEventListener('touchend', stravaChartsSwipeDocTouchEnd);
+            stravaChartsSwipeTouchTarget.removeEventListener('touchcancel', stravaChartsSwipeDocTouchEnd);
+            stravaChartsSwipeTouchTarget = null;
+        }
         stravaChartsSwipeDocTouchMove = null;
         stravaChartsSwipeDocTouchEnd = null;
     }
@@ -2543,7 +2804,13 @@ function stravaChartsSwipeTryBeginDrag(st, clientX, clientY, row) {
     const dx = clientX - st.originX;
     const dy = clientY - st.originY;
     if (st.dragging) return true;
+    if (st.scrolling) return false;
     if (dx * dx + dy * dy < STRAVA_CHART_SWIPE_DRAG_THRESHOLD_PX ** 2) return false;
+    // A mostly vertical touch is the page scrolling past the chart, not a pan.
+    if (st.isTouch && Math.abs(dy) > Math.abs(dx)) {
+        st.scrolling = true;
+        return false;
+    }
     st.dragging = true;
     st.plotWCached = Math.max(getStravaChartsSwipePlotWidth(), 120);
     row.classList.add('strava-charts-row--panning');
@@ -2623,6 +2890,7 @@ function setupStravaChartsSwipeListeners() {
             const t = e.touches[0];
             stravaChartsSwipeState = {
                 source: 'touch',
+                isTouch: true,
                 touchId: t.identifier,
                 pointerId: null,
                 originX: t.clientX,
@@ -2639,7 +2907,7 @@ function setupStravaChartsSwipeListeners() {
 
                 if (!stravaChartsSwipeTryBeginDrag(st, touch.clientX, touch.clientY, row)) return;
                 stravaChartsSwipeApplyClientX(st, touch.clientX);
-                ev.preventDefault();
+                if (ev.cancelable) ev.preventDefault();
             };
 
             stravaChartsSwipeDocTouchEnd = ev => {
@@ -2664,6 +2932,14 @@ function setupStravaChartsSwipeListeners() {
             });
             window.addEventListener('touchend', stravaChartsSwipeDocTouchEnd, { capture: true });
             window.addEventListener('touchcancel', stravaChartsSwipeDocTouchEnd, { capture: true });
+
+            // Touch events stay bound to the element the finger landed on. Panning redraws
+            // the charts, which removes that element, and events on a detached node never
+            // reach window: without these the pan would freeze and never finish.
+            stravaChartsSwipeTouchTarget = e.target;
+            stravaChartsSwipeTouchTarget.addEventListener('touchmove', stravaChartsSwipeDocTouchMove, { passive: false });
+            stravaChartsSwipeTouchTarget.addEventListener('touchend', stravaChartsSwipeDocTouchEnd);
+            stravaChartsSwipeTouchTarget.addEventListener('touchcancel', stravaChartsSwipeDocTouchEnd);
         },
         { capture: true, passive: false }
     );
@@ -2678,6 +2954,7 @@ function setupStravaChartsSwipeListeners() {
 
         stravaChartsSwipeState = {
             source: 'pointer',
+            isTouch: e.pointerType !== 'mouse',
             pointerId: e.pointerId,
             originX: e.clientX,
             originY: e.clientY,
@@ -3270,12 +3547,13 @@ function renderStravaMetricTrend(config) {
     });
 
     const ns = 'http://www.w3.org/2000/svg';
-    const W = 640;
-    const H = 260;
+    // Drawn at the element's real size (not a scaled viewBox) so axis text stays readable.
+    const W = Math.round(svg.getBoundingClientRect().width) || 640;
+    const H = W < 460 ? 230 : 260;
     const pl = 48;
     const pr = 14;
-    const pt = 16;
-    const pb = 40;
+    const pt = 12;
+    const pb = 30;
     const plotW = W - pl - pr;
     const plotH = H - pt - pb;
     const baseY = pt + plotH;
@@ -3311,6 +3589,9 @@ function renderStravaMetricTrend(config) {
         }
         if (yFloor != null) yMin = Math.max(yFloor, yMin);
     }
+    const yStep = niceTickStep(yMax - yMin, 4);
+    yMin = Math.floor(yMin / yStep) * yStep;
+    yMax = Math.ceil(yMax / yStep) * yStep;
     const ySpan = Math.max(yMax - yMin, 1e-6);
     const yAt = v => pt + plotH - ((v - yMin) / ySpan) * plotH;
 
@@ -3331,7 +3612,7 @@ function renderStravaMetricTrend(config) {
         const st0 = document.createElementNS(ns, 'stop');
         st0.setAttribute('offset', '0%');
         st0.setAttribute('stop-color', `var(${s.colorVar})`);
-        st0.setAttribute('stop-opacity', '0.24');
+        st0.setAttribute('stop-opacity', '0.16');
         const st1 = document.createElementNS(ns, 'stop');
         st1.setAttribute('offset', '100%');
         st1.setAttribute('stop-color', `var(${s.colorVar})`);
@@ -3343,9 +3624,7 @@ function renderStravaMetricTrend(config) {
     });
     frag.appendChild(defs);
 
-    const yTicks = 4;
-    for (let i = 0; i <= yTicks; i++) {
-        const v = yMin + (i / yTicks) * (yMax - yMin);
+    for (let v = yMin; v <= yMax + yStep / 2; v += yStep) {
         const y = yAt(v);
         const line = document.createElementNS(ns, 'line');
         line.setAttribute('x1', pl);
@@ -3372,14 +3651,14 @@ function renderStravaMetricTrend(config) {
     };
     const midTime = (tMin + tMax) / 2;
     [
-        { x: xAt(tMin), text: formatShortDate(range.start) },
-        { x: xAt(midTime), text: formatShortDate(new Date(midTime)) },
-        { x: xAt(tMax), text: formatShortDate(range.end) }
-    ].forEach(({ x, text }) => {
+        { x: xAt(tMin), text: formatShortDate(range.start), anchor: 'start' },
+        { x: xAt(midTime), text: formatShortDate(new Date(midTime)), anchor: 'middle' },
+        { x: xAt(tMax), text: formatShortDate(range.end), anchor: 'end' }
+    ].forEach(({ x, text, anchor }) => {
         const t = document.createElementNS(ns, 'text');
         t.setAttribute('x', x);
-        t.setAttribute('y', H - 10);
-        t.setAttribute('text-anchor', 'middle');
+        t.setAttribute('y', H - 8);
+        t.setAttribute('text-anchor', anchor);
         t.setAttribute('class', 'strava-trend-axis-text');
         t.textContent = text;
         frag.appendChild(t);
@@ -3453,7 +3732,7 @@ function renderStravaMetricTrend(config) {
             const c = document.createElementNS(ns, 'circle');
             c.setAttribute('cx', cx);
             c.setAttribute('cy', cy);
-            c.setAttribute('r', 3);
+            c.setAttribute('r', 4);
             c.setAttribute('class', 'strava-trend-dot');
             c.setAttribute('fill', `var(${s.colorVar})`);
             g.appendChild(c);
@@ -3504,6 +3783,15 @@ function renderStravaMetricTrend(config) {
     });
 
     svg.appendChild(frag);
+}
+
+/** Round axis step (1, 2, 2.5 or 5 × 10^n) giving roughly the requested number of intervals. */
+function niceTickStep(span, targetIntervals) {
+    const raw = Math.max(span, 1e-6) / targetIntervals;
+    const magnitude = 10 ** Math.floor(Math.log10(raw));
+    const normalized = raw / magnitude;
+    const nice = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 2.5 ? 2.5 : normalized <= 5 ? 5 : 10;
+    return nice * magnitude;
 }
 
 function renderStravaPowerTrendChart() {
@@ -3569,7 +3857,7 @@ function downsamplePairs(times, watts, maxPoints) {
 
 function renderActivityPowerStreamSvg(svg, times, watts) {
     const ns = 'http://www.w3.org/2000/svg';
-    const W = 600;
+    const W = Math.round(svg.getBoundingClientRect().width) || 600;
     const H = 200;
     const pl = 44;
     const pr = 10;
@@ -3812,12 +4100,16 @@ function updateMapStats() {
         const completedInMap = routesInMap.filter(r => completedRoutes.has(r.route)).length;
 
         header.textContent = `${completedInMap} / ${routesInMap.length} completed`;
+        mapGroup
+            .querySelector('.map-progress-fill')
+            ?.style.setProperty('--meter', `${(completedInMap / routesInMap.length) * 100}%`);
 
         const timeStats = mapGroup.querySelector('.map-time-stats');
         if (timeStats) {
             timeStats.innerHTML = buildMapTimeStatsHtml(mapName);
         }
     });
+    updateMapNav();
 }
 
 // Update authentication UI
@@ -3874,6 +4166,7 @@ function setupSortSelect() {
         persistSortPreference();
         updateSortSelectUI();
         renderRoutes();
+        keepRouteListInView();
     });
     if (directionBtn) {
         directionBtn.addEventListener('click', () => {
@@ -3881,6 +4174,7 @@ function setupSortSelect() {
             persistSortPreference();
             updateSortSelectUI();
             renderRoutes();
+            keepRouteListInView();
         });
     }
 }
@@ -3892,6 +4186,20 @@ function setupPlanningWkgSelect() {
     sel.addEventListener('change', () => {
         setPlanningWkg(sel.value);
         updateStats();
+    });
+}
+
+function setupFilterButtons() {
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => {
+                b.classList.toggle('active', b === btn);
+                b.setAttribute('aria-pressed', String(b === btn));
+            });
+            currentFilter = btn.dataset.filter;
+            renderRoutes();
+            keepRouteListInView();
+        });
     });
 }
 
@@ -3984,25 +4292,15 @@ function setupEventListeners() {
     });
     
     // Filter buttons
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            renderRoutes();
-        });
-    });
+    setupFilterButtons();
     
     // Sort dropdown
     setupSortSelect();
     setupPlanningWkgSelect();
     
     // Search input
-    searchInput.addEventListener('input', (e) => {
-        searchQuery = e.target.value;
-        renderRoutes();
-    });
-    
+    setupSearchInput();
+
     // Strava connect button
     const stravaBtn = document.getElementById('strava-connect-btn');
     if (stravaBtn) {
@@ -4085,7 +4383,7 @@ function setupEventListeners() {
             } catch (error) {
                 if (statusEl) {
                     statusEl.textContent = `✗ Error: ${error.message}`;
-                    statusEl.style.color = '#f85149';
+                    statusEl.style.color = 'var(--danger)';
                 }
             }
         });
@@ -4154,13 +4452,175 @@ function setupEventListeners() {
             } catch (error) {
                 if (statusEl) {
                     statusEl.textContent = `✗ Error: ${error.message}`;
-                    statusEl.style.color = '#f85149';
+                    statusEl.style.color = 'var(--danger)';
                 }
             }
         });
     }
 
     setupStravaChartsInteractionListeners();
+}
+
+function setupSearchInput() {
+    if (!searchInput) return;
+    const clearBtn = document.getElementById('search-clear');
+    const setQuery = value => {
+        searchQuery = value;
+        if (clearBtn) clearBtn.hidden = !value;
+        renderRoutes();
+    };
+    searchInput.addEventListener('input', e => setQuery(e.target.value));
+    searchInput.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && searchInput.value) {
+            searchInput.value = '';
+            setQuery('');
+        }
+    });
+    clearBtn?.addEventListener('click', () => {
+        searchInput.value = '';
+        setQuery('');
+        searchInput.focus();
+    });
+
+    // Phones: the dock's search button brings the field back from anywhere in the list.
+    document.getElementById('dock-search-btn')?.addEventListener('click', () => {
+        searchInput.focus();
+        searchInput.scrollIntoView({ block: 'center' });
+    });
+
+    // Empty state: drop the search and filter, then go back to everything.
+    routesContainer?.addEventListener('click', e => {
+        if (e.target.id !== 'empty-state-reset') return;
+        searchInput.value = '';
+        if (clearBtn) clearBtn.hidden = true;
+        searchQuery = '';
+        document.querySelector('.filter-btn[data-filter="all"]')?.click();
+    });
+}
+
+// ==================== Page enhancements ====================
+
+function setupThemeToggle() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle) return;
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const currentTheme = () =>
+        document.documentElement.getAttribute('data-theme') || (systemDark.matches ? 'dark' : 'light');
+    const label = () => {
+        toggle.setAttribute('aria-label', `Switch to ${currentTheme() === 'dark' ? 'light' : 'dark'} theme`);
+    };
+    toggle.addEventListener('click', () => {
+        const next = currentTheme() === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try {
+            localStorage.setItem(CONFIG.THEME_KEY, next);
+        } catch (e) {
+            console.warn('Could not persist theme:', e);
+        }
+        label();
+    });
+    systemDark.addEventListener('change', label);
+    label();
+}
+
+/** "Routes only / With lead-in" switches on the Distance and Elevation panels. */
+function setupStatScopeSwitches() {
+    document.querySelectorAll('.stat-panel').forEach(panel => {
+        const buttons = panel.querySelectorAll('[data-scope-btn]');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const scope = btn.dataset.scopeBtn;
+                buttons.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+                panel.querySelectorAll('[data-scope]').forEach(el => {
+                    el.hidden = el.dataset.scope !== scope;
+                });
+            });
+        });
+    });
+}
+
+/** Charts and the ridge are drawn at true pixel size, so redraw when the width changes. */
+function setupResponsiveRedraw() {
+    const container = document.querySelector('.container');
+    if (!container || !('ResizeObserver' in window)) return;
+    let lastWidth = 0;
+    let frame = null;
+    new ResizeObserver(entries => {
+        // Height changes constantly as the list re-renders; only width affects drawing.
+        const width = Math.round(entries[0].contentRect.width);
+        if (width === lastWidth) return;
+        const firstMeasure = lastWidth === 0;
+        lastWidth = width;
+        if (firstMeasure) return;
+        if (frame != null) cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+            frame = null;
+            renderRouteRidge();
+            renderStravaPowerTrendChart();
+            renderStravaHeartTrendChart();
+        });
+    }).observe(container);
+}
+
+/**
+ * Keyboard and focus behaviour for the modals. app.js opens and closes them by writing
+ * style.display in many places, so this watches that one property rather than wrapping
+ * every call site.
+ */
+function setupModalBehavior() {
+    const modals = [...document.querySelectorAll('.modal')];
+    const isOpen = modal => modal.style.display === 'block';
+
+    modals.forEach(modal => {
+        let wasOpen = false;
+        let opener = null;
+        new MutationObserver(() => {
+            const open = isOpen(modal);
+            if (open && !wasOpen) {
+                opener = document.activeElement;
+                modal.querySelector('.modal-content')?.focus({ preventScroll: true });
+            } else if (!open && wasOpen) {
+                opener?.focus?.({ preventScroll: true });
+                opener = null;
+            }
+            wasOpen = open;
+            document.documentElement.classList.toggle('modal-open', modals.some(isOpen));
+        }).observe(modal, { attributes: true, attributeFilter: ['style'] });
+    });
+
+    document.addEventListener('keydown', e => {
+        const modal = modals.find(isOpen);
+        if (!modal) return;
+        if (e.key === 'Escape') {
+            modal.style.display = 'none';
+            return;
+        }
+        if (e.key !== 'Tab') return;
+
+        // Keep Tab inside the dialog
+        const focusable = [...modal.querySelectorAll('a[href], button, input, select')].filter(
+            el => !el.disabled && el.offsetParent !== null
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+        if (e.shiftKey && (active === first || !modal.contains(active) || active.classList.contains('modal-content'))) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && active === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    });
+}
+
+function setupPageEnhancements() {
+    setupThemeToggle();
+    setupStatScopeSwitches();
+    setupRouteRidgeListeners();
+    setupResponsiveRedraw();
+    setupModalBehavior();
 }
 
 // UI Visibility Functions
@@ -4311,27 +4771,15 @@ function setupScrollDetection() {
 // Setup event listeners for showcase mode (limited functionality)
 function setupShowcaseEventListeners() {
     // Filter buttons
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            currentFilter = btn.dataset.filter;
-            renderRoutes();
-        });
-    });
+    setupFilterButtons();
     
     // Sort dropdown
     setupSortSelect();
     setupPlanningWkgSelect();
     
     // Search input
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            searchQuery = e.target.value;
-            renderRoutes();
-        });
-    }
-    
+    setupSearchInput();
+
     // Activity details modal close (for showcase mode)
     const activityDetailsModal = document.getElementById('activity-details-modal');
     const closeActivityDetails = document.querySelector('.close-activity-details');
