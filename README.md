@@ -97,7 +97,7 @@ Edit `app.js` to configure:
 
 ## Security
 
-- Tokens stored in `sessionStorage` (cleared on browser close)
+- Tokens stored in `localStorage` (kept in that browser until you log out or disconnect Strava)
 - Strava Client Secret stored in Vercel environment variables (never in code)
 - Gist is public (progress visible to anyone with the link)
 

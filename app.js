@@ -1866,9 +1866,9 @@ function createRouteCard(route, completionOrderMap = {}) {
         } else {
             card.classList.remove('completed');
 
-            // Remove activity section if route is unchecked
+            // Unchecked routes only keep the activity section while an activity is linked
             const activitySection = card.querySelector('.route-activity-section');
-            if (activitySection) {
+            if (activitySection && !routeActivities[routeName]) {
                 activitySection.remove();
             }
         }
@@ -1898,8 +1898,9 @@ function createRouteCard(route, completionOrderMap = {}) {
         });
     }
     
-    // Activity linking/unlinking handlers (only in edit mode)
-    if (isCompleted && isEditMode) {
+    // Activity linking/unlinking handlers (only in edit mode). Not gated on completion:
+    // a route can keep a linked activity after being unticked, and still shows its unlink button.
+    if (isEditMode) {
         const linkBtn = card.querySelector('.btn-link-activity');
         if (linkBtn) {
             linkBtn.addEventListener('click', () => {
@@ -1951,8 +1952,8 @@ function renderActivityDetails(activity) {
     return `
         <div class="activity-info">
             <div class="activity-name">
-                <a href="${activity.activityUrl}" target="_blank" rel="noopener noreferrer">
-                    ${activity.name || 'Strava Activity'}
+                <a href="${escapeHtml(activity.activityUrl)}" target="_blank" rel="noopener noreferrer">
+                    ${escapeHtml(activity.name || 'Strava Activity')}
                 </a>
             </div>
             ${completedDate ? `
@@ -4419,7 +4420,7 @@ function setupEventListeners() {
                             const date = new Date(activity.start_date);
                             item.innerHTML = `
                                 <div class="activity-item-info">
-                                    <strong>${activity.name || 'Untitled'}</strong>
+                                    <strong>${escapeHtml(activity.name || 'Untitled')}</strong>
                                     <div class="activity-item-meta">
                                         ${(activity.distance / 1000).toFixed(2)} km • 
                                         ${new Date(activity.moving_time * 1000).toISOString().substr(11, 8)} • 
