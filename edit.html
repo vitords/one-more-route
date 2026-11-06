@@ -337,40 +337,68 @@
                         </div>
                     </div>
                     <div class="strava-linked-charts">
-                        <div id="strava-charts-nav" class="strava-charts-nav" hidden>
-                            <button type="button" class="btn btn-secondary btn-small strava-charts-nav-btn" id="strava-charts-nav-prev" aria-label="Show earlier 30 days">← Earlier</button>
-                            <span class="strava-charts-nav-center">
-                                <span id="strava-charts-nav-label" class="strava-charts-nav-label"></span>
-                                <span class="strava-charts-nav-hint">Drag a chart to move through time</span>
-                            </span>
-                            <button type="button" class="btn btn-secondary btn-small strava-charts-nav-btn" id="strava-charts-nav-next" aria-label="Show later 30 days">Later →</button>
-                        </div>
-                        <div id="strava-charts-row" class="strava-charts-row">
-                            <div id="strava-power-chart-wrap" class="chart-card strava-power-chart-wrap strava-power-chart-wrap--empty">
-                                <div class="strava-chart-panel-title">Power</div>
-                                <div class="strava-power-chart-legend">
-                                    <span class="strava-power-legend-item strava-power-legend-avg"><span class="strava-power-legend-swatch"></span>Avg power</span>
-                                    <span class="strava-power-legend-item strava-power-legend-weighted"><span class="strava-power-legend-swatch"></span>Weighted avg</span>
-                                    <span class="strava-power-legend-item strava-trend-legend-note">dots = rides · line = trend</span>
+                        <section id="fitness-card" class="chart-card fitness-card fitness-card--empty" aria-labelledby="fitness-title">
+                            <div class="strava-chart-panel-title" id="fitness-title">Fitness trend</div>
+                            <div class="fitness-body">
+                                <div class="fitness-readout">
+                                    <button type="button" class="fitness-step" id="fitness-prev" aria-label="Previous ride">
+                                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+                                    </button>
+                                    <div class="fitness-readout-text" aria-live="polite">
+                                        <strong id="fitness-readout-title"></strong>
+                                        <span id="fitness-readout-meta"></span>
+                                    </div>
+                                    <button type="button" class="fitness-step" id="fitness-next" aria-label="Next ride">
+                                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+                                    </button>
+                                    <button type="button" class="btn btn-secondary btn-small fitness-open" id="fitness-open">View ride</button>
+                                    <p class="fitness-hint">Drag a chart to explore rides</p>
                                 </div>
-                                <div class="strava-power-chart-inner">
-                                    <svg id="strava-power-chart" class="strava-power-chart" role="img" aria-label="Average and weighted average power per linked Strava ride, with rolling-average trend"></svg>
+                                <div id="fitness-panels" class="fitness-panels">
+                                    <div class="fitness-row">
+                                        <div class="fitness-metric">
+                                            <span class="fitness-metric-name">Weighted power</span>
+                                            <span class="fitness-metric-value" id="fitness-value-power"></span>
+                                            <span class="fitness-metric-delta" id="fitness-delta-power"></span>
+                                        </div>
+                                        <svg id="fitness-plot-power" class="fitness-plot" data-metric="power" role="img" aria-label="Weighted power across the season. Each dot is a ride; the line is a 4-week median."></svg>
+                                    </div>
+                                    <div class="fitness-row">
+                                        <div class="fitness-metric">
+                                            <span class="fitness-metric-name">Average heart rate</span>
+                                            <span class="fitness-metric-value" id="fitness-value-hr"></span>
+                                            <span class="fitness-metric-delta" id="fitness-delta-hr"></span>
+                                        </div>
+                                        <svg id="fitness-plot-hr" class="fitness-plot" data-metric="hr" role="img" aria-label="Average heart rate across the season. Each dot is a ride; the line is a 4-week median."></svg>
+                                    </div>
+                                    <div class="fitness-row">
+                                        <div class="fitness-metric">
+                                            <span class="fitness-metric-name">Power per heartbeat</span>
+                                            <span class="fitness-metric-value" id="fitness-value-ef"></span>
+                                            <span class="fitness-metric-delta" id="fitness-delta-ef"></span>
+                                        </div>
+                                        <svg id="fitness-plot-ef" class="fitness-plot" data-metric="ef" role="img" aria-label="Power per heartbeat across the season. Each dot is a ride; the line is a 4-week median."></svg>
+                                    </div>
+                                    <div class="fitness-row fitness-row--axis">
+                                        <svg id="fitness-axis" class="fitness-axis" aria-hidden="true"></svg>
+                                    </div>
                                 </div>
-                                <p id="strava-power-chart-empty" class="strava-power-chart-empty">Link Strava activities with power data to see this chart.</p>
+                                <p class="fitness-note">Dots are rides and lines are 4-week medians. Power per heartbeat is weighted power divided by average heart rate. Higher means more power for the same heart rate, though ride intensity, heat and fatigue move it too.</p>
+                                <details class="fitness-months">
+                                    <summary>Month by month</summary>
+                                    <div class="fitness-table-scroll">
+                                        <table class="fitness-table">
+                                            <thead>
+                                                <tr><th scope="col">Month</th><th scope="col">Rides</th><th scope="col">Power (W)</th><th scope="col">HR (bpm)</th><th scope="col">W/bpm</th></tr>
+                                            </thead>
+                                            <tbody id="fitness-table-body"></tbody>
+                                        </table>
+                                    </div>
+                                    <p class="fitness-table-note">Monthly medians.</p>
+                                </details>
                             </div>
-                            <div id="strava-hr-chart-wrap" class="chart-card strava-hr-chart-wrap strava-hr-chart-wrap--empty">
-                                <div class="strava-chart-panel-title">Heart rate</div>
-                                <div class="strava-hr-chart-legend">
-                                    <span class="strava-hr-legend-item strava-hr-legend-avg"><span class="strava-hr-legend-swatch"></span>Avg HR</span>
-                                    <span class="strava-hr-legend-item strava-hr-legend-max"><span class="strava-hr-legend-swatch"></span>Max HR</span>
-                                    <span class="strava-hr-legend-item strava-trend-legend-note">dots = rides · line = trend</span>
-                                </div>
-                                <div class="strava-hr-chart-inner">
-                                    <svg id="strava-hr-chart" class="strava-hr-chart" role="img" aria-label="Average and maximum heart rate per linked Strava ride, with rolling-average trend"></svg>
-                                </div>
-                                <p id="strava-hr-chart-empty" class="strava-hr-chart-empty">Link Strava activities with heart rate data to see this chart.</p>
-                            </div>
-                        </div>
+                            <p class="strava-timing-chart-empty fitness-empty">Link Strava activities with power or heart rate data to see your fitness trend.</p>
+                        </section>
                         <div id="strava-timing-row" class="strava-timing-row">
                             <div id="strava-timing-weekday-wrap" class="chart-card strava-timing-panel strava-timing-panel--empty">
                                 <div class="strava-chart-panel-title">By weekday</div>

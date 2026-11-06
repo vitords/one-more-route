@@ -68,9 +68,9 @@
 
     /* Series colours, validated against each surface for CVD separation */
     --power-chart-avg: #ea580c;
-    --power-chart-weighted: #2563eb;
+    --fitness-ef: #0b78ad;
+    --fitness-dot-opacity: 0.3;
     --hr-chart-avg: #a21caf;
-    --hr-chart-max: #0d9488;
     --chart-bar: #5f9cc4;
     --chart-bar-peak: var(--primary-color);
 
@@ -115,9 +115,9 @@
         --card-shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.4), 0 14px 30px rgba(0, 0, 0, 0.45);
         --toolbar-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 24px rgba(0, 0, 0, 0.4);
         --power-chart-avg: #e4610c;
-        --power-chart-weighted: #4b96f0;
+        --fitness-ef: #4b96f0;
+        --fitness-dot-opacity: 0.45;
         --hr-chart-avg: #d946ef;
-        --hr-chart-max: #0f9e8e;
         --chart-bar: #3f7fa8;
     }
 }
@@ -146,9 +146,9 @@
     --card-shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.4), 0 14px 30px rgba(0, 0, 0, 0.45);
     --toolbar-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 24px rgba(0, 0, 0, 0.4);
     --power-chart-avg: #e4610c;
-    --power-chart-weighted: #4b96f0;
+    --fitness-ef: #4b96f0;
+    --fitness-dot-opacity: 0.45;
     --hr-chart-avg: #d946ef;
-    --hr-chart-max: #0f9e8e;
     --chart-bar: #3f7fa8;
 }
 
@@ -941,57 +941,6 @@ h1 {
     margin-top: 16px;
 }
 
-.strava-charts-nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: 8px;
-}
-
-.strava-charts-nav-center {
-    display: flex;
-    grid-column: 1 / -1;
-    grid-row: 1;
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
-    text-align: center;
-}
-
-.strava-charts-nav-label {
-    color: var(--text-primary);
-    font-size: 0.86rem;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.25;
-}
-
-.strava-charts-nav-hint {
-    color: var(--text-muted);
-    font-size: 0.72rem;
-    line-height: 1.25;
-}
-
-.strava-charts-nav-btn {
-    min-height: var(--control-h);
-    flex-shrink: 0;
-}
-
-/* touch-action lets vertical swipes scroll the page; app.js handles horizontal pans. */
-.strava-charts-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
-    touch-action: pan-y;
-    cursor: grab;
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-.strava-charts-row--panning {
-    cursor: grabbing;
-}
-
 .strava-timing-row {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -1013,8 +962,6 @@ h1 {
     font-weight: 700;
 }
 
-.strava-power-chart-legend,
-.strava-hr-chart-legend,
 .strava-timing-legend {
     display: flex;
     flex-wrap: wrap;
@@ -1025,16 +972,12 @@ h1 {
     font-size: 0.8rem;
 }
 
-.strava-power-legend-item,
-.strava-hr-legend-item,
 .strava-timing-legend-item {
     display: inline-flex;
     align-items: center;
     gap: 7px;
 }
 
-.strava-power-legend-swatch,
-.strava-hr-legend-swatch,
 .strava-timing-legend-swatch {
     width: 14px;
     height: 3px;
@@ -1042,53 +985,20 @@ h1 {
     flex-shrink: 0;
 }
 
-.strava-power-legend-avg .strava-power-legend-swatch {
-    background: var(--power-chart-avg);
-}
-
-.strava-power-legend-weighted .strava-power-legend-swatch {
-    background: var(--power-chart-weighted);
-}
-
-.strava-hr-legend-avg .strava-hr-legend-swatch {
-    background: var(--hr-chart-avg);
-}
-
-.strava-hr-legend-max .strava-hr-legend-swatch {
-    background: var(--hr-chart-max);
-}
-
 .strava-timing-legend-swatch--count,
 .strava-timing-legend-swatch--hour {
     background: var(--chart-bar);
 }
 
-.strava-trend-legend-note,
 .strava-timing-legend-item--muted {
     color: var(--text-muted);
 }
 
-.strava-power-chart-inner,
-.strava-hr-chart-inner,
 .strava-timing-chart-inner {
     position: relative;
     width: 100%;
     max-width: 100%;
     overflow: hidden;
-}
-
-.strava-power-chart-inner,
-.strava-hr-chart-inner,
-.strava-power-chart,
-.strava-hr-chart {
-    touch-action: pan-y;
-}
-
-.strava-power-chart,
-.strava-hr-chart {
-    display: block;
-    width: 100%;
-    height: auto;
 }
 
 .strava-timing-chart {
@@ -1097,8 +1007,6 @@ h1 {
 }
 
 /* Empty panels */
-.strava-power-chart-empty,
-.strava-hr-chart-empty,
 .strava-timing-chart-empty {
     display: none;
     padding: 18px 12px;
@@ -1110,17 +1018,11 @@ h1 {
     text-align: center;
 }
 
-.strava-power-chart-wrap--empty .strava-power-chart-legend,
-.strava-power-chart-wrap--empty .strava-power-chart-inner,
-.strava-hr-chart-wrap--empty .strava-hr-chart-legend,
-.strava-hr-chart-wrap--empty .strava-hr-chart-inner,
 .strava-timing-panel--empty .strava-timing-legend,
 .strava-timing-panel--empty .strava-timing-chart-inner {
     display: none;
 }
 
-.strava-power-chart-wrap--empty .strava-power-chart-empty,
-.strava-hr-chart-wrap--empty .strava-hr-chart-empty,
 .strava-timing-panel--empty .strava-timing-chart-empty {
     display: block;
 }
@@ -1141,125 +1043,342 @@ h1 {
     pointer-events: none;
 }
 
-.strava-chart-period-empty-msg {
-    fill: var(--text-secondary);
-    font-size: 13px;
-    pointer-events: none;
+/* Season fitness chart */
+.fitness-card {
+    padding-bottom: 8px;
 }
 
-.strava-trend-area {
-    stroke: none;
-    pointer-events: none;
+.fitness-readout {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    align-items: center;
+    gap: 6px 8px;
+    min-height: 60px;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2, var(--background));
 }
 
-.strava-trend-line {
+.fitness-readout-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    text-align: center;
+}
+
+.fitness-readout-text strong {
+    overflow: hidden;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fitness-readout-text span {
+    overflow: hidden;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.fitness-step {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background var(--dur) var(--ease);
+}
+
+.fitness-step:hover:not(:disabled) {
+    background: var(--surface-hover);
+}
+
+.fitness-step:disabled {
+    color: var(--border-strong);
+    cursor: default;
+}
+
+/* Phones: details get the full width, with the controls in a thumb row beneath */
+.fitness-readout-text {
+    grid-area: 1 / 1 / 2 / -1;
+}
+
+#fitness-prev {
+    grid-area: 2 / 1;
+}
+
+#fitness-next {
+    grid-area: 2 / 3;
+}
+
+.fitness-open,
+.fitness-hint {
+    grid-area: 2 / 2;
+}
+
+.fitness-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    text-align: center;
+    visibility: hidden;
+}
+
+.fitness-readout.is-idle .fitness-open {
+    visibility: hidden;
+}
+
+.fitness-readout.is-idle .fitness-hint {
+    visibility: visible;
+}
+
+.fitness-panels {
+    margin-top: 12px;
+}
+
+.fitness-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+    padding-top: 12px;
+}
+
+.fitness-row--axis {
+    padding-top: 0;
+}
+
+.fitness-row[hidden] {
+    display: none;
+}
+
+.fitness-metric {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0 10px;
+}
+
+.fitness-metric-name {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.fitness-metric-value {
+    color: var(--text-primary);
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.fitness-metric-delta {
+    grid-column: 1 / -1;
+    min-height: 1.2em;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+.fitness-plot,
+.fitness-axis {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* pan-y keeps vertical swipes scrolling the page while horizontal drags scrub the rides */
+.fitness-plot {
+    touch-action: pan-y;
+    cursor: crosshair;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.fitness-plot[data-metric='ef'] {
+    --series: var(--fitness-ef);
+}
+
+.fitness-plot[data-metric='power'] {
+    --series: var(--power-chart-avg);
+}
+
+.fitness-plot[data-metric='hr'] {
+    --series: var(--hr-chart-avg);
+}
+
+.fitness-dots {
     fill: none;
+    stroke: var(--series);
+    stroke-width: 4;
+    stroke-linecap: round;
+    opacity: var(--fitness-dot-opacity);
+    pointer-events: none;
+}
+
+.fitness-line {
+    fill: none;
+    stroke: var(--series);
     stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
     pointer-events: none;
 }
 
-.strava-trend-dot {
+.fitness-end-dot,
+.fitness-selected {
+    fill: var(--series);
     stroke: var(--surface);
-    stroke-width: 1.5;
-    opacity: 0.72;
-    transition: opacity 120ms ease, r 120ms ease;
-    pointer-events: none;
-}
-
-.strava-trend-marker-group--hover .strava-trend-dot {
-    opacity: 1;
-    r: 5.5;
-}
-
-.strava-trend-hit {
-    cursor: pointer;
-    outline: none;
-}
-
-.strava-trend-hit:focus-visible {
-    stroke: var(--focus);
     stroke-width: 2;
+    pointer-events: none;
 }
 
-.strava-power-chart-tooltip,
-.strava-hr-chart-tooltip,
-.strava-trend-chart-tooltip {
-    position: absolute;
-    z-index: 20;
-    min-width: 160px;
-    max-width: min(280px, 90%);
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    color: var(--text-primary);
-    font-size: 0.82rem;
-    line-height: 1.4;
-    box-shadow: var(--card-shadow-lift);
+.fitness-cross {
+    stroke: var(--text-muted);
+    stroke-width: 1;
     pointer-events: none;
+}
+
+.fitness-peak-label {
+    fill: var(--text-primary);
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    paint-order: stroke;
+    stroke: var(--surface);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+.fitness-note {
+    margin: 10px 0 0;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+
+.fitness-months {
+    margin-top: 6px;
+}
+
+.fitness-months summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--text-primary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.fitness-table-scroll {
+    overflow-x: auto;
+}
+
+.fitness-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.fitness-table th,
+.fitness-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.fitness-table th:first-child {
+    padding-left: 0;
     text-align: left;
 }
 
-.strava-power-tooltip-title {
-    margin-bottom: 2px;
-    font-size: 0.88rem;
-    font-weight: 700;
+.fitness-table td {
+    color: var(--text-primary);
 }
 
-.strava-power-tooltip-date {
-    margin-bottom: 6px;
+.fitness-table th {
     color: var(--text-secondary);
-    font-size: 0.76rem;
+    font-weight: 600;
 }
 
-.strava-power-tooltip-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 3px;
-}
-
-.strava-power-tooltip-label {
-    color: var(--text-secondary);
+.fitness-table-note {
+    margin: 6px 0 8px;
+    color: var(--text-muted);
     font-size: 0.78rem;
 }
 
-.strava-power-tooltip-label--avg::before,
-.strava-power-tooltip-label--weighted::before,
-.strava-hr-tooltip-label--avg::before,
-.strava-hr-tooltip-label--max::before {
-    content: '';
-    display: inline-block;
-    width: 10px;
-    height: 3px;
-    margin-right: 6px;
-    border-radius: 2px;
-    vertical-align: middle;
+.fitness-card--empty .fitness-body {
+    display: none;
 }
 
-.strava-power-tooltip-label--avg::before {
-    background: var(--power-chart-avg);
+.fitness-card--empty .fitness-empty {
+    display: block;
 }
 
-.strava-power-tooltip-label--weighted::before {
-    background: var(--power-chart-weighted);
-}
+@media (min-width: 768px) {
+    .fitness-readout {
+        grid-template-columns: 44px minmax(0, 1fr) 44px 110px;
+    }
 
-.strava-hr-tooltip-label--avg::before {
-    background: var(--hr-chart-avg);
-}
+    .fitness-readout-text {
+        grid-area: 1 / 2;
+    }
 
-.strava-hr-tooltip-label--max::before {
-    background: var(--hr-chart-max);
-}
+    #fitness-prev {
+        grid-area: 1 / 1;
+    }
 
-.strava-power-tooltip-value {
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
+    #fitness-next {
+        grid-area: 1 / 3;
+    }
+
+    .fitness-open {
+        grid-area: 1 / 4;
+    }
+
+    .fitness-hint {
+        display: none;
+    }
+
+    .fitness-row {
+        grid-template-columns: 170px minmax(0, 1fr);
+        gap: 16px;
+        align-items: center;
+    }
+
+    .fitness-row--axis > .fitness-axis {
+        grid-column: 2;
+    }
+
+    .fitness-metric {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .fitness-metric-value {
+        font-size: 1.35rem;
+    }
+
+    .fitness-metric-delta {
+        grid-column: auto;
+        text-align: left;
+    }
 }
 
 /* By weekday: horizontal bars */
@@ -2860,26 +2979,6 @@ html:not(.is-ready) .stat-value-inline * {
         grid-column: auto;
     }
 
-    .strava-charts-nav {
-        grid-template-columns: auto auto auto;
-        justify-content: center;
-        gap: 16px;
-    }
-
-    .strava-charts-nav-center {
-        grid-column: 2;
-    }
-
-    #strava-charts-nav-next {
-        grid-column: 3;
-        grid-row: 1;
-    }
-
-    #strava-charts-nav-prev {
-        grid-column: 1;
-        grid-row: 1;
-    }
-
     .activity-stats-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -2979,7 +3078,6 @@ html:not(.is-ready) .stat-value-inline * {
         grid-column: 1 / -1;
     }
 
-    .strava-charts-row,
     .strava-timing-row {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
